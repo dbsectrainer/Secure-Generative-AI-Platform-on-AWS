@@ -75,7 +75,6 @@ module "s3" {
   kms_admin_role_arn                 = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.name_prefix}-role-terraform-deploy"
   lambda_role_arns                   = [module.iam.lambda_orchestrator_role_arn]
   ingestion_role_arns                = [module.iam.lambda_ingestion_role_arn]
-  ingestion_lambda_arn               = module.bedrock.lambda_function_arn
   kms_deletion_window_days           = 30
   noncurrent_version_expiration_days = 365
   tags                               = local.common_tags

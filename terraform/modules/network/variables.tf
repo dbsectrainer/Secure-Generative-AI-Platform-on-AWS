@@ -54,6 +54,12 @@ variable "kms_key_arn" {
   default     = null
 }
 
+variable "flow_log_retention_days" {
+  description = "Number of days to retain VPC Flow Log entries in CloudWatch Logs"
+  type        = number
+  default     = 30
+}
+
 variable "tags" {
   description = "Map of tags applied to all resources"
   type        = map(string)

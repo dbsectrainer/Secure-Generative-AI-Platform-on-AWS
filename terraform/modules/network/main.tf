@@ -185,15 +185,6 @@ resource "aws_security_group" "vpc_endpoints" {
   description = "Security group for Interface VPC endpoint ENIs"
   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    description = "HTTPS from Lambda orchestrator"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    self        = false
-    security_groups = []
-  }
-
   tags = merge(var.tags, {
     Name = "${var.name_prefix}-sg-vpc-endpoints"
   })
@@ -434,7 +425,7 @@ resource "aws_vpc_endpoint" "interface" {
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/flowlogs/${var.name_prefix}"
-  retention_in_days = 1
+  retention_in_days = var.flow_log_retention_days
   kms_key_id        = var.kms_key_arn
 
   tags = var.tags

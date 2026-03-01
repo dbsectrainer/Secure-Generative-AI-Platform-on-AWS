@@ -146,13 +146,6 @@ resource "aws_iam_policy" "deny_privilege_escalation" {
           "sts:AssumeRole"
         ]
         Resource = "*"
-        Condition = {
-          StringNotEquals = {
-            "aws:PrincipalARN" = [
-              "arn:aws:iam::${var.account_id}:role/${var.name_prefix}-role-terraform-deploy"
-            ]
-          }
-        }
       },
       {
         Sid    = "DenyKMSAdminActions"
