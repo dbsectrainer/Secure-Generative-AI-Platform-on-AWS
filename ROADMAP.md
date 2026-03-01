@@ -127,3 +127,368 @@ By completion, the project demonstrates:
 	•	Ability to construct advanced certification exam questions
 
 ⸻
+
+Project Deliverables
+
+Secure Generative AI Platform on AWS
+
+Deliverables are grouped into technical artefacts, security artefacts, DevOps artefacts, architecture artefacts, and certification assets.
+
+⸻
+
+1. Architecture Deliverables
+
+These demonstrate Solutions Architect – Professional capability.
+
+⸻
+
+1.1 High-Level Architecture Diagram
+
+Must include:
+	•	Multi-account structure (Dev / Prod / Security)
+	•	Bedrock integration
+	•	RAG components
+	•	Private VPC endpoints
+	•	WAF + API Gateway
+	•	Monitoring services
+	•	CI/CD pipeline
+
+Deliverable format:
+	•	PNG + editable source (Draw.io / Lucidchart)
+	•	Version-controlled
+
+⸻
+
+1.2 Detailed Network Architecture
+	•	Subnet layout
+	•	NAT usage justification
+	•	Security groups
+	•	NACL strategy
+	•	Interface VPC endpoints
+	•	Route tables
+
+⸻
+
+1.3 Disaster Recovery Plan
+	•	RTO / RPO definitions
+	•	Backup strategy
+	•	Cross-region strategy
+	•	Failover decision tree
+
+⸻
+
+2. Infrastructure as Code Deliverables
+
+Demonstrates DevOps Engineer – Professional maturity.
+
+⸻
+
+2.1 Terraform Module Structure
+
+/modules
+    /network
+    /iam
+    /bedrock
+    /rag
+    /monitoring
+    /waf
+/environments
+    /dev
+    /prod
+
+Deliver:
+	•	Parameterised modules
+	•	Remote state configuration
+	•	Backend encryption
+	•	Workspace separation
+
+⸻
+
+2.2 CI/CD Pipeline Definition
+	•	CodePipeline or GitHub Actions
+	•	Static analysis stage
+	•	Security scanning stage
+	•	Terraform plan/apply stage
+	•	Canary deployment stage
+	•	Rollback automation
+
+⸻
+
+2.3 Infrastructure Security Report
+	•	IAM least privilege validation
+	•	Access Analyzer results
+	•	Config rule compliance
+	•	SCP enforcement summary
+
+⸻
+
+3. Generative AI Deliverables
+
+Demonstrates Generative AI Developer – Professional capability.
+
+⸻
+
+3.1 RAG Pipeline Implementation
+	•	Embedding workflow
+	•	Vector database integration
+	•	Retrieval filtering logic
+	•	Prompt construction module
+	•	Injection sanitisation layer
+
+⸻
+
+3.2 Prompt Engineering Documentation
+
+Include:
+	•	Prompt templates
+	•	Guardrail configuration
+	•	Token limits
+	•	Cost-per-request estimation
+	•	Latency benchmarking
+
+⸻
+
+3.3 Attack Simulation Scripts
+
+You must implement and document:
+	1.	Prompt injection
+	2.	Model abuse (token flooding)
+	3.	Data leakage attempt
+	4.	Retrieval manipulation
+	5.	IAM misconfiguration test
+
+Deliver:
+	•	Before/after metrics
+	•	Detection logs
+	•	Mitigation effectiveness
+
+⸻
+
+4. Security Deliverables
+
+These differentiate the project from a standard AI demo.
+
+⸻
+
+4.1 Formal Threat Model
+
+Use:
+	•	STRIDE methodology
+	•	MITRE ATT&CK mapping
+
+Include:
+	•	Trust boundaries
+	•	Data flow diagrams
+	•	Risk matrix
+	•	Residual risk statement
+
+⸻
+
+4.2 Security Control Matrix
+
+Threat	Control	AWS Service	Residual Risk
+
+
+
+⸻
+
+4.3 Compliance Mapping
+
+Map architecture to:
+	•	NIST AI Risk Management Framework
+	•	Data protection controls
+	•	Encryption at rest and in transit
+
+⸻
+
+4.4 IAM Policy Review
+	•	Document role boundaries
+	•	Explicit deny strategy
+	•	Privilege escalation prevention
+
+⸻
+
+5. Observability & Operations Deliverables
+
+⸻
+
+5.1 Monitoring Dashboard
+	•	CloudWatch dashboard export
+	•	Token usage metrics
+	•	Latency metrics
+	•	Error rates
+	•	Cost metrics
+
+⸻
+
+5.2 Incident Response Runbook
+
+Include:
+	•	Alert classification
+	•	Escalation path
+	•	Isolation procedure
+	•	Recovery process
+	•	Post-incident review template
+
+⸻
+
+5.3 Abuse Detection Logic
+	•	Rate anomaly detection
+	•	Prompt entropy analysis
+	•	Cost anomaly alarm
+	•	IAM anomaly detection
+
+⸻
+
+6. Cost & Performance Deliverables
+
+⸻
+
+6.1 Cost Model
+	•	Monthly cost projection
+	•	Token usage estimation
+	•	Scaling scenario modelling
+	•	OpenSearch capacity justification
+
+⸻
+
+6.2 Performance Benchmark Report
+	•	Baseline latency
+	•	Load testing results
+	•	Canary deployment impact
+	•	Scaling thresholds
+
+⸻
+
+7. Documentation Deliverables
+
+⸻
+
+7.1 README.md
+	•	Project summary
+	•	Architecture overview
+	•	Deployment instructions
+	•	Security posture summary
+
+⸻
+
+7.2 ROADMAP.md
+	•	Phased execution plan
+	•	Milestones
+	•	Certification alignment
+
+⸻
+
+7.3 Trade-Off Log
+
+Professional-level documentation of:
+	•	Why Bedrock over SageMaker endpoints
+	•	Why OpenSearch over Aurora pgvector
+	•	Why private endpoints over public
+	•	Cost vs latency trade-offs
+
+This is essential for Professional exams.
+
+⸻
+
+8. Certification & Exam Creation Deliverables
+
+This is what elevates the project.
+
+⸻
+
+8.1 Domain Mapping Matrix
+
+Feature	GenAI Pro	DevOps Pro	SA Pro
+
+
+
+⸻
+
+8.2 Scenario-Based Question Bank
+
+Minimum:
+	•	30 GenAI Professional-style questions
+	•	30 DevOps Professional-style questions
+	•	40 Solutions Architect Professional-style questions
+
+Each question must include:
+	•	Scenario
+	•	4–5 options
+	•	Correct answer
+	•	Justification
+	•	Why other answers are wrong
+
+⸻
+
+8.3 Failure Scenario Case Studies
+	•	Region outage
+	•	IAM compromise
+	•	Model abuse attack
+	•	Prompt injection incident
+	•	Deployment regression
+
+Each mapped to exam domain.
+
+⸻
+
+9. Demonstration Deliverables
+
+⸻
+
+9.1 15-Minute Technical Walkthrough Video
+
+Demonstrate:
+	•	Architecture
+	•	Deployment
+	•	Attack simulation
+	•	Monitoring alert trigger
+	•	Rollback
+
+⸻
+
+9.2 Executive Summary Deck (10–15 slides)
+
+Audience:
+	•	Hiring managers
+	•	Architecture review board
+	•	Certification study groups
+
+⸻
+
+10. Optional Senior-Level Enhancements
+	•	Multi-region active-active
+	•	Model signing
+	•	Differential privacy experiment
+	•	Chaos engineering injection
+	•	SCP guardrail enforcement
+	•	Security Hub aggregation
+
+⸻
+
+Minimum Viable Deliverables (If Time-Constrained)
+
+If constrained, the absolute minimum acceptable set:
+	1.	Working RAG platform on Bedrock
+	2.	Secure IAM architecture
+	3.	Private networking configuration
+	4.	CI/CD pipeline with rollback
+	5.	Prompt injection simulation + mitigation
+	6.	Threat model document
+	7.	Architecture diagram
+	8.	30 Professional-level exam questions
+
+⸻
+
+Final Standard
+
+If executed properly, this project will demonstrate:
+	•	Enterprise AI system design
+	•	Advanced AWS architecture
+	•	DevSecOps automation
+	•	Adversarial AI security capability
+	•	Professional certification readiness
+	•	Ability to author high-quality exam material
+
+⸻
+
