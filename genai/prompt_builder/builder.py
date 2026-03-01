@@ -33,14 +33,26 @@ logger = logging.getLogger(__name__)
 
 # Common prompt-injection prefixes/patterns to strip from user queries
 _INJECTION_PATTERNS: list[re.Pattern[str]] = [
+    # Classic instruction override variants
     re.compile(r"ignore\s+(all\s+)?(previous|prior|above)\s+instructions?", re.IGNORECASE),
     re.compile(r"disregard\s+(all\s+)?(previous|prior|above)\s+instructions?", re.IGNORECASE),
     re.compile(r"forget\s+(all\s+)?(previous|prior|above)\s+instructions?", re.IGNORECASE),
+    re.compile(r"override\s+(all\s+)?(previous|prior|above)\s+instructions?", re.IGNORECASE),
+    # Role reassignment
     re.compile(r"you\s+are\s+now\s+", re.IGNORECASE),
+    re.compile(r"act\s+as\s+(a\s+|an\s+)?(?:different|new|unrestricted)\s+", re.IGNORECASE),
+    # Instruction injection markers
     re.compile(r"new\s+instructions?:", re.IGNORECASE),
+    re.compile(r"updated\s+instructions?:", re.IGNORECASE),
     re.compile(r"system\s+prompt:", re.IGNORECASE),
+    # XML/tag-based injection
     re.compile(r"<\s*/?system\s*>", re.IGNORECASE),
+    re.compile(r"<\s*/?instruction\s*>", re.IGNORECASE),
+    re.compile(r"<\s*/?prompt\s*>", re.IGNORECASE),
+    # Token-style injection markers
     re.compile(r"\[INST\]", re.IGNORECASE),
+    re.compile(r"###\s*instruction", re.IGNORECASE),
+    re.compile(r"###\s*system", re.IGNORECASE),
 ]
 
 # ── Token estimation ──────────────────────────────────────────────────────────
