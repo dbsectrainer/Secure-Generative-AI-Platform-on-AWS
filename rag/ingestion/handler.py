@@ -70,7 +70,7 @@ def _chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
                     the start of the next chunk.
 
     Returns:
-        List of text chunks; always contains at least one element.
+        List of text chunks. Returns an empty list when *text* is empty.
     """
     if not text:
         return []

@@ -55,7 +55,8 @@ def estimate_tokens(text: str) -> int:
         text: Input string.
 
     Returns:
-        Estimated token count (always >= 1 for non-empty strings).
+        Estimated token count. Returns 0 for empty strings; returns at least 1
+        for any non-empty string.
     """
     if not text:
         return 0
