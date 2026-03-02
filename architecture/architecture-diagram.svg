@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Secure Generative AI Platform on AWS – High-Level Architecture Diagram
+  Source format: SVG (editable in Inkscape, Figma, or any SVG editor)
+  Export PNG: open in browser and use "Save as image", or run:
+    inkscape --export-type=png --export-filename=architecture-diagram.png architecture-diagram.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#f5f7fa"/>
+
+  <!-- Title -->
+  <text x="600" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a2e">Secure Generative AI Platform on AWS – Architecture Overview</text>
+
+  <!-- ── AWS Cloud border ─────────────────────────────────────── -->
+  <rect x="20" y="55" width="1160" height="830" rx="12" fill="none" stroke="#FF9900" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="40" y="75" font-size="13" fill="#FF9900" font-weight="bold">AWS Cloud</text>
+
+  <!-- ── Security Account (top-left) ──────────────────────────── -->
+  <rect x="35" y="85" width="280" height="180" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="55" y="105" font-size="12" font-weight="bold" fill="#e65100">Security / Audit Account</text>
+  <rect x="55" y="115" width="110" height="40" rx="4" fill="#ffe0b2" stroke="#e65100"/>
+  <text x="110" y="132" text-anchor="middle" font-size="10" fill="#333">AWS CloudTrail</text>
+  <text x="110" y="146" text-anchor="middle" font-size="9" fill="#666">(Org Trail)</text>
+  <rect x="180" y="115" width="110" height="40" rx="4" fill="#ffe0b2" stroke="#e65100"/>
+  <text x="235" y="132" text-anchor="middle" font-size="10" fill="#333">Security Hub</text>
+  <text x="235" y="146" text-anchor="middle" font-size="9" fill="#666">(Aggregated)</text>
+  <rect x="55" y="165" width="110" height="40" rx="4" fill="#ffe0b2" stroke="#e65100"/>
+  <text x="110" y="182" text-anchor="middle" font-size="10" fill="#333">GuardDuty</text>
+  <text x="110" y="196" text-anchor="middle" font-size="9" fill="#666">(Org Delegated)</text>
+  <rect x="180" y="165" width="110" height="40" rx="4" fill="#ffe0b2" stroke="#e65100"/>
+  <text x="235" y="182" text-anchor="middle" font-size="10" fill="#333">IAM Access</text>
+  <text x="235" y="196" text-anchor="middle" font-size="9" fill="#666">Analyzer</text>
+  <rect x="55" y="215" width="235" height="35" rx="4" fill="#ffe0b2" stroke="#e65100"/>
+  <text x="172" y="230" text-anchor="middle" font-size="10" fill="#333">AWS Config (Managed Rules)</text>
+  <text x="172" y="244" text-anchor="middle" font-size="9" fill="#666">CIS Benchmark / NIST AI RMF Controls</text>
+
+  <!-- ── Workload VPC (main area) ──────────────────────────────── -->
+  <rect x="35" y="280" width="1145" height="590" rx="8" fill="#e8f4fd" stroke="#0288d1" stroke-width="1.5"/>
+  <text x="55" y="300" font-size="12" font-weight="bold" fill="#0288d1">Workload Account – VPC (10.0.0.0/16)</text>
+
+  <!-- Public subnet -->
+  <rect x="55" y="310" width="260" height="130" rx="6" fill="#e3f2fd" stroke="#42a5f5" stroke-width="1"/>
+  <text x="185" y="328" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565c0">Public Subnets</text>
+  <rect x="70" y="335" width="100" height="45" rx="4" fill="#bbdefb" stroke="#1e88e5"/>
+  <text x="120" y="353" text-anchor="middle" font-size="10" fill="#333">WAF + API</text>
+  <text x="120" y="366" text-anchor="middle" font-size="9" fill="#333">Gateway</text>
+  <text x="120" y="377" text-anchor="middle" font-size="8" fill="#666">(Regional)</text>
+  <rect x="185" y="335" width="110" height="45" rx="4" fill="#bbdefb" stroke="#1e88e5"/>
+  <text x="240" y="353" text-anchor="middle" font-size="10" fill="#333">NAT Gateway</text>
+  <text x="240" y="366" text-anchor="middle" font-size="9" fill="#666">(per AZ)</text>
+  <rect x="70" y="390" width="225" height="35" rx="4" fill="#bbdefb" stroke="#1e88e5"/>
+  <text x="182" y="405" text-anchor="middle" font-size="10" fill="#333">Cognito User Pool</text>
+  <text x="182" y="418" text-anchor="middle" font-size="9" fill="#666">(JWT Auth for API Gateway)</text>
+
+  <!-- Private App subnet -->
+  <rect x="340" y="310" width="450" height="250" rx="6" fill="#e8f5e9" stroke="#66bb6a" stroke-width="1"/>
+  <text x="565" y="328" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">Private App Subnets</text>
+
+  <rect x="355" y="335" width="130" height="60" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="420" y="355" text-anchor="middle" font-size="10" fill="#333">Lambda</text>
+  <text x="420" y="368" text-anchor="middle" font-size="9" fill="#333">Bedrock Orchestrator</text>
+  <text x="420" y="380" text-anchor="middle" font-size="8" fill="#666">(VPC + SG)</text>
+
+  <rect x="500" y="335" width="130" height="60" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="565" y="355" text-anchor="middle" font-size="10" fill="#333">Lambda</text>
+  <text x="565" y="368" text-anchor="middle" font-size="9" fill="#333">RAG Orchestrator</text>
+  <text x="565" y="380" text-anchor="middle" font-size="8" fill="#666">(VPC + SG)</text>
+
+  <rect x="645" y="335" width="130" height="60" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="710" y="355" text-anchor="middle" font-size="10" fill="#333">Lambda</text>
+  <text x="710" y="368" text-anchor="middle" font-size="9" fill="#333">Ingestion /</text>
+  <text x="710" y="381" text-anchor="middle" font-size="9" fill="#333">Embedding</text>
+
+  <!-- Bedrock Guardrail note -->
+  <rect x="355" y="408" width="420" height="35" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="565" y="423" text-anchor="middle" font-size="10" fill="#333">Amazon Bedrock (Claude 3) + Guardrails</text>
+  <text x="565" y="436" text-anchor="middle" font-size="9" fill="#666">Content filtering · Prompt injection mitigation · Token limits</text>
+
+  <!-- IAM / SCP note -->
+  <rect x="355" y="453" width="420" height="35" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="565" y="468" text-anchor="middle" font-size="10" fill="#333">IAM Least-Privilege Roles + SCP Deny Escalation</text>
+  <text x="565" y="481" text-anchor="middle" font-size="9" fill="#666">Permissions boundary · Explicit deny privilege escalation policy</text>
+
+  <!-- X-Ray -->
+  <rect x="355" y="497" width="200" height="35" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="455" y="512" text-anchor="middle" font-size="10" fill="#333">AWS X-Ray Tracing</text>
+  <text x="455" y="525" text-anchor="middle" font-size="9" fill="#666">End-to-end request tracing</text>
+
+  <!-- CloudWatch -->
+  <rect x="565" y="497" width="210" height="35" rx="4" fill="#c8e6c9" stroke="#43a047"/>
+  <text x="670" y="512" text-anchor="middle" font-size="10" fill="#333">CloudWatch Dashboards</text>
+  <text x="670" y="525" text-anchor="middle" font-size="9" fill="#666">Alarms · Metrics · Log Insights</text>
+
+  <!-- Private Data subnet -->
+  <rect x="820" y="310" width="340" height="250" rx="6" fill="#fce4ec" stroke="#f06292" stroke-width="1"/>
+  <text x="990" y="328" text-anchor="middle" font-size="11" font-weight="bold" fill="#880e4f">Private Data Subnets</text>
+
+  <rect x="835" y="335" width="145" height="60" rx="4" fill="#f8bbd0" stroke="#e91e63"/>
+  <text x="907" y="355" text-anchor="middle" font-size="10" fill="#333">OpenSearch</text>
+  <text x="907" y="368" text-anchor="middle" font-size="9" fill="#333">Serverless</text>
+  <text x="907" y="381" text-anchor="middle" font-size="8" fill="#666">(Vector Store)</text>
+
+  <rect x="997" y="335" width="148" height="60" rx="4" fill="#f8bbd0" stroke="#e91e63"/>
+  <text x="1071" y="355" text-anchor="middle" font-size="10" fill="#333">S3 Document</text>
+  <text x="1071" y="368" text-anchor="middle" font-size="9" fill="#333">Bucket</text>
+  <text x="1071" y="381" text-anchor="middle" font-size="8" fill="#666">(KMS + Versioning)</text>
+
+  <rect x="835" y="408" width="310" height="35" rx="4" fill="#f8bbd0" stroke="#e91e63"/>
+  <text x="990" y="423" text-anchor="middle" font-size="10" fill="#333">Interface VPC Endpoints</text>
+  <text x="990" y="436" text-anchor="middle" font-size="9" fill="#666">Bedrock · S3 · OpenSearch · Lambda · ECR · STS</text>
+
+  <rect x="835" y="453" width="310" height="35" rx="4" fill="#f8bbd0" stroke="#e91e63"/>
+  <text x="990" y="468" text-anchor="middle" font-size="10" fill="#333">VPC Flow Logs</text>
+  <text x="990" y="481" text-anchor="middle" font-size="9" fill="#666">CloudWatch Logs (KMS encrypted)</text>
+
+  <rect x="835" y="497" width="310" height="35" rx="4" fill="#f8bbd0" stroke="#e91e63"/>
+  <text x="990" y="512" text-anchor="middle" font-size="10" fill="#333">KMS CMK</text>
+  <text x="990" y="525" text-anchor="middle" font-size="9" fill="#666">At-rest encryption for S3, CloudWatch, OpenSearch</text>
+
+  <!-- ── CI/CD Section ─────────────────────────────────────────── -->
+  <rect x="35" y="590" width="280" height="120" rx="6" fill="#ede7f6" stroke="#7e57c2" stroke-width="1.5"/>
+  <text x="175" y="610" text-anchor="middle" font-size="11" font-weight="bold" fill="#4527a0">CI/CD Pipeline</text>
+  <rect x="55" y="618" width="115" height="40" rx="4" fill="#d1c4e9" stroke="#7e57c2"/>
+  <text x="112" y="635" text-anchor="middle" font-size="10" fill="#333">GitHub Actions</text>
+  <text x="112" y="648" text-anchor="middle" font-size="9" fill="#666">OIDC → Terraform</text>
+  <rect x="185" y="618" width="115" height="40" rx="4" fill="#d1c4e9" stroke="#7e57c2"/>
+  <text x="242" y="635" text-anchor="middle" font-size="10" fill="#333">pytest / tflint</text>
+  <text x="242" y="648" text-anchor="middle" font-size="9" fill="#666">Security scanning</text>
+  <rect x="55" y="667" width="245" height="30" rx="4" fill="#d1c4e9" stroke="#7e57c2"/>
+  <text x="177" y="682" text-anchor="middle" font-size="10" fill="#333">Terraform S3 Backend + DynamoDB Lock</text>
+  <text x="177" y="694" text-anchor="middle" font-size="9" fill="#666">(KMS encrypted state)</text>
+
+  <!-- ── Multi-account callout ──────────────────────────────────── -->
+  <rect x="35" y="730" width="280" height="120" rx="6" fill="#fafafa" stroke="#9e9e9e" stroke-width="1.5"/>
+  <text x="175" y="750" text-anchor="middle" font-size="11" font-weight="bold" fill="#424242">Multi-Account Structure</text>
+  <text x="55" y="770" font-size="10" fill="#333">• Management / Root Account (SCPs)</text>
+  <text x="55" y="787" font-size="10" fill="#333">• Security / Audit Account</text>
+  <text x="55" y="804" font-size="10" fill="#333">• Workload Dev Account</text>
+  <text x="55" y="821" font-size="10" fill="#333">• Workload Prod Account</text>
+  <text x="55" y="838" font-size="10" fill="#333">• Shared Services Account (CI/CD)</text>
+
+  <!-- ── Arrows ───────────────────────────────────────────────────── -->
+  <!-- Client → WAF -->
+  <line x1="600" y1="55" x2="120" y2="310" stroke="#888" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6,3"/>
+  <text x="300" y="200" font-size="9" fill="#555">HTTPS (TLS 1.2+)</text>
+
+  <!-- WAF/APIGW → Lambda Bedrock -->
+  <line x1="170" y1="380" x2="355" y2="365" stroke="#1565c0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Lambda Bedrock → OpenSearch -->
+  <line x1="485" y1="365" x2="835" y2="365" stroke="#2e7d32" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Lambda RAG → S3 -->
+  <line x1="630" y1="365" x2="997" y2="365" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+
+  <!-- Security Account → Workload -->
+  <line x1="175" y1="265" x2="175" y2="280" stroke="#e65100" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- ── Legend ────────────────────────────────────────────────── -->
+  <rect x="820" y="595" width="340" height="245" rx="6" fill="#fff" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="990" y="614" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Legend</text>
+  <rect x="835" y="622" width="16" height="12" fill="#e3f2fd" stroke="#42a5f5"/>
+  <text x="860" y="633" font-size="10" fill="#333">Public Subnet</text>
+  <rect x="835" y="641" width="16" height="12" fill="#e8f5e9" stroke="#66bb6a"/>
+  <text x="860" y="652" font-size="10" fill="#333">Private App Subnet (compute)</text>
+  <rect x="835" y="660" width="16" height="12" fill="#fce4ec" stroke="#f06292"/>
+  <text x="860" y="671" font-size="10" fill="#333">Private Data Subnet (storage)</text>
+  <rect x="835" y="679" width="16" height="12" fill="#fff3e0" stroke="#e65100"/>
+  <text x="860" y="690" font-size="10" fill="#333">Security / Audit Account</text>
+  <rect x="835" y="698" width="16" height="12" fill="#ede7f6" stroke="#7e57c2"/>
+  <text x="860" y="709" font-size="10" fill="#333">CI/CD Pipeline</text>
+  <line x1="835" y1="723" x2="851" y2="723" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="860" y="727" font-size="10" fill="#333">Synchronous call</text>
+  <line x1="835" y1="742" x2="851" y2="742" stroke="#555" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <text x="860" y="746" font-size="10" fill="#333">Async / event-driven call</text>
+  <line x1="835" y1="761" x2="851" y2="761" stroke="#888" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+  <text x="860" y="765" font-size="10" fill="#333">Internet / client traffic</text>
+  <text x="835" y="790" font-size="9" fill="#666">All inter-service traffic traverses</text>
+  <text x="835" y="803" font-size="9" fill="#666">Interface VPC Endpoints (no public internet).</text>
+  <text x="835" y="816" font-size="9" fill="#666">All data encrypted at rest (KMS CMK)</text>
+  <text x="835" y="829" font-size="9" fill="#666">and in transit (TLS 1.2+).</text>
+
+</svg>

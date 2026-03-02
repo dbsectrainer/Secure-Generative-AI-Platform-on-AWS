@@ -119,3 +119,82 @@ module "bedrock" {
   alarm_sns_topic_arns            = var.alarm_sns_topic_arns
   tags                            = local.common_tags
 }
+
+# ── OpenSearch Module ─────────────────────────────────────────────────────────
+
+module "opensearch" {
+  source = "../../modules/opensearch"
+
+  name_prefix              = local.name_prefix
+  vpc_id                   = module.network.vpc_id
+  private_subnet_ids       = module.network.private_data_subnet_ids
+  lambda_security_group_id = module.network.lambda_security_group_id
+  lambda_role_arns         = [module.iam.lambda_orchestrator_role_arn, module.iam.lambda_ingestion_role_arn]
+  tags                     = local.common_tags
+}
+
+# ── RAG Module ────────────────────────────────────────────────────────────────
+
+module "rag" {
+  source = "../../modules/rag"
+
+  name_prefix                     = local.name_prefix
+  region                          = var.region
+  private_subnet_ids              = module.network.private_app_subnet_ids
+  lambda_security_group_id        = module.network.lambda_security_group_id
+  kms_key_arn                     = module.s3.kms_key_arn
+  document_bucket_name            = module.s3.bucket_id
+  opensearch_endpoint             = module.opensearch.collection_endpoint
+  ingestion_lambda_role_arn       = module.iam.lambda_ingestion_role_arn
+  embedding_lambda_role_arn       = module.iam.lambda_orchestrator_role_arn
+  retrieval_lambda_role_arn       = module.iam.lambda_orchestrator_role_arn
+  orchestrator_lambda_role_arn    = module.iam.lambda_orchestrator_role_arn
+  log_retention_days              = 90
+  error_alarm_threshold           = 1
+  duration_alarm_threshold_ms     = 20000
+  alarm_sns_topic_arns            = var.alarm_sns_topic_arns
+  tags                            = local.common_tags
+}
+
+# ── Security Module ───────────────────────────────────────────────────────────
+
+module "security" {
+  source = "../../modules/security"
+
+  name_prefix          = local.name_prefix
+  region               = var.region
+  account_id           = data.aws_caller_identity.current.account_id
+  kms_key_arn          = module.s3.kms_key_arn
+  alarm_sns_topic_arns = var.alarm_sns_topic_arns
+  tags                 = local.common_tags
+}
+
+# ── WAF Module ────────────────────────────────────────────────────────────────
+
+module "waf" {
+  source = "../../modules/waf"
+
+  name_prefix                      = local.name_prefix
+  region                           = var.region
+  kms_key_arn                      = module.s3.kms_key_arn
+  log_retention_days               = 90
+  block_anonymous_ip               = true
+  alarm_sns_topic_arns             = var.alarm_sns_topic_arns
+  tags                             = local.common_tags
+}
+
+# ── Monitoring Module ─────────────────────────────────────────────────────────
+
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  name_prefix                    = local.name_prefix
+  region                         = var.region
+  account_id                     = data.aws_caller_identity.current.account_id
+  kms_key_arn                    = module.s3.kms_key_arn
+  bedrock_lambda_function_name   = module.bedrock.lambda_function_name
+  rag_orchestrator_function_name = module.rag.orchestrator_lambda_name
+  log_retention_days             = 90
+  alarm_sns_topic_arns           = var.alarm_sns_topic_arns
+  tags                           = local.common_tags
+}
