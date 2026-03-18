@@ -140,11 +140,16 @@ The system addresses the following threats using **STRIDE + MITRE ATT&CK** mappi
 ```
 .
 ├── architecture/    # Architecture diagrams and documentation
+├── docs/            # Developer guides (local testing, etc.)
+├── events/          # Sample event payloads for SAM local testing
 ├── genai/           # Generative AI layer (Bedrock, guardrails, prompts)
 ├── lambda/          # Lambda function handlers
+├── layers/          # Lambda layer sources (prompt_builder)
 ├── rag/             # RAG pipeline implementation
 ├── security/        # Security configs, threat models, attack simulations
 ├── terraform/       # Infrastructure as Code modules
+├── template.yaml    # SAM template (local testing only)
+├── Makefile         # SAM build and invoke targets
 ├── ROADMAP.md       # Project roadmap
 └── README.md
 ```
@@ -159,6 +164,8 @@ The system addresses the following threats using **STRIDE + MITRE ATT&CK** mappi
 - Terraform >= 1.x
 - AWS CLI configured
 - CodePipeline permissions
+- Docker Desktop (for local Lambda testing)
+- AWS SAM CLI >= 1.100.0 (for local Lambda testing)
 
 ### Deploy Infrastructure
 
@@ -167,6 +174,25 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+### Local Testing with SAM CLI
+
+Test Lambda functions locally without deploying to AWS. Requires Docker and SAM CLI.
+
+```bash
+# Build all functions and the Lambda layer
+make sam-build
+
+# Invoke a single function with a sample event
+make sam-invoke-bedrock
+
+# Start a local API Gateway on port 3000
+make sam-api
+```
+
+Available invoke targets: `sam-invoke-bedrock`, `sam-invoke-ingestion`, `sam-invoke-embedding`, `sam-invoke-retrieval`, `sam-invoke-rag`.
+
+See [docs/local-testing.md](docs/local-testing.md) for full documentation including API endpoints, environment configuration, debugging, and known limitations.
 
 ---
 

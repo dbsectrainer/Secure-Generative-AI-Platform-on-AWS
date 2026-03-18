@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Local testing template for Secure Generative AI Platform.
+  THIS TEMPLATE IS FOR LOCAL TESTING ONLY — Terraform is used for cloud deployment.
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 60
+    MemorySize: 256
+    Architectures:
+      - arm64
+
+Resources:
+  # ── Shared Lambda Layer ─────────────────────────────────────────────────────
+
+  PromptBuilderLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: prompt-builder
+      Description: Shared prompt builder module for injection-safe prompt construction
+      ContentUri: layers/prompt_builder/
+      CompatibleRuntimes:
+        - python3.12
+    Metadata:
+      BuildMethod: python3.12
+
+  # ── Bedrock Orchestrator ────────────────────────────────────────────────────
+
+  BedrockOrchestratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: bedrock-orchestrator
+      CodeUri: lambda/bedrock_integration/
+      Handler: handler.lambda_handler
+      Description: Direct Bedrock invocation with prompt validation
+      Environment:
+        Variables:
+          BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+          BEDROCK_REGION: eu-west-1
+          DOCUMENT_BUCKET: local-test-document-bucket
+          MAX_TOKENS: "1024"
+          LOG_LEVEL: DEBUG
+      Events:
+        InvokeApi:
+          Type: Api
+          Properties:
+            Path: /invoke
+            Method: post
+
+  # ── RAG Ingestion (S3 trigger — no API event) ──────────────────────────────
+
+  RagIngestionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: rag-ingestion
+      CodeUri: rag/ingestion/
+      Handler: handler.lambda_handler
+      Description: Document chunking and embedding dispatch triggered by S3 events
+      Environment:
+        Variables:
+          DOCUMENT_BUCKET: local-test-document-bucket
+          EMBEDDING_LAMBDA_ARN: rag-embedding
+          CHUNK_SIZE: "1000"
+          CHUNK_OVERLAP: "200"
+          LOG_LEVEL: DEBUG
+
+  # ── RAG Embedding Generation ────────────────────────────────────────────────
+
+  RagEmbeddingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: rag-embedding
+      CodeUri: rag/embedding/
+      Handler: handler.lambda_handler
+      Description: Bedrock embedding generation and OpenSearch indexing
+      Environment:
+        Variables:
+          BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
+          BEDROCK_REGION: eu-west-1
+          OPENSEARCH_ENDPOINT: https://localhost:9200
+          OPENSEARCH_INDEX: rag-documents
+          LOG_LEVEL: DEBUG
+      Events:
+        EmbedApi:
+          Type: Api
+          Properties:
+            Path: /embed
+            Method: post
+
+  # ── RAG Retrieval ───────────────────────────────────────────────────────────
+
+  RagRetrievalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: rag-retrieval
+      CodeUri: rag/retrieval/
+      Handler: handler.lambda_handler
+      Description: Vector search with metadata filtering via OpenSearch
+      Environment:
+        Variables:
+          BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
+          BEDROCK_REGION: eu-west-1
+          OPENSEARCH_ENDPOINT: https://localhost:9200
+          OPENSEARCH_INDEX: rag-documents
+          TOP_K: "5"
+          LOG_LEVEL: DEBUG
+      Events:
+        RetrieveApi:
+          Type: Api
+          Properties:
+            Path: /retrieve
+            Method: post
+
+  # ── RAG Orchestrator (full pipeline) ────────────────────────────────────────
+
+  RagOrchestratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: rag-orchestrator
+      CodeUri: rag/orchestrator/
+      Handler: handler.lambda_handler
+      Description: Full RAG pipeline — retrieval, prompt construction, inference
+      Layers:
+        - !Ref PromptBuilderLayer
+      Environment:
+        Variables:
+          BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+          BEDROCK_REGION: eu-west-1
+          RETRIEVAL_LAMBDA_ARN: rag-retrieval
+          MAX_TOKENS: "2048"
+          TOP_K: "5"
+          PROMPT_MODE: rag
+          LOG_LEVEL: DEBUG
+      Events:
+        QueryApi:
+          Type: Api
+          Properties:
+            Path: /query
+            Method: post
+
+Outputs:
+  ApiEndpoint:
+    Description: Local API Gateway endpoint (sam local start-api)
+    Value: !Sub "http://localhost:3000"
+  BedrockOrchestratorArn:
+    Description: Bedrock Orchestrator function
+    Value: !GetAtt BedrockOrchestratorFunction.Arn
+  RagOrchestratorArn:
+    Description: RAG Orchestrator function
+    Value: !GetAtt RagOrchestratorFunction.Arn

@@ -1,0 +1,1 @@
+# No external dependencies - prompt_builder uses only Python stdlib

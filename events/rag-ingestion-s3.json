@@ -1,0 +1,23 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "eu-west-1",
+      "eventTime": "2024-01-15T12:00:00.000Z",
+      "eventName": "ObjectCreated:Put",
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "bucket": {
+          "name": "local-test-document-bucket",
+          "arn": "arn:aws:s3:::local-test-document-bucket"
+        },
+        "object": {
+          "key": "raw/sample-document.txt",
+          "size": 1024,
+          "eTag": "d41d8cd98f00b204e9800998ecf8427e"
+        }
+      }
+    }
+  ]
+}

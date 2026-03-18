@@ -1,0 +1,5 @@
+{
+  "query": "Summarize the security controls implemented for the generative AI platform",
+  "filters": {},
+  "top_k": 5
+}

@@ -1,0 +1,17 @@
+# SAM CLI configuration — LOCAL TESTING ONLY
+# This file provides default parameters for sam build / sam local invoke / sam local start-api.
+# It does NOT control cloud deployments (Terraform handles that).
+
+version = 0.1
+
+[default.build.parameters]
+use_container = true
+parallel = true
+
+[default.local_invoke.parameters]
+env_vars = "env.json"
+
+[default.local_start_api.parameters]
+env_vars = "env.json"
+warm_containers = "EAGER"
+port = 3000

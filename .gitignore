@@ -55,6 +55,11 @@ logs/
 # Node (if applicable)
 node_modules/
 
+# AWS SAM CLI
+.aws-sam/
+layers/prompt_builder/python/
+env.local.json
+
 # Archives
 *.zip
 *.tar.gz

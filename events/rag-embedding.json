@@ -1,0 +1,7 @@
+{
+  "text": "Amazon Bedrock is a fully managed service that offers a choice of high-performing foundation models from leading AI companies. It provides a single API to access models from Amazon, Anthropic, Cohere, Meta, and other providers.",
+  "metadata": {
+    "document_key": "raw/sample-document.txt",
+    "chunk_index": 0
+  }
+}
