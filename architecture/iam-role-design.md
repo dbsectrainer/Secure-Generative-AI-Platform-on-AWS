@@ -16,6 +16,7 @@
 **Purpose**: Assumed by the Lambda Orchestrator function to invoke Bedrock models and read from S3.
 
 **Trust Policy**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -35,6 +36,7 @@
 ```
 
 **Permission Policy** (`policy-lambda-bedrock-orchestrator`):
+
 ```json
 {
   "Version": "2012-10-17",
@@ -54,19 +56,13 @@
     {
       "Sid": "S3DocumentRead",
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:GetObjectVersion"
-      ],
+      "Action": ["s3:GetObject", "s3:GetObjectVersion"],
       "Resource": "arn:aws:s3:::${document_bucket_name}/*"
     },
     {
       "Sid": "KMSDecrypt",
       "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt",
-        "kms:GenerateDataKey"
-      ],
+      "Action": ["kms:Decrypt", "kms:GenerateDataKey"],
       "Resource": "arn:aws:kms:${region}:${account_id}:key/${kms_key_id}"
     },
     {
@@ -82,10 +78,7 @@
     {
       "Sid": "XRayTrace",
       "Effect": "Allow",
-      "Action": [
-        "xray:PutTraceSegments",
-        "xray:PutTelemetryRecords"
-      ],
+      "Action": ["xray:PutTraceSegments", "xray:PutTelemetryRecords"],
       "Resource": "*"
     },
     {
@@ -103,6 +96,7 @@
 ```
 
 **Explicit Deny** (appended as a separate policy `policy-deny-privilege-escalation`):
+
 ```json
 {
   "Version": "2012-10-17",
@@ -160,6 +154,7 @@
 **Purpose**: Assumed by the document ingestion Lambda to write documents to S3 with checksum validation.
 
 **Permission Policy**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -178,10 +173,7 @@
     {
       "Sid": "KMSEncrypt",
       "Effect": "Allow",
-      "Action": [
-        "kms:GenerateDataKey",
-        "kms:Decrypt"
-      ],
+      "Action": ["kms:GenerateDataKey", "kms:Decrypt"],
       "Resource": "arn:aws:kms:${region}:${account_id}:key/${kms_key_id}"
     },
     {
@@ -205,6 +197,7 @@
 **Purpose**: Assumed by CI/CD pipeline (CodeBuild / GitHub Actions OIDC) for Terraform plan/apply.
 
 **Trust Policy**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -243,6 +236,7 @@ This role grants only the permissions required to create/modify the infrastructu
 ## Permission Boundary
 
 All human and service IAM roles in the Dev and Prod accounts have a **Permission Boundary** (`boundary-max-permissions`) attached. This boundary prevents any role from exceeding the following maximum permissions:
+
 - No `iam:*` except read-only
 - No `organizations:*`
 - No `account:*`
@@ -254,6 +248,7 @@ All human and service IAM roles in the Dev and Prod accounts have a **Permission
 SCPs are applied at the Organisation level to enforce non-negotiable baselines.
 
 ### `scp-deny-root-usage`
+
 ```json
 {
   "Version": "2012-10-17",
@@ -272,6 +267,7 @@ SCPs are applied at the Organisation level to enforce non-negotiable baselines.
 ```
 
 ### `scp-require-region-restriction`
+
 ```json
 {
   "Version": "2012-10-17",
@@ -300,6 +296,7 @@ SCPs are applied at the Organisation level to enforce non-negotiable baselines.
 ```
 
 ### `scp-deny-disable-security-services`
+
 ```json
 {
   "Version": "2012-10-17",
@@ -338,6 +335,7 @@ SCPs are applied at the Organisation level to enforce non-negotiable baselines.
 ```
 
 ### `scp-require-encryption`
+
 ```json
 {
   "Version": "2012-10-17",
@@ -356,10 +354,7 @@ SCPs are applied at the Organisation level to enforce non-negotiable baselines.
     {
       "Sid": "DenyPublicS3Buckets",
       "Effect": "Deny",
-      "Action": [
-        "s3:PutBucketPublicAccessBlock",
-        "s3:DeletePublicAccessBlock"
-      ],
+      "Action": ["s3:PutBucketPublicAccessBlock", "s3:DeletePublicAccessBlock"],
       "Resource": "*",
       "Condition": {
         "Bool": { "s3:PublicAccessBlockEnabled": false }

@@ -22,13 +22,13 @@ This directory contains five attack simulation scripts that validate the securit
 
 ## Scripts
 
-| Script                         | Attack Category                  | Primary Control Tested                              |
-|--------------------------------|----------------------------------|-----------------------------------------------------|
-| `01_prompt_injection.py`       | Prompt injection                 | `sanitise_query()` + Bedrock Guardrails             |
-| `02_token_flooding.py`         | Model abuse / token flooding     | WAF rate limiting + Lambda concurrency + Budgets    |
-| `03_data_leakage.py`           | Data leakage attempt             | S3 bucket policies + VPC endpoints + Guardrails PII |
-| `04_retrieval_manipulation.py` | Retrieval manipulation           | OpenSearch access policy + embedding validation     |
-| `05_iam_misconfiguration.py`   | IAM misconfiguration test        | IAM least-privilege + Access Analyzer + Config      |
+| Script                         | Attack Category              | Primary Control Tested                              |
+| ------------------------------ | ---------------------------- | --------------------------------------------------- |
+| `01_prompt_injection.py`       | Prompt injection             | `sanitise_query()` + Bedrock Guardrails             |
+| `02_token_flooding.py`         | Model abuse / token flooding | WAF rate limiting + Lambda concurrency + Budgets    |
+| `03_data_leakage.py`           | Data leakage attempt         | S3 bucket policies + VPC endpoints + Guardrails PII |
+| `04_retrieval_manipulation.py` | Retrieval manipulation       | OpenSearch access policy + embedding validation     |
+| `05_iam_misconfiguration.py`   | IAM misconfiguration test    | IAM least-privilege + Access Analyzer + Config      |
 
 ---
 

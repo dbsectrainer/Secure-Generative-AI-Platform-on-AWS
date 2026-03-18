@@ -96,16 +96,16 @@ Provide a concise, accurate summary that addresses the task above.
 The `sanitise_query()` function in `builder.py` removes common prompt-injection
 patterns **before** the query is injected into the prompt. Patterns screened:
 
-| Pattern | Regex |
-|---------|-------|
-| Ignore previous instructions | `ignore\s+(all\s+)?(previous\|prior\|above)\s+instructions?` |
-| Disregard instructions | `disregard\s+(all\s+)?(previous\|prior\|above)\s+instructions?` |
-| Forget instructions | `forget\s+(all\s+)?(previous\|prior\|above)\s+instructions?` |
-| Role hijacking | `you\s+are\s+now\s+` |
-| New instructions injection | `new\s+instructions?:` |
-| System prompt override | `system\s+prompt:` |
-| XML system tags | `<\s*/?system\s*>` |
-| Llama instruction tokens | `\[INST\]` |
+| Pattern                      | Regex                                                           |
+| ---------------------------- | --------------------------------------------------------------- |
+| Ignore previous instructions | `ignore\s+(all\s+)?(previous\|prior\|above)\s+instructions?`    |
+| Disregard instructions       | `disregard\s+(all\s+)?(previous\|prior\|above)\s+instructions?` |
+| Forget instructions          | `forget\s+(all\s+)?(previous\|prior\|above)\s+instructions?`    |
+| Role hijacking               | `you\s+are\s+now\s+`                                            |
+| New instructions injection   | `new\s+instructions?:`                                          |
+| System prompt override       | `system\s+prompt:`                                              |
+| XML system tags              | `<\s*/?system\s*>`                                              |
+| Llama instruction tokens     | `\[INST\]`                                                      |
 
 **Defence-in-depth:** The Bedrock Guardrail (configured in
 `terraform/modules/bedrock/main.tf`) applies `PROMPT_ATTACK` filtering at
@@ -126,14 +126,14 @@ estimated_tokens = max(1, len(text) / 4.0)
 
 ### Hard Limits (characters)
 
-| Component | Limit | Approximate Token Limit |
-|-----------|-------|------------------------|
-| System prompt | 2,000 chars | ~500 tokens |
-| User query | 4,000 chars | ~1,000 tokens |
-| Context (all chunks) | 16,000 chars | ~4,000 tokens |
-| **Total prompt budget** | **~22,000 chars** | **~5,500 tokens** |
-| Max response tokens | `MAX_TOKENS` env var | 2,048 (default) |
-| **Total budget** | — | **~7,548 tokens** |
+| Component               | Limit                | Approximate Token Limit |
+| ----------------------- | -------------------- | ----------------------- |
+| System prompt           | 2,000 chars          | ~500 tokens             |
+| User query              | 4,000 chars          | ~1,000 tokens           |
+| Context (all chunks)    | 16,000 chars         | ~4,000 tokens           |
+| **Total prompt budget** | **~22,000 chars**    | **~5,500 tokens**       |
+| Max response tokens     | `MAX_TOKENS` env var | 2,048 (default)         |
+| **Total budget**        | —                    | **~7,548 tokens**       |
 
 Context is truncated intelligently at sentence boundaries when the total
 exceeds 16,000 characters. Chunks are included in relevance order until
@@ -146,18 +146,18 @@ the budget is reached.
 The Bedrock Guardrail applied to the orchestrator Lambda (`modules/bedrock`)
 is configured with:
 
-| Policy | Type | Strength |
-|--------|------|----------|
-| Content filtering – Hate | `HATE` | HIGH (in + out) |
-| Content filtering – Violence | `VIOLENCE` | HIGH (in + out) |
-| Content filtering – Sexual | `SEXUAL` | HIGH (in + out) |
-| Content filtering – Misconduct | `MISCONDUCT` | HIGH (in + out) |
-| Prompt attack | `PROMPT_ATTACK` | HIGH (in only) |
-| PII – Email | `EMAIL` | ANONYMIZE |
-| PII – Name | `NAME` | ANONYMIZE |
-| PII – Phone | `PHONE` | ANONYMIZE |
-| PII – AWS Access Key | `AWS_ACCESS_KEY` | BLOCK |
-| PII – AWS Secret Key | `AWS_SECRET_KEY` | BLOCK |
+| Policy                         | Type             | Strength        |
+| ------------------------------ | ---------------- | --------------- |
+| Content filtering – Hate       | `HATE`           | HIGH (in + out) |
+| Content filtering – Violence   | `VIOLENCE`       | HIGH (in + out) |
+| Content filtering – Sexual     | `SEXUAL`         | HIGH (in + out) |
+| Content filtering – Misconduct | `MISCONDUCT`     | HIGH (in + out) |
+| Prompt attack                  | `PROMPT_ATTACK`  | HIGH (in only)  |
+| PII – Email                    | `EMAIL`          | ANONYMIZE       |
+| PII – Name                     | `NAME`           | ANONYMIZE       |
+| PII – Phone                    | `PHONE`          | ANONYMIZE       |
+| PII – AWS Access Key           | `AWS_ACCESS_KEY` | BLOCK           |
+| PII – AWS Secret Key           | `AWS_SECRET_KEY` | BLOCK           |
 
 ---
 
@@ -178,12 +178,12 @@ current rates.
 
 ### Sample calculation
 
-| Scenario | Input Tokens | Output Tokens | Estimated Cost |
-|----------|-------------|---------------|----------------|
-| Short Q&A (1 chunk) | 300 | 100 | $0.000002400 |
-| Standard query (5 chunks) | 800 | 300 | $0.000006900 |
-| Summarisation (10 chunks) | 1,500 | 600 | $0.000013500 |
-| Complex analysis | 2,500 | 1,000 | $0.000022500 |
+| Scenario                  | Input Tokens | Output Tokens | Estimated Cost |
+| ------------------------- | ------------ | ------------- | -------------- |
+| Short Q&A (1 chunk)       | 300          | 100           | $0.000002400   |
+| Standard query (5 chunks) | 800          | 300           | $0.000006900   |
+| Summarisation (10 chunks) | 1,500        | 600           | $0.000013500   |
+| Complex analysis          | 2,500        | 1,000         | $0.000022500   |
 
 All per-request usage is logged via the orchestrator Lambda's CloudWatch logs
 for aggregation and cost anomaly detection.

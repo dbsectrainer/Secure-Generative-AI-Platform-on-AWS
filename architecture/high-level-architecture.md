@@ -26,12 +26,12 @@ The Secure Generative AI Platform on AWS is deployed across a multi-account AWS 
 
 ## Multi-Account Strategy
 
-| Account | Purpose | Key Services |
-|---------|---------|--------------|
-| **Management** | Organisation root, SCPs, consolidated billing, AWS SSO | AWS Organizations, IAM Identity Center |
-| **Dev** | Development and testing workloads | VPC, Bedrock, Lambda, S3, API Gateway, CodePipeline |
-| **Prod** | Production workloads with stricter controls | VPC, Bedrock, Lambda, S3, API Gateway, WAF, CloudFront |
-| **Security** | Centralised security monitoring | CloudTrail (org-wide), GuardDuty, Security Hub, Config, IAM Access Analyzer |
+| Account        | Purpose                                                | Key Services                                                                |
+| -------------- | ------------------------------------------------------ | --------------------------------------------------------------------------- |
+| **Management** | Organisation root, SCPs, consolidated billing, AWS SSO | AWS Organizations, IAM Identity Center                                      |
+| **Dev**        | Development and testing workloads                      | VPC, Bedrock, Lambda, S3, API Gateway, CodePipeline                         |
+| **Prod**       | Production workloads with stricter controls            | VPC, Bedrock, Lambda, S3, API Gateway, WAF, CloudFront                      |
+| **Security**   | Centralised security monitoring                        | CloudTrail (org-wide), GuardDuty, Security Hub, Config, IAM Access Analyzer |
 
 ## Core Component Interactions
 

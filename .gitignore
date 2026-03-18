@@ -39,3 +39,23 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+*~
+
+# Secrets
+.env.*
+*.pem
+*.key
+credentials.json
+terraform.tfvars
+
+# Logs
+*.log
+logs/
+
+# Node (if applicable)
+node_modules/
+
+# Archives
+*.zip
+*.tar.gz
+!terraform/modules/bedrock/bedrock_lambda.zip
