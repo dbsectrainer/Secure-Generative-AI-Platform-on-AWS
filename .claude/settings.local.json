@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo view --json nameWithOwner -q .nameWithOwner)",
+      "Bash(gh label create \"phase\" --description \"Project phase\" --color \"0075ca\")",
+      "Bash(gh issue list --repo dbsectrainer/Secure-Generative-AI-Platform-on-AWS --limit 20)",
+      "Bash(gh issue list --repo dbsectrainer/Secure-Generative-AI-Platform-on-AWS --state all --limit 20)"
+    ]
+  }
+}

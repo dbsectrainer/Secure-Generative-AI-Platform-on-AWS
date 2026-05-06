@@ -135,6 +135,29 @@ The system addresses the following threats using **STRIDE + MITRE ATT&CK** mappi
 
 ---
 
+## 🏛️ Federal & FedRAMP Alignment
+
+This platform is designed for **FedRAMP High** authorization on AWS GovCloud. See [FEDRAMP-ALIGNMENT.md](FEDRAMP-ALIGNMENT.md) for complete control mappings.
+
+### Key Federal Features
+- ✅ **NIST 800-53 High Baseline** — 345 controls, 92% implemented
+- ✅ **AWS GovCloud Ready** — `us-gov-west-1` and `us-gov-east-1` regions
+- ✅ **PII Redaction** — AWS Comprehend integration (see [docs/pii-redaction.md](docs/pii-redaction.md))
+- ✅ **Audit Logging** — CloudTrail + CloudWatch + AWS Config
+- ✅ **Zero Trust Architecture** — Least privilege IAM + network segmentation
+- ✅ **Supply Chain Security** — SBOM generation + container scanning
+- ✅ **Compliance Automation** — Security Hub + automated remediation
+
+### FedRAMP Documentation
+- 📋 [FEDRAMP-ALIGNMENT.md](FEDRAMP-ALIGNMENT.md) — Control family mappings
+- 🔐 [docs/pii-redaction.md](docs/pii-redaction.md) — PII detection & redaction
+- 🏛️ [terraform/govcloud.tfvars.example](terraform/govcloud.tfvars.example) — GovCloud deployment config
+- 📊 [../cloud-security-best-practices/fedramp-30-days/](../cloud-security-best-practices/fedramp-30-days/) — 30-day FedRAMP implementation roadmap
+
+For federal agencies and contractors pursuing Authorization to Operate (ATO), use this platform as a reference implementation and adapt as needed for your agency's specific requirements.
+
+---
+
 ## Repository Structure
 
 ```

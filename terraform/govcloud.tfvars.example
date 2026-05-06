@@ -1,0 +1,199 @@
+# AWS GovCloud FedRAMP High Configuration
+# Copy this file to terraform.tfvars and customize for your agency
+
+# AWS GovCloud Regions
+aws_region = "us-gov-west-1"  # us-gov-west-1 (Oregon) or us-gov-east-1 (Virginia)
+
+# Deployment Environment
+environment = "production"  # production, staging, development
+environment_code = "prod"   # prod, stg, dev
+
+# Organization & Project
+project_name = "secure-ai-platform"
+organization = "your-agency-name"
+cost_center  = "your-cost-center"
+team         = "security-engineering"
+
+# AWS Account Configuration
+account_id = "123456789012"  # Your GovCloud AWS Account ID
+
+# Network Configuration
+vpc_cidr_block = "10.0.0.0/16"
+private_subnet_cidrs = [
+  "10.0.1.0/24",   # AZ-1
+  "10.0.2.0/24",   # AZ-2
+  "10.0.3.0/24"    # AZ-3
+]
+public_subnet_cidrs = [
+  "10.0.101.0/24",  # AZ-1
+  "10.0.102.0/24",  # AZ-2
+  "10.0.103.0/24"   # AZ-3
+]
+
+# Availability Zones (GovCloud-specific)
+availability_zones = [
+  "us-gov-west-1a",
+  "us-gov-west-1b",
+  "us-gov-west-1c"
+]
+
+# Database Configuration
+db_instance_class = "db.r6i.xlarge"  # Multi-AZ recommended for production
+db_allocated_storage = 100            # 100 GB initial
+db_max_allocated_storage = 1000       # Auto-scaling up to 1 TB
+db_backup_retention_days = 30         # 30-day retention for compliance
+db_deletion_protection = true
+db_engine = "postgres"
+db_engine_version = "15.3"            # Latest supported version
+
+# Aurora (if using Aurora instead of RDS)
+aurora_cluster_instances = 3          # Multi-AZ: 1 primary + 2 read replicas
+aurora_instance_class = "db.r6i.large"
+
+# Encryption Configuration
+kms_enable_key_rotation = true
+kms_key_rotation_days = 365           # Annual rotation per FedRAMP
+
+# Secrets Manager
+secrets_rotation_enabled = true
+secrets_rotation_days = 30             # 30-day credential rotation
+
+# Application Load Balancer (ALB)
+alb_enable_deletion_protection = true
+alb_enable_access_logs = true
+alb_access_logs_s3_bucket = "your-org-alb-logs"
+alb_access_logs_prefix = "secure-ai-platform"
+
+# S3 Configuration (Logs, Data, Backups)
+s3_enable_versioning = true
+s3_enable_mfa_delete = true
+s3_object_lock_enabled = true         # For log immutability (WORM)
+s3_log_retention_days = 2555          # 7 years per FedRAMP
+s3_enable_server_side_encryption = true
+s3_sse_algorithm = "aws:kms"          # Use KMS CMK, not SSE-S3
+
+# CloudTrail Configuration
+cloudtrail_enable_log_file_validation = true
+cloudtrail_s3_key_prefix = "cloudtrail-logs"
+cloudtrail_log_retention_days = 2555  # 7 years per FedRAMP
+
+# CloudWatch Configuration
+cloudwatch_log_retention_days = 365   # 1 year (longer durations increase costs)
+cloudwatch_enable_detailed_monitoring = true
+
+# Security Hub & Config
+enable_security_hub = true
+enable_aws_config = true
+enable_guardduty = true
+enable_macie = true
+enable_inspector = true
+
+# WAF Configuration
+waf_enable_aws_managed_rules = true
+waf_rate_limit_count = 2000           # Requests per 5 minutes
+waf_geographic_restriction_enabled = false  # Set to true if restricting to US
+
+# Container Registry (ECR)
+ecr_enable_image_scan = true
+ecr_scan_on_push = true
+ecr_image_retention_count = 10        # Retain last 10 images
+
+# Lambda Configuration
+lambda_timeout = 300                  # 5 minutes max for inference
+lambda_memory_size = 3008             # Max memory for better performance
+lambda_ephemeral_storage = 10240      # 10 GB for large models
+
+# Bedrock Configuration (Generative AI)
+bedrock_model_id = "anthropic.claude-3-sonnet-20240229-v1:0"  # FedRAMP-authorized model
+bedrock_max_tokens = 4096
+bedrock_temperature = 0.7             # Lower = more deterministic
+
+# API Gateway
+api_gateway_throttle_rate_limit = 10000
+api_gateway_throttle_burst_limit = 5000
+api_gateway_require_api_key = true
+api_gateway_enable_access_logging = true
+
+# Cognito Configuration
+cognito_password_minimum_length = 15
+cognito_password_require_uppercase = true
+cognito_password_require_lowercase = true
+cognito_password_require_numbers = true
+cognito_password_require_symbols = true
+cognito_temporary_password_validity_days = 3
+cognito_user_attribute_update_requires_verification = true  # Verify email changes
+cognito_mfa_required = true            # MFA mandatory for all users
+cognito_mfa_configuration = "OPTIONAL"  # Can be OPTIONAL or REQUIRED
+cognito_allowed_mfa = ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]  # TOTP and SMS
+
+# IAM Identity Center (IdC) Configuration
+idp_authentication_enabled = true
+idp_mfa_requirement = "REQUIRED"       # MFA required for IdC access
+idp_session_duration = 3600            # 1-hour session
+
+# Monitoring & Alerting
+enable_health_checks = true
+health_check_interval_seconds = 30
+health_check_healthy_threshold = 2
+health_check_unhealthy_threshold = 3
+
+# Tagging Configuration
+tags = {
+  Environment     = "production"
+  Project         = "secure-ai-platform"
+  CostCenter      = "your-cost-center"
+  Owner           = "security-engineering"
+  Compliance      = "FedRAMP-High"
+  Classification  = "Federal-Unclassified"
+  BackupRequired  = "true"
+  DataClassification = "Sensitive"
+  AutoShutdown    = "false"
+  ManagedBy       = "terraform"
+}
+
+# Backup & Disaster Recovery
+backup_enabled = true
+backup_retention_days = 30
+backup_vault_name = "fedex-ai-platform-vault"
+
+# Logging & Audit
+audit_logging_enabled = true
+detailed_logging = true
+
+# Network Security
+enable_vpc_flow_logs = true
+vpc_flow_logs_retention_days = 365
+
+# Advanced Configuration
+enable_network_firewall = true
+enable_efs = true                      # Elastic File System for shared storage
+efs_throughput_mode = "bursting"       # Use "provisioned" for consistent performance
+efs_performance_mode = "generalPurpose"
+
+# Cost Optimization (GovCloud specific)
+use_graviton_instances = false         # Not available in all GovCloud services
+enable_compute_savings_plans = true
+reserved_instances_enabled = false     # Not typical for federal dynamic workloads
+
+# Disaster Recovery Target (Secondary Region)
+enable_cross_region_replication = true
+dr_target_region = "us-gov-east-1"     # Replicate to other GovCloud region
+
+# Compliance Automation
+enable_compliance_scanning = true
+compliance_scan_frequency = "DAILY"
+
+# Custom Alarms (High-Priority Security Alerts)
+custom_alarms = {
+  root_account_access = true           # Alert on root account use
+  iam_policy_changes = true            # Alert on IAM changes
+  security_group_changes = true        # Alert on SG changes
+  cloudtrail_tampering = true          # Alert on CloudTrail disabled
+  unencrypted_uploads = true           # Alert on unencrypted S3 uploads
+}
+
+# PII/PHI Handling (if processing sensitive data)
+enable_pii_detection = true
+pii_detection_confidence_threshold = 0.95
+enable_data_masking = true
+masked_columns = ["email", "phone", "ssn", "account_number"]
