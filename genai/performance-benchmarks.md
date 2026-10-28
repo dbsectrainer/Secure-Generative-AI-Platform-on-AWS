@@ -81,6 +81,10 @@ Prompt construction is CPU-bound (no I/O). Measured from `PromptBuilder.build()`
 
 ### Stage 5: Bedrock Inference (Claude Sonnet 5.5)
 
+> **Re-baseline needed:** the latency figures below were measured on the
+> previous default model (Claude 3 Sonnet) and have not been re-measured on
+> Sonnet 5.5. Treat them as placeholders until a load test is run.
+
 | Response Length         | Latency (p50) | Latency (p95) |
 | ----------------------- | ------------- | ------------- |
 | Short (< 100 tokens)    | 800 ms        | 1,500 ms      |

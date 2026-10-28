@@ -180,10 +180,10 @@ current rates.
 
 | Scenario                  | Input Tokens | Output Tokens | Estimated Cost |
 | ------------------------- | ------------ | ------------- | -------------- |
-| Short Q&A (1 chunk)       | 300          | 100           | $0.000002400   |
-| Standard query (5 chunks) | 800          | 300           | $0.000006900   |
-| Summarisation (10 chunks) | 1,500        | 600           | $0.000013500   |
-| Complex analysis          | 2,500        | 1,000         | $0.000022500   |
+| Short Q&A (1 chunk)       | 300          | 100           | $0.0016        |
+| Standard query (5 chunks) | 800          | 300           | $0.0046        |
+| Summarisation (10 chunks) | 1,500        | 600           | $0.0090        |
+| Complex analysis          | 2,500        | 1,000         | $0.0150        |
 
 All per-request usage is logged via the orchestrator Lambda's CloudWatch logs
 for aggregation and cost anomaly detection.

@@ -6,7 +6,9 @@ This document establishes the baseline token usage and cost estimates for the
 RAG pipeline. All costs are based on Amazon Bedrock pricing for
 **Claude Sonnet 5.5** and **Titan Text Embeddings v2** in `eu-west-1`.
 
-> **Note:** Pricing changes frequently. Always verify current rates at
+> **Note:** Claude prices are the Sonnet 5.5 / Haiku 5.5 list rates from the
+> [Claude models overview](https://platform.claude.com/docs/en/about-claude/pricing)
+> (Haiku 5.5 is quoted at its "from" price). Pricing changes frequently. Always verify current rates at
 > [https://aws.amazon.com/bedrock/pricing/](https://aws.amazon.com/bedrock/pricing/).
 
 ---
@@ -16,7 +18,7 @@ RAG pipeline. All costs are based on Amazon Bedrock pricing for
 | Model                    | Input Price          | Output Price         |
 | ------------------------ | -------------------- | -------------------- |
 | Claude Sonnet 5.5        | $0.002 / 1K tokens   | $0.010 / 1K tokens   |
-| Claude Haiku 5.5           | $0.00025 / 1K tokens | $0.00125 / 1K tokens |
+| Claude Haiku 5.5         | $0.0001 / 1K tokens  | $0.0005 / 1K tokens  |
 | Titan Text Embeddings v2 | $0.00002 / 1K tokens | —                    |
 
 ---
@@ -72,24 +74,24 @@ The RAG orchestrator assembles a grounded prompt and calls the inference model.
 
 | Scenario                           | Input Tokens | Output Tokens | Total Cost (Sonnet) |
 | ---------------------------------- | ------------ | ------------- | ------------------- |
-| Minimal (1 chunk, short answer)    | 400          | 100           | $0.0000026          |
-| Standard (5 chunks, medium answer) | 1,500        | 300           | $0.0000090          |
-| Rich (10 chunks, long answer)      | 2,800        | 600           | $0.0000174          |
-| Max budget                         | 5,500        | 2,048         | $0.0000472          |
+| Minimal (1 chunk, short answer)    | 400          | 100           | $0.0018             |
+| Standard (5 chunks, medium answer) | 1,500        | 300           | $0.0060             |
+| Rich (10 chunks, long answer)      | 2,800        | 600           | $0.0116             |
+| Max budget                         | 5,500        | 2,048         | $0.0315             |
 
 ---
 
 ## Monthly Cost Projections
 
-Assumes **standard scenario** ($0.000009/request):
+Assumes **standard scenario** ($0.006/request, 30-day month):
 
 | Daily Requests | Monthly Cost |
 | -------------- | ------------ |
-| 100            | $0.027       |
-| 1,000          | $0.27        |
-| 10,000         | $2.70        |
-| 100,000        | $27.00       |
-| 1,000,000      | $270.00      |
+| 100            | $18          |
+| 1,000          | $180         |
+| 10,000         | $1,800       |
+| 100,000        | $18,000      |
+| 1,000,000      | $180,000     |
 
 ---
 
@@ -102,7 +104,7 @@ Per-request token usage is logged by the orchestrator Lambda:
   "input_tokens": 1487,
   "output_tokens": 312,
   "prompt_token_estimate": 1350,
-  "estimated_cost_usd": 0.000009126
+  "estimated_cost_usd": 0.006094
 }
 ```
 
