@@ -10,7 +10,7 @@ Test Lambda functions and API endpoints locally using Docker containers that rep
 | AWS SAM CLI    | `brew install aws-sam-cli`                                    | Local invoke and API Gateway emulation         |
 | AWS CLI        | `brew install awscli`                                         | Credential configuration                       |
 | GNU Make       | Pre-installed on macOS                                        | Build orchestration                            |
-| Python 3.12    | `brew install python@3.12`                                    | Required if building without `--use-container` |
+| Python 3.13    | `brew install python@3.13`                                    | Required if building without `--use-container` |
 
 **AWS credentials** are required even locally because the Lambda functions call real AWS services (Bedrock, OpenSearch). Run `aws configure` or set `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` environment variables.
 

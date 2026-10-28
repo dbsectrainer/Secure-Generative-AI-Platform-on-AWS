@@ -95,7 +95,9 @@ def _chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
         if end >= text_len:
             break
 
-        start = end - overlap
+        # Guarantee forward progress: a whitespace-snapped chunk shorter than
+        # the overlap would otherwise leave start unchanged and loop forever.
+        start = max(end - overlap, start + 1)
 
     return chunks
 

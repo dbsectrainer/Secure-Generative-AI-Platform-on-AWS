@@ -16,7 +16,7 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _env(monkeypatch):
-    monkeypatch.setenv("BEDROCK_MODEL_ID", "anthropic.claude-3-sonnet-20240229-v1:0")
+    monkeypatch.setenv("BEDROCK_MODEL_ID", "anthropic.claude-sonnet-5-5")
     monkeypatch.setenv("BEDROCK_REGION", "eu-west-1")
     monkeypatch.setenv("RETRIEVAL_LAMBDA_ARN", "arn:aws:lambda:eu-west-1:123456789012:function:retrieve")
     monkeypatch.setenv("MAX_TOKENS", "512")

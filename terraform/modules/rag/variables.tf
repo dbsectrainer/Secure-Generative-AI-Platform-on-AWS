@@ -48,7 +48,7 @@ variable "embedding_model_id" {
 variable "inference_model_id" {
   description = "Bedrock inference model ID for the RAG orchestrator"
   type        = string
-  default     = "anthropic.claude-3-sonnet-20240229-v1:0"
+  default     = "anthropic.claude-sonnet-5-5"
 }
 
 variable "ingestion_lambda_role_arn" {

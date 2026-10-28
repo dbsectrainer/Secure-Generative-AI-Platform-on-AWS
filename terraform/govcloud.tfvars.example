@@ -104,7 +104,7 @@ lambda_memory_size = 3008             # Max memory for better performance
 lambda_ephemeral_storage = 10240      # 10 GB for large models
 
 # Bedrock Configuration (Generative AI)
-bedrock_model_id = "anthropic.claude-3-sonnet-20240229-v1:0"  # FedRAMP-authorized model
+bedrock_model_id = "anthropic.claude-sonnet-5-5"  # VERIFY model availability + authorization in GovCloud before use
 bedrock_max_tokens = 4096
 bedrock_temperature = 0.7             # Lower = more deterministic
 

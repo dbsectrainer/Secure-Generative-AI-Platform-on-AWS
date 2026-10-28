@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
     archive = {
       source  = "hashicorp/archive"
@@ -79,7 +79,7 @@ resource "aws_lambda_function" "ingestion" {
   function_name    = "${var.name_prefix}-rag-ingestion"
   role             = var.ingestion_lambda_role_arn
   handler          = "handler.lambda_handler"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   source_code_hash = data.archive_file.ingestion.output_base64sha256
   timeout          = var.lambda_timeout_seconds
   memory_size      = var.lambda_memory_mb
@@ -115,7 +115,7 @@ resource "aws_lambda_function" "embedding" {
   function_name    = "${var.name_prefix}-rag-embedding"
   role             = var.embedding_lambda_role_arn
   handler          = "handler.lambda_handler"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   source_code_hash = data.archive_file.embedding.output_base64sha256
   timeout          = var.lambda_timeout_seconds
   memory_size      = var.lambda_memory_mb
@@ -151,7 +151,7 @@ resource "aws_lambda_function" "retrieval" {
   function_name    = "${var.name_prefix}-rag-retrieval"
   role             = var.retrieval_lambda_role_arn
   handler          = "handler.lambda_handler"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   source_code_hash = data.archive_file.retrieval.output_base64sha256
   timeout          = var.lambda_timeout_seconds
   memory_size      = var.lambda_memory_mb
@@ -188,7 +188,7 @@ resource "aws_lambda_function" "orchestrator" {
   function_name    = "${var.name_prefix}-rag-orchestrator"
   role             = var.orchestrator_lambda_role_arn
   handler          = "handler.lambda_handler"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   source_code_hash = data.archive_file.orchestrator.output_base64sha256
   timeout          = var.lambda_timeout_seconds
   memory_size      = var.lambda_memory_mb

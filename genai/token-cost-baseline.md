@@ -4,7 +4,7 @@
 
 This document establishes the baseline token usage and cost estimates for the
 RAG pipeline. All costs are based on Amazon Bedrock pricing for
-**Claude 3 Sonnet** and **Titan Text Embeddings v2** in `eu-west-1`.
+**Claude Sonnet 5.5** and **Titan Text Embeddings v2** in `eu-west-1`.
 
 > **Note:** Pricing changes frequently. Always verify current rates at
 > [https://aws.amazon.com/bedrock/pricing/](https://aws.amazon.com/bedrock/pricing/).
@@ -15,8 +15,8 @@ RAG pipeline. All costs are based on Amazon Bedrock pricing for
 
 | Model                    | Input Price          | Output Price         |
 | ------------------------ | -------------------- | -------------------- |
-| Claude 3 Sonnet          | $0.003 / 1K tokens   | $0.015 / 1K tokens   |
-| Claude 3 Haiku           | $0.00025 / 1K tokens | $0.00125 / 1K tokens |
+| Claude Sonnet 5.5        | $0.002 / 1K tokens   | $0.010 / 1K tokens   |
+| Claude Haiku 5.5           | $0.00025 / 1K tokens | $0.00125 / 1K tokens |
 | Titan Text Embeddings v2 | $0.00002 / 1K tokens | —                    |
 
 ---
@@ -53,7 +53,7 @@ Each user query generates one embedding before k-NN search.
 
 ---
 
-### Stage 3: Bedrock Inference (Claude 3 Sonnet)
+### Stage 3: Bedrock Inference (Claude Sonnet 5.5)
 
 The RAG orchestrator assembles a grounded prompt and calls the inference model.
 

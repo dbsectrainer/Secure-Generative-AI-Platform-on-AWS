@@ -2,7 +2,7 @@
 
 > Production-ready Generative AI platform on AWS using Bedrock, RAG, and a hardened DevSecOps architecture aligned to FedRAMP High.
 
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/) [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.x-blueviolet.svg)](https://www.terraform.io/) [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock-orange.svg)](https://aws.amazon.com/bedrock/) [![FedRAMP High](https://img.shields.io/badge/FedRAMP-High%20Alignment-red.svg)](FEDRAMP-ALIGNMENT.md) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/) [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.x-blueviolet.svg)](https://www.terraform.io/) [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock-orange.svg)](https://aws.amazon.com/bedrock/) [![FedRAMP High](https://img.shields.io/badge/FedRAMP-High%20Alignment-red.svg)](FEDRAMP-ALIGNMENT.md) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
@@ -101,15 +101,15 @@ The RAG pipeline supports secure ingestion and retrieval from proprietary docume
 
 The platform includes a threat model mapped to STRIDE and MITRE ATT&CK, with hands-on attack simulation scripts for red team exercises.
 
-| Threat | Mitigation |
-| --- | --- |
-| Prompt Injection | Input sanitization + retrieval filtering + Guardrails |
-| Data Exfiltration | Private VPC endpoints + IAM permission boundaries |
-| Token Abuse | Rate limiting + CloudWatch alarms + budget alerts |
-| Data Tampering | S3 versioning + checksum validation + Object Lock |
-| Privilege Escalation | Least-privilege IAM + IAM Access Analyzer |
-| Public Exposure | Private API Gateway + AWS WAF rules |
-| Retrieval Manipulation | Output validation + metadata scoping |
+| Threat                 | Mitigation                                            |
+| ---------------------- | ----------------------------------------------------- |
+| Prompt Injection       | Input sanitization + retrieval filtering + Guardrails |
+| Data Exfiltration      | Private VPC endpoints + IAM permission boundaries     |
+| Token Abuse            | Rate limiting + CloudWatch alarms + budget alerts     |
+| Data Tampering         | S3 versioning + checksum validation + Object Lock     |
+| Privilege Escalation   | Least-privilege IAM + IAM Access Analyzer             |
+| Public Exposure        | Private API Gateway + AWS WAF rules                   |
+| Retrieval Manipulation | Output validation + metadata scoping                  |
 
 Attack simulation scripts are located in security/attack-simulation/ and cover prompt injection, token flooding, data leakage, retrieval manipulation, and IAM misconfiguration scenarios.
 
@@ -147,7 +147,7 @@ The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambd
 - Terraform >= 1.x
 - AWS SAM CLI >= 1.100.0
 - Docker Desktop (required for SAM local testing)
-- Python 3.12+
+- Python 3.13+
 - AWS Organization with multi-account setup recommended (Dev / Staging / Prod)
 
 ### Local Development
@@ -287,16 +287,16 @@ terraform init && terraform validate
 
 ## BE EASY ENTERPRISES Federal Portfolio
 
-| Showcase Project | Repository | Description |
-| --- | --- | --- |
-| **Secure RAG Pipeline** | **[Secure-Generative-AI-Platform-on-AWS](https://github.com/dbsectrainer/Secure-Generative-AI-Platform-on-AWS)** | **This repo** |
-| **DevSecOps CI/CD** | [dod-cybersec-ops-framework](https://github.com/dbsectrainer/dod-cybersec-ops-framework) | DoD 8570 / NIST RMF aligned pipeline |
-| **Zero Trust Architecture** | [AEGIS](https://github.com/dbsectrainer/AEGIS) | FedRAMP High + NIST 800-207 Zero Trust |
-| **FedRAMP Control Automation** | [nist_800_53_scanner](https://github.com/dbsectrainer/nist_800_53_scanner) | NIST 800-53 Rev 5 compliance scanner |
-| **Federal AI Governance** | [ai-safety-governance](https://github.com/dbsectrainer/ai-safety-governance) | EO 14110 / OMB M-24-10 aligned |
-| **CMMC 2.0 Dashboard** | [integrated-cyber-risk-compliance](https://github.com/dbsectrainer/integrated-cyber-risk-compliance) | CMMC 2.0 readiness assessment |
-| **FedRAMP 30-Day Guide** | [cloud-security-best-practices](https://github.com/dbsectrainer/cloud-security-best-practices) | Day-by-day FedRAMP implementation roadmap |
-| **Agentic AI Workflow** | [federal-doc-triage-agent](https://github.com/dbsectrainer/federal-doc-triage-agent) | Production-ready LangGraph + Bedrock triage agent |
+| Showcase Project               | Repository                                                                                                       | Description                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **Secure RAG Pipeline**        | **[Secure-Generative-AI-Platform-on-AWS](https://github.com/dbsectrainer/Secure-Generative-AI-Platform-on-AWS)** | **This repo**                                     |
+| **DevSecOps CI/CD**            | [dod-cybersec-ops-framework](https://github.com/dbsectrainer/dod-cybersec-ops-framework)                         | DoD 8570 / NIST RMF aligned pipeline              |
+| **Zero Trust Architecture**    | [AEGIS](https://github.com/dbsectrainer/AEGIS)                                                                   | FedRAMP High + NIST 800-207 Zero Trust            |
+| **FedRAMP Control Automation** | [nist_800_53_scanner](https://github.com/dbsectrainer/nist_800_53_scanner)                                       | NIST 800-53 Rev 5 compliance scanner              |
+| **Federal AI Governance**      | [ai-safety-governance](https://github.com/dbsectrainer/ai-safety-governance)                                     | EO 14110 / OMB M-24-10 aligned                    |
+| **CMMC 2.0 Dashboard**         | [integrated-cyber-risk-compliance](https://github.com/dbsectrainer/integrated-cyber-risk-compliance)             | CMMC 2.0 readiness assessment                     |
+| **FedRAMP 30-Day Guide**       | [cloud-security-best-practices](https://github.com/dbsectrainer/cloud-security-best-practices)                   | Day-by-day FedRAMP implementation roadmap         |
+| **Agentic AI Workflow**        | [federal-doc-triage-agent](https://github.com/dbsectrainer/federal-doc-triage-agent)                             | Production-ready LangGraph + Bedrock triage agent |
 
 ---
 

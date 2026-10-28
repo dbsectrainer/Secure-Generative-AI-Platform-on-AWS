@@ -6,7 +6,7 @@ an Interface VPC Endpoint for bedrock-runtime. Supports streaming and
 non-streaming invocations.
 
 Environment variables:
-    BEDROCK_MODEL_ID      – Bedrock foundation model ID (e.g. anthropic.claude-3-sonnet-...)
+    BEDROCK_MODEL_ID      – Bedrock foundation model ID (e.g. anthropic.claude-sonnet-5-5)
     BEDROCK_REGION        – AWS region where Bedrock is available
     DOCUMENT_BUCKET       – S3 bucket name containing RAG source documents
     MAX_TOKENS            – Maximum number of tokens in the model response
@@ -77,7 +77,7 @@ def _validate_event(event: dict[str, Any]) -> str:
 def _build_request_body(prompt: str, max_tokens: int) -> str:
     """Build the model-specific request body.
 
-    Currently supports Claude 3 (Messages API). Extend this function to handle
+    Currently supports Claude (Messages API body). Extend this function to handle
     additional model families (Titan, Llama, etc.).
     """
     if "anthropic.claude" in BEDROCK_MODEL_ID:
@@ -121,7 +121,7 @@ def _invoke_bedrock(prompt: str) -> dict[str, Any]:
     response_body = json.loads(response["body"].read())
     logger.debug("Bedrock raw response received")
 
-    # Extract text from Claude 3 Messages API or generic response
+    # Extract text from Claude Messages API or generic response
     if "anthropic.claude" in BEDROCK_MODEL_ID:
         output_text = response_body["content"][0]["text"]
         input_tokens = response_body.get("usage", {}).get("input_tokens", 0)

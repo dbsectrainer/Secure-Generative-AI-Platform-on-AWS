@@ -6,7 +6,7 @@ Description: >
 
 Globals:
   Function:
-    Runtime: python3.12
+    Runtime: python3.13
     Timeout: 60
     MemorySize: 256
     Architectures:
@@ -22,9 +22,9 @@ Resources:
       Description: Shared prompt builder module for injection-safe prompt construction
       ContentUri: layers/prompt_builder/
       CompatibleRuntimes:
-        - python3.12
+        - python3.13
     Metadata:
-      BuildMethod: python3.12
+      BuildMethod: python3.13
 
   # ── Bedrock Orchestrator ────────────────────────────────────────────────────
 
@@ -37,7 +37,7 @@ Resources:
       Description: Direct Bedrock invocation with prompt validation
       Environment:
         Variables:
-          BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+          BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
           BEDROCK_REGION: eu-west-1
           DOCUMENT_BUCKET: local-test-document-bucket
           MAX_TOKENS: "1024"
@@ -126,7 +126,7 @@ Resources:
         - !Ref PromptBuilderLayer
       Environment:
         Variables:
-          BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+          BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
           BEDROCK_REGION: eu-west-1
           RETRIEVAL_LAMBDA_ARN: rag-retrieval
           MAX_TOKENS: "2048"

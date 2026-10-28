@@ -79,7 +79,7 @@ Prompt construction is CPU-bound (no I/O). Measured from `PromptBuilder.build()`
 
 ---
 
-### Stage 5: Bedrock Inference (Claude 3 Sonnet)
+### Stage 5: Bedrock Inference (Claude Sonnet 5.5)
 
 | Response Length         | Latency (p50) | Latency (p95) |
 | ----------------------- | ------------- | ------------- |
@@ -138,7 +138,7 @@ These defaults are configurable via the `duration_alarm_threshold_ms` and
 
 | Opportunity                                     | Expected Improvement              |
 | ----------------------------------------------- | --------------------------------- |
-| Switch to Claude 3 Haiku                        | 3–4× faster inference, lower cost |
+| Switch to Claude Haiku 5.5                        | 3–4× faster inference, lower cost |
 | Reduce `top_k` from 5 to 3                      | ~20 ms saved in retrieval         |
 | Reduce `MAX_TOKENS` from 2048 to 512            | 2–3× faster short-answer queries  |
 | Provision Lambda at 1 GB memory                 | ~15% faster cold starts           |

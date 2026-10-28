@@ -37,7 +37,7 @@ variable "kms_key_arn" {
 variable "bedrock_model_id" {
   description = "Bedrock foundation model ID to invoke"
   type        = string
-  default     = "anthropic.claude-3-sonnet-20240229-v1:0"
+  default     = "anthropic.claude-sonnet-5-5"
 }
 
 variable "max_tokens" {

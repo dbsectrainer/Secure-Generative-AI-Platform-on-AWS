@@ -76,7 +76,7 @@ resource "aws_accessanalyzer_analyzer" "main" {
 
 | Permission               | Resource Scope                                                                       | Justification                   |
 | ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------- |
-| `bedrock:InvokeModel`    | `arn:aws:bedrock:{region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0` | LLM inference                   |
+| `bedrock:InvokeModel`    | `arn:aws:bedrock:{region}::foundation-model/anthropic.claude-sonnet-5-5` | LLM inference                   |
 | `bedrock:ApplyGuardrail` | Guardrail ARN                                                                        | Apply content guardrails        |
 | `lambda:InvokeFunction`  | Retrieval Lambda ARN                                                                 | Invoke retrieval for context    |
 | `kms:Decrypt`            | KMS CMK ARN                                                                          | Decrypt any encrypted responses |

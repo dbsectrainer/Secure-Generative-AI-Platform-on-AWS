@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
     archive = {
       source  = "hashicorp/archive"
@@ -37,7 +37,7 @@ resource "aws_lambda_function" "bedrock_orchestrator" {
   function_name    = "${var.name_prefix}-bedrock-orchestrator"
   role             = var.lambda_role_arn
   handler          = "handler.lambda_handler"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   source_code_hash = data.archive_file.bedrock_lambda.output_base64sha256
   timeout          = var.lambda_timeout_seconds
   memory_size      = var.lambda_memory_mb

@@ -9,7 +9,7 @@ Coordinates the full RAG pipeline in a single Lambda invocation:
   5. Return the grounded response with token usage and stage latencies.
 
 Environment variables:
-    BEDROCK_MODEL_ID     – Bedrock model for inference (Claude 3)
+    BEDROCK_MODEL_ID     – Bedrock model for inference (Claude Sonnet 5.5)
     BEDROCK_REGION       – AWS region for Bedrock (default: AWS_REGION)
     RETRIEVAL_LAMBDA_ARN – ARN of the retrieval Lambda
     MAX_TOKENS           – Maximum response tokens (default: 2048)
@@ -230,12 +230,12 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
 
         total_latency = (time.monotonic() - pipeline_start) * 1000
 
-        # Cost estimation: Claude 3 Sonnet pricing (USD per 1K tokens)
-        # Input: $0.003 / 1K tokens, Output: $0.015 / 1K tokens
+        # Cost estimation: Claude Sonnet 5.5 pricing (USD per 1K tokens)
+        # Input: $0.002 / 1K tokens, Output: $0.010 / 1K tokens
         # These are approximate values; use AWS pricing calculator for exact costs.
         estimated_cost = (
-            usage["input_tokens"] * 0.003 / 1000
-            + usage["output_tokens"] * 0.015 / 1000
+            usage["input_tokens"] * 0.002 / 1000
+            + usage["output_tokens"] * 0.010 / 1000
         )
 
         return {

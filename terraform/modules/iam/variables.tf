@@ -26,7 +26,7 @@ variable "kms_key_arn" {
 variable "bedrock_model_ids" {
   description = "List of Bedrock foundation model IDs the orchestrator may invoke"
   type        = list(string)
-  default     = ["anthropic.claude-3-sonnet-20240229-v1:0"]
+  default     = ["anthropic.claude-sonnet-5-5"]
 }
 
 variable "permissions_boundary_arn" {

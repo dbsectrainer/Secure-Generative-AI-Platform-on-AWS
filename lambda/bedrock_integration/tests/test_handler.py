@@ -17,7 +17,7 @@ import pytest
 
 
 def _make_bedrock_response(output_text: str, input_tokens: int = 10, output_tokens: int = 20) -> dict:
-    """Build a mock bedrock-runtime invoke_model response for Claude 3."""
+    """Build a mock bedrock-runtime invoke_model response for Claude."""
     body_bytes = json.dumps(
         {
             "content": [{"type": "text", "text": output_text}],
@@ -37,7 +37,7 @@ def _make_bedrock_response(output_text: str, input_tokens: int = 10, output_toke
 @pytest.fixture(autouse=True)
 def _env(monkeypatch):
     """Set required environment variables for all tests."""
-    monkeypatch.setenv("BEDROCK_MODEL_ID", "anthropic.claude-3-sonnet-20240229-v1:0")
+    monkeypatch.setenv("BEDROCK_MODEL_ID", "anthropic.claude-sonnet-5-5")
     monkeypatch.setenv("BEDROCK_REGION", "eu-west-1")
     monkeypatch.setenv("DOCUMENT_BUCKET", "test-bucket")
     monkeypatch.setenv("MAX_TOKENS", "512")
@@ -87,7 +87,7 @@ class TestLambdaHandler:
         assert result["body"]["output"] == "Paris is the capital of France."
         assert result["body"]["usage"]["input_tokens"] == 10
         assert result["body"]["usage"]["output_tokens"] == 20
-        assert result["body"]["model_id"] == "anthropic.claude-3-sonnet-20240229-v1:0"
+        assert result["body"]["model_id"] == "anthropic.claude-sonnet-5-5"
 
     def test_missing_prompt_returns_400(self):
         import handler

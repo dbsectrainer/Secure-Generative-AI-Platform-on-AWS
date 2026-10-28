@@ -167,12 +167,12 @@ Costs are estimated in the orchestrator using the formula:
 
 ```python
 estimated_cost = (
-    input_tokens  * 0.003 / 1000
-  + output_tokens * 0.015 / 1000
+    input_tokens  * 0.002 / 1000
+  + output_tokens * 0.010 / 1000
 )
 ```
 
-These rates are for **Claude 3 Sonnet** in `us-east-1`. Adjust for region and
+These rates are for **Claude Sonnet 5.5** in `us-east-1`. Adjust for region and
 model. See [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) for
 current rates.
 
