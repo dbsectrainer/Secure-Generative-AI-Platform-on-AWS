@@ -62,6 +62,12 @@ class TestValidateEvent:
         with pytest.raises(ValueError, match="top_k"):
             handler._validate_event({"query": "q", "top_k": 0})
 
+    @pytest.mark.parametrize("bad_value", [None, "abc", True, 3.5, [], {}])
+    def test_non_integer_top_k_raises_value_error(self, bad_value):
+        import handler
+        with pytest.raises(ValueError, match="top_k"):
+            handler._validate_event({"query": "q", "top_k": bad_value})
+
 
 class TestInvokeRetrieval:
     def test_successful_retrieval(self):
@@ -164,3 +170,59 @@ class TestLambdaHandler:
 
         assert result["statusCode"] == 200
         assert result["body"]["retrieval"]["chunks_used"] == 0
+
+
+def _proxy_event(payload: dict | str | None) -> dict:
+    """Build an API Gateway Lambda proxy event with a JSON body."""
+    if payload is not None and not isinstance(payload, str):
+        payload = json.dumps(payload)
+    return {
+        "httpMethod": "POST",
+        "path": "/query",
+        "headers": {"Content-Type": "application/json"},
+        "body": payload,
+        "isBase64Encoded": False,
+        "requestContext": {"requestId": "test-request"},
+    }
+
+
+class TestApiGatewayProxy:
+    """Regression coverage for the documented HTTP `/query` endpoint."""
+
+    def test_proxy_event_body_is_parsed_and_response_is_json(self):
+        import handler
+
+        retrieval_mock = _make_retrieval_response(["Context chunk about policy."])
+        bedrock_mock = _make_bedrock_inference_response("The policy states X.")
+
+        with (
+            patch.object(handler._lambda_client, "invoke", return_value=retrieval_mock),
+            patch.object(handler._bedrock_client, "invoke_model", return_value=bedrock_mock),
+        ):
+            result = handler.lambda_handler(
+                _proxy_event({"query": "What is the policy?", "top_k": 2}), None
+            )
+
+        assert result["statusCode"] == 200
+        assert isinstance(result["body"], str)
+        parsed = json.loads(result["body"])
+        assert parsed["output"] == "The policy states X."
+        assert parsed["retrieval"]["chunks_used"] == 1
+
+    def test_malformed_json_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event("{bad"), None)
+
+        assert result["statusCode"] == 400
+        assert "valid JSON" in json.loads(result["body"])["error"]
+
+    def test_invalid_top_k_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(
+            _proxy_event({"query": "test", "top_k": "abc"}), None
+        )
+
+        assert result["statusCode"] == 400
+        assert "top_k" in json.loads(result["body"])["error"]

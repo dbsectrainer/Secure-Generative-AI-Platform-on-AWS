@@ -1,0 +1,15 @@
+$ grep -n "^module \\"" terraform/environments/dev/main.tf terraform/environments/prod/main.tf
+terraform/environments/dev/main.tf:52:module "network" {
+terraform/environments/dev/main.tf:70:module "s3" {
+terraform/environments/dev/main.tf:84:module "iam" {
+terraform/environments/dev/main.tf:101:module "bedrock" {
+terraform/environments/prod/main.tf:52:module "network" {
+terraform/environments/prod/main.tf:70:module "s3" {
+terraform/environments/prod/main.tf:85:module "iam" {
+terraform/environments/prod/main.tf:102:module "bedrock" {
+
+$ grep -n "aws_lambda_layer_version\|Layers\|layers" terraform/modules/rag/main.tf
+(no layer attachment found)
+
+$ grep -n "ingestion_lambda_arn" terraform/environments/dev/main.tf terraform/environments/prod/main.tf
+(not passed by either environment root)

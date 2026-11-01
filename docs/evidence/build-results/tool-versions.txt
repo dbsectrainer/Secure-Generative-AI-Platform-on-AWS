@@ -1,0 +1,7 @@
+Python 3.12.7
+SAM CLI, version 1.155.2
+Docker version 29.9.2, build a82e528
+Terraform v1.17.1
+on darwin_arm64
+v26.13.0
+aws-cli/2.39.1 Python/3.15.2 Darwin/27.0.0 source/arm64

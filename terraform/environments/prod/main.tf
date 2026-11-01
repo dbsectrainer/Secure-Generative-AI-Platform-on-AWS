@@ -102,20 +102,20 @@ module "iam" {
 module "bedrock" {
   source = "../../modules/bedrock"
 
-  name_prefix                     = local.name_prefix
-  region                          = var.region
-  lambda_role_arn                 = module.iam.lambda_orchestrator_role_arn
-  private_subnet_ids              = module.network.private_app_subnet_ids
-  lambda_security_group_id        = module.network.lambda_security_group_id
-  document_bucket_name            = module.s3.bucket_id
-  kms_key_arn                     = module.s3.kms_key_arn
-  bedrock_model_id                = var.bedrock_model_id
-  max_tokens                      = var.max_tokens
-  log_retention_days              = 90
-  reserved_concurrent_executions  = var.reserved_concurrent_executions
-  error_alarm_threshold           = 1
-  duration_alarm_threshold_ms     = 20000
-  enable_bedrock_guardrail        = true
-  alarm_sns_topic_arns            = var.alarm_sns_topic_arns
-  tags                            = local.common_tags
+  name_prefix                    = local.name_prefix
+  region                         = var.region
+  lambda_role_arn                = module.iam.lambda_orchestrator_role_arn
+  private_subnet_ids             = module.network.private_app_subnet_ids
+  lambda_security_group_id       = module.network.lambda_security_group_id
+  document_bucket_name           = module.s3.bucket_id
+  kms_key_arn                    = module.s3.kms_key_arn
+  bedrock_model_id               = var.bedrock_model_id
+  max_tokens                     = var.max_tokens
+  log_retention_days             = 90
+  reserved_concurrent_executions = var.reserved_concurrent_executions
+  error_alarm_threshold          = 1
+  duration_alarm_threshold_ms    = 20000
+  enable_bedrock_guardrail       = true
+  alarm_sns_topic_arns           = var.alarm_sns_topic_arns
+  tags                           = local.common_tags
 }

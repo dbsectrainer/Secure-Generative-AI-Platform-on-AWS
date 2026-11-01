@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python tests and lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install development dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Unit and regression tests
+        run: python -m pytest -q
+      - name: Dependency audit
+        run: pip-audit -r requirements-dev.txt
+
+  terraform:
+    name: Terraform format and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.17.1"
+      - name: Format check
+        run: terraform fmt -check -recursive
+      - name: Validate dev
+        working-directory: terraform/environments/dev
+        run: |
+          terraform init -backend=false -input=false -no-color
+          terraform validate -no-color
+      - name: Validate prod
+        working-directory: terraform/environments/prod
+        run: |
+          terraform init -backend=false -input=false -no-color
+          terraform validate -no-color
+
+  sam:
+    name: SAM template, build, and cfn-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install SAM CLI and cfn-lint
+        run: pip install "aws-sam-cli>=1.100,<2" "cfn-lint>=1.0"
+      - name: Lint SAM template
+        run: sam validate --lint
+      - name: Lint CloudFormation
+        run: cfn-lint template.yaml
+      - name: Prepare layer layout
+        run: make layer-prepare
+      - name: Build all functions and layer
+        # Use the local Python toolchain rather than an arm64 build container on
+        # the x86_64 runner; this job validates packaging, not deployment.
+        run: sam build --no-use-container

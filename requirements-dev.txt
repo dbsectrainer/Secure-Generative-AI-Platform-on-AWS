@@ -1,0 +1,10 @@
+# Development and verification dependencies.
+# Lambda runtime dependencies are declared per-function in */requirements.txt.
+boto3>=1.34.0
+botocore>=1.34.0
+cfn-lint>=1.0
+pytest>=8.0
+pip-audit>=2.7
+ruff>=0.13
+# Only needed for `make screenshots` (requires `playwright install chromium`).
+playwright>=1.49

@@ -65,6 +65,12 @@ class TestValidateEvent:
         with pytest.raises(ValueError, match="top_k"):
             handler._validate_event({"query": "q", "top_k": 0})
 
+    @pytest.mark.parametrize("bad_value", [None, "abc", True, 3.5, [], {}])
+    def test_non_integer_top_k_raises_value_error(self, bad_value):
+        import handler
+        with pytest.raises(ValueError, match="top_k"):
+            handler._validate_event({"query": "q", "top_k": bad_value})
+
     def test_invalid_filters_type_is_replaced(self):
         import handler
         _, filters, _ = handler._validate_event({"query": "q", "filters": "bad"})
@@ -97,20 +103,6 @@ class TestLambdaHandler:
 
         vector = [0.1] * 1024
         mock_embed_resp = _make_bedrock_embed_response(vector)
-
-        opensearch_hits = {
-            "hits": {
-                "hits": [
-                    {
-                        "_score": 0.95,
-                        "_source": {
-                            "text": "Relevant chunk",
-                            "metadata": {"document_key": "raw/doc.txt", "chunk_index": 0},
-                        },
-                    }
-                ]
-            }
-        }
 
         with (
             patch.object(handler._bedrock_client, "invoke_model", return_value=mock_embed_resp),
@@ -155,6 +147,7 @@ class TestLambdaHandler:
             result = handler.lambda_handler({"query": "test"}, None)
 
         assert result["statusCode"] == 502
+        assert "OS down" not in result["body"]["error"]
 
     def test_unexpected_error_returns_500(self):
         import handler
@@ -163,3 +156,60 @@ class TestLambdaHandler:
         ):
             result = handler.lambda_handler({"query": "test"}, None)
         assert result["statusCode"] == 500
+
+
+def _proxy_event(payload: dict | str | None) -> dict:
+    """Build an API Gateway Lambda proxy event with a JSON body."""
+    if payload is not None and not isinstance(payload, str):
+        payload = json.dumps(payload)
+    return {
+        "httpMethod": "POST",
+        "path": "/retrieve",
+        "headers": {"Content-Type": "application/json"},
+        "body": payload,
+        "isBase64Encoded": False,
+        "requestContext": {"requestId": "test-request"},
+    }
+
+
+class TestApiGatewayProxy:
+    """Regression coverage for the documented HTTP `/retrieve` endpoint."""
+
+    def test_proxy_event_body_is_parsed_and_response_is_json(self):
+        import handler
+
+        vector = [0.1] * 1024
+        mock_embed_resp = _make_bedrock_embed_response(vector)
+
+        with (
+            patch.object(handler._bedrock_client, "invoke_model", return_value=mock_embed_resp),
+            patch.object(handler, "_search_opensearch", return_value=[
+                {"text": "Relevant chunk", "metadata": {}, "score": 0.95}
+            ]),
+        ):
+            result = handler.lambda_handler(
+                _proxy_event({"query": "test query", "top_k": 1}), None
+            )
+
+        assert result["statusCode"] == 200
+        parsed = json.loads(result["body"])
+        assert parsed["results"][0]["text"] == "Relevant chunk"
+        assert parsed["top_k"] == 1
+
+    def test_malformed_json_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event("{bad"), None)
+
+        assert result["statusCode"] == 400
+        assert "valid JSON" in json.loads(result["body"])["error"]
+
+    def test_invalid_top_k_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(
+            _proxy_event({"query": "test", "top_k": None}), None
+        )
+
+        assert result["statusCode"] == 400
+        assert "top_k" in json.loads(result["body"])["error"]

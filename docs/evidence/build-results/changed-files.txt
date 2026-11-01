@@ -1,0 +1,82 @@
+# Working tree change set at audit completion
+
+$ git status --short
+ M .gitignore
+ M CHANGELOG.md
+ M FEDRAMP-ALIGNMENT.md
+ M Makefile
+ M README.md
+ M docs/local-testing.md
+ M docs/pii-redaction.md
+ M genai/prompt_builder/builder.py
+ M lambda/bedrock_integration/handler.py
+ M lambda/bedrock_integration/tests/test_handler.py
+ M rag/embedding/handler.py
+ M rag/embedding/tests/test_embedding.py
+ M rag/ingestion/handler.py
+ M rag/ingestion/tests/test_ingestion.py
+ M rag/orchestrator/handler.py
+ M rag/orchestrator/tests/test_orchestrator.py
+ M rag/retrieval/handler.py
+ M rag/retrieval/tests/test_retrieval.py
+ M security/attack-simulation/01_prompt_injection.py
+ M security/attack-simulation/02_token_flooding.py
+ M security/attack-simulation/03_data_leakage.py
+ M security/attack-simulation/04_retrieval_manipulation.py
+ M security/attack-simulation/05_iam_misconfiguration.py
+ M security/attack-simulation/README.md
+ M security/iam-least-privilege-validation.md
+ M security/injection-mitigation-results.md
+ M security/threat-model.md
+ M template.yaml
+ M terraform/environments/prod/main.tf
+ M terraform/modules/bedrock/main.tf
+ M terraform/modules/iam/main.tf
+ M terraform/modules/network/main.tf
+ M terraform/modules/s3/main.tf
+ M terraform/modules/security/main.tf
+ M terraform/modules/waf/variables.tf
+?? .github/workflows/
+?? docs/evidence/
+?? env.mock.json
+?? pyproject.toml
+?? requirements-dev.txt
+?? scripts/
+
+$ git diff --stat
+ .gitignore                                         |   2 +
+ CHANGELOG.md                                       |  20 ++
+ FEDRAMP-ALIGNMENT.md                               |  10 +-
+ Makefile                                           |  70 +++++-
+ README.md                                          | 251 +++++++++++++--------
+ docs/local-testing.md                              |  93 ++++++--
+ docs/pii-redaction.md                              |   6 +-
+ genai/prompt_builder/builder.py                    |   1 -
+ lambda/bedrock_integration/handler.py              | 119 +++++++---
+ lambda/bedrock_integration/tests/test_handler.py   |  63 ++++++
+ rag/embedding/handler.py                           |  87 +++++--
+ rag/embedding/tests/test_embedding.py              |  54 +++++
+ rag/ingestion/handler.py                           |   9 +-
+ rag/ingestion/tests/test_ingestion.py              |   2 -
+ rag/orchestrator/handler.py                        | 111 +++++++--
+ rag/orchestrator/tests/test_orchestrator.py        |  62 +++++
+ rag/retrieval/handler.py                           | 102 +++++++--
+ rag/retrieval/tests/test_retrieval.py              |  78 +++++--
+ security/attack-simulation/01_prompt_injection.py  |   2 +-
+ security/attack-simulation/02_token_flooding.py    |   5 +-
+ security/attack-simulation/03_data_leakage.py      |   4 +-
+ .../attack-simulation/04_retrieval_manipulation.py |   4 +-
+ .../attack-simulation/05_iam_misconfiguration.py   |   8 +-
+ security/attack-simulation/README.md               |   4 +-
+ security/iam-least-privilege-validation.md         |   2 +
+ security/injection-mitigation-results.md           |   4 +-
+ security/threat-model.md                           |   2 +-
+ template.yaml                                      |  10 +
+ terraform/environments/prod/main.tf                |  32 +--
+ terraform/modules/bedrock/main.tf                  |  12 +-
+ terraform/modules/iam/main.tf                      |   6 +-
+ terraform/modules/network/main.tf                  |   2 +-
+ terraform/modules/s3/main.tf                       |  10 +-
+ terraform/modules/security/main.tf                 |  48 ++--
+ terraform/modules/waf/variables.tf                 |   2 +-
+ 35 files changed, 1003 insertions(+), 294 deletions(-)

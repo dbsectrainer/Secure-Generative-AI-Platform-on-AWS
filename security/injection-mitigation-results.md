@@ -4,7 +4,9 @@
 **Date:** 2026-03-01  
 **Reference:** [Attack Simulation Scripts](./attack-simulation/README.md)
 
-This document records the evidence of prompt injection sanitisation effectiveness, demonstrating that the multi-layer injection mitigation controls reduce attack success rates to zero under tested conditions.
+> **Status: historical/illustrative, not reproduced in the 2026-10-31 audit.** The described "after" measurements depend on Bedrock Guardrails, which are not wired into the Lambda handlers, and on a deployed API that was not available. The repository's current prompt-injection unit tests verify regex sanitization only. Do not treat the tables below as current production evidence; see [docs/evidence/verification-report.md](../docs/evidence/verification-report.md).
+
+This document describes the intended prompt injection sanitisation effectiveness under the original test methodology; the multi-layer claims (sanitization plus Guardrails) are not fully implemented in the current codebase.
 
 ---
 

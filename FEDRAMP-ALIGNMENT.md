@@ -1,12 +1,14 @@
 # FedRAMP High Alignment
 
+> **Status: self-assessment, not an authorization.** This mapping describes intended controls and partial infrastructure coverage. It is not a FedRAMP authorization package, a 3PAO assessment, or evidence that every mapped control is deployed. The repository's Terraform roots do not yet instantiate the RAG, OpenSearch, security, or WAF modules, and no live AWS environment was audited. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
+
 This document maps the Secure Generative AI Platform's architectural components to FedRAMP High baseline controls under NIST SP 800-53 Revision 5.
 
 ## Executive Summary
 
-The Secure Generative AI Platform implements **FedRAMP High** security controls across 18 of 20 NIST 800-53 control families. AWS-inherited controls (via AWS GovCloud) and customer-implemented controls work together to achieve comprehensive coverage.
+The design targets **FedRAMP High** security controls across 18 of 20 NIST 800-53 control families. AWS-inherited controls (via AWS GovCloud) and intended customer-implemented controls would work together; current implementation coverage is partial.
 
-**Platform FedRAMP Readiness:** 92% (318/345 High controls)
+**Self-assessed platform alignment:** 92% (318/345 High controls), not independently validated
 
 ---
 
@@ -267,7 +269,7 @@ The Secure Generative AI Platform implements **FedRAMP High** security controls 
 - CodeBuild for automated security testing
 - Security scanning in pull request gates
 - Runbooks for deployment procedures
-- Architecture documentation (ARCHITECTURE.md)
+- Architecture documentation ([architecture/high-level-architecture.md](architecture/high-level-architecture.md))
 
 **FedRAMP Controls Addressed:**
 
@@ -385,7 +387,7 @@ All AWS services used are FedRAMP High authorized in GovCloud. Bedrock models in
 ## Compliance Documents
 
 - [SECURITY.md](SECURITY.md) — Security vulnerabilities reporting
-- [ARCHITECTURE.md](ARCHITECTURE.md) — System architecture diagrams
+- [architecture/high-level-architecture.md](architecture/high-level-architecture.md) — System architecture diagrams
 - [docs/](docs/) — Detailed implementation guides
 - [terraform/](terraform/) — Infrastructure as Code
 - [fedramp-30-days/](../cloud-security-best-practices/fedramp-30-days/) — 30-day FedRAMP implementation roadmap

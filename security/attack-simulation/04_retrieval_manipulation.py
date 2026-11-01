@@ -237,12 +237,12 @@ def print_report(results: dict) -> int:
         print(f"  Evidence:   {result.get('evidence', 'N/A')}")
         print(f"  Mitigation: {status}")
 
-    print(f"\n── Detection Evidence ────────────────────────────────────────")
+    print("\n── Detection Evidence ────────────────────────────────────────")
     print("  CloudTrail: OpenSearch API calls from unexpected principals → blocked")
     print("  VPC Flow Logs: Outbound connection attempts to OpenSearch endpoint")
     print("  Lambda logs: Invalid context_keys rejected with 400")
 
-    print(f"\n── Summary ────────────────────────────────────────────────────")
+    print("\n── Summary ────────────────────────────────────────────────────")
     print(f"  Failures: {failures}")
     print(f"  Mitigation: {'EFFECTIVE' if failures == 0 else 'REQUIRES REVIEW'}")
     print("=" * 60 + "\n")

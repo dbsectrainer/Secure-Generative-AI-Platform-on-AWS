@@ -54,13 +54,20 @@ BEDROCK_REGION = os.environ.get("BEDROCK_REGION", os.environ.get("AWS_REGION", "
 OPENSEARCH_ENDPOINT = os.environ["OPENSEARCH_ENDPOINT"].rstrip("/")
 OPENSEARCH_INDEX = os.environ.get("OPENSEARCH_INDEX", "rag-documents")
 
+# Optional endpoint override for local end-to-end tests (unset in production).
+BEDROCK_ENDPOINT_URL = os.environ.get("BEDROCK_ENDPOINT_URL") or None
+
 _bedrock_config = Config(
     region_name=BEDROCK_REGION,
     retries={"max_attempts": 3, "mode": "adaptive"},
     connect_timeout=5,
     read_timeout=30,
 )
-_bedrock_client = boto3.client("bedrock-runtime", config=_bedrock_config)
+_bedrock_client = boto3.client(
+    "bedrock-runtime",
+    config=_bedrock_config,
+    **({"endpoint_url": BEDROCK_ENDPOINT_URL} if BEDROCK_ENDPOINT_URL else {}),
+)
 _session = boto3.session.Session()
 
 # Maximum text length accepted by Titan Embeddings v2 (8192 tokens ≈ 32 768 chars)
@@ -68,6 +75,47 @@ _MAX_TEXT_LENGTH = 32_768
 
 
 # ── Input validation ──────────────────────────────────────────────────────────
+
+def _is_api_gateway_event(event: Any) -> bool:
+    """Return True when *event* is an API Gateway Lambda proxy event."""
+    return isinstance(event, dict) and "httpMethod" in event and "body" in event
+
+
+def _parse_event(event: Any) -> dict[str, Any]:
+    """Return the payload from a direct invocation or an API Gateway event."""
+    if not isinstance(event, dict):
+        raise ValueError("Request payload must be a JSON object.")
+    if not _is_api_gateway_event(event):
+        return event
+
+    raw_body = event.get("body")
+    if raw_body in (None, ""):
+        raise ValueError("Request body is required.")
+    if isinstance(raw_body, dict):
+        return raw_body
+    if not isinstance(raw_body, str):
+        raise ValueError("Request body must be a JSON object.")
+    try:
+        payload = json.loads(raw_body)
+    except json.JSONDecodeError as exc:
+        raise ValueError("Request body must contain valid JSON.") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("Request body must contain a JSON object.")
+    return payload
+
+
+def _build_response(
+    status_code: int, body: dict[str, Any], proxy: bool
+) -> dict[str, Any]:
+    """Build a direct-invocation or API Gateway proxy response."""
+    if proxy:
+        return {
+            "statusCode": status_code,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps(body),
+        }
+    return {"statusCode": status_code, "body": body}
+
 
 def _validate_event(event: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Return (text, metadata) extracted from the event.
@@ -190,38 +238,49 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     """
     logger.debug("Received embedding event")
 
+    is_proxy = _is_api_gateway_event(event)
+
     try:
-        text, metadata = _validate_event(event)
+        payload = _parse_event(event)
+        text, metadata = _validate_event(payload)
         embedding = _generate_embedding(text)
         _index_document(embedding, text, metadata)
 
-        return {
-            "statusCode": 200,
-            "body": {
+        return _build_response(
+            200,
+            {
                 "indexed": True,
                 "dimensions": len(embedding),
                 "metadata": metadata,
             },
-        }
+            is_proxy,
+        )
 
     except ValueError as exc:
         logger.warning("Invalid embedding request: %s", exc)
-        return {"statusCode": 400, "body": {"error": str(exc)}}
+        return _build_response(400, {"error": str(exc)}, is_proxy)
 
     except ClientError as exc:
         error_code = exc.response["Error"]["Code"]
         logger.error("Bedrock ClientError: %s – %s", error_code, exc)
         if error_code in ("ThrottlingException", "ServiceUnavailableException"):
-            return {
-                "statusCode": 429,
-                "body": {"error": "Service temporarily unavailable. Please retry."},
-            }
-        return {"statusCode": 502, "body": {"error": "Upstream Bedrock error."}}
+            return _build_response(
+                429,
+                {"error": "Service temporarily unavailable. Please retry."},
+                is_proxy,
+            )
+        return _build_response(502, {"error": "Upstream Bedrock error."}, is_proxy)
 
     except RuntimeError as exc:
+        # Log details for operators, but never return endpoint/response internals
+        # to the API caller.
         logger.error("OpenSearch indexing error: %s", exc)
-        return {"statusCode": 502, "body": {"error": str(exc)}}
+        return _build_response(
+            502,
+            {"error": "Vector index service error. Please retry later."},
+            is_proxy,
+        )
 
     except Exception as exc:  # noqa: BLE001
         logger.exception("Unexpected error: %s", exc)
-        return {"statusCode": 500, "body": {"error": "Internal server error."}}
+        return _build_response(500, {"error": "Internal server error."}, is_proxy)

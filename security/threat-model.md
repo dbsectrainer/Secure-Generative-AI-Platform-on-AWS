@@ -3,7 +3,7 @@
 **Methodology:** STRIDE + MITRE ATT&CK for Enterprise / ATLAS  
 **Version:** 1.0  
 **Date:** 2026-03-01  
-**Status:** Approved
+**Status:** Design baseline — not validated against a deployed environment
 
 ---
 

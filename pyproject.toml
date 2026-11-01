@@ -1,0 +1,25 @@
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = [
+    "genai/tests",
+    "lambda/bedrock_integration/tests",
+    "rag/ingestion/tests",
+    "rag/embedding/tests",
+    "rag/retrieval/tests",
+    "rag/orchestrator/tests",
+]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py313"
+extend-exclude = [
+    ".aws-sam",
+    ".terraform",
+    "layers/prompt_builder/builder.py",
+    "layers/prompt_builder/templates.py",
+]
+
+[tool.ruff.lint]
+# Keep the gate stable across Ruff releases and cover the defects this project
+# cares about: pycodestyle errors, pyflakes, and undefined names.
+select = ["E4", "E7", "E9", "F"]

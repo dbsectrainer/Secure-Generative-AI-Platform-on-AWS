@@ -127,6 +127,8 @@ class TestLambdaHandler:
             result = handler.lambda_handler({"text": "hello"}, None)
 
         assert result["statusCode"] == 502
+        # Endpoint/response internals must not be disclosed to callers.
+        assert "OS error" not in result["body"]["error"]
 
     def test_unexpected_error_returns_500(self):
         import handler
@@ -135,3 +137,55 @@ class TestLambdaHandler:
         ):
             result = handler.lambda_handler({"text": "hello"}, None)
         assert result["statusCode"] == 500
+
+
+def _proxy_event(payload: dict | str | None) -> dict:
+    """Build an API Gateway Lambda proxy event with a JSON body."""
+    if payload is not None and not isinstance(payload, str):
+        payload = json.dumps(payload)
+    return {
+        "httpMethod": "POST",
+        "path": "/embed",
+        "headers": {"Content-Type": "application/json"},
+        "body": payload,
+        "isBase64Encoded": False,
+        "requestContext": {"requestId": "test-request"},
+    }
+
+
+class TestApiGatewayProxy:
+    """Regression coverage for the documented HTTP `/embed` endpoint."""
+
+    def test_proxy_event_body_is_parsed_and_response_is_json(self):
+        import handler
+
+        vector = [0.1] * 1024
+        mock_resp = _make_bedrock_embed_response(vector)
+
+        with (
+            patch.object(handler._bedrock_client, "invoke_model", return_value=mock_resp),
+            patch.object(handler, "_index_document"),
+        ):
+            result = handler.lambda_handler(
+                _proxy_event({"text": "hello", "metadata": {"doc": "a.txt"}}), None
+            )
+
+        assert result["statusCode"] == 200
+        parsed = json.loads(result["body"])
+        assert parsed["indexed"] is True
+        assert parsed["dimensions"] == 1024
+
+    def test_malformed_json_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event("{bad"), None)
+
+        assert result["statusCode"] == 400
+        assert "valid JSON" in json.loads(result["body"])["error"]
+
+    def test_empty_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event(None), None)
+
+        assert result["statusCode"] == 400

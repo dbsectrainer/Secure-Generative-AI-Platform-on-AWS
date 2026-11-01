@@ -21,7 +21,6 @@ from templates import (
     QUERY_MAX_CHARS,
     RAG_SYSTEM_PROMPT,
     RESTRICTED_SYSTEM_PROMPT,
-    SYSTEM_PROMPT_MAX_CHARS,
     citation_user_message,
     rag_user_message,
     summarisation_user_message,

@@ -273,11 +273,11 @@ def print_report(results: dict) -> int:
         if "response_preview" in result and result["response_preview"]:
             print(f"  Response preview:    {result['response_preview'][:100]!r}")
 
-    print(f"\n── Detection Evidence ────────────────────────────────────────")
+    print("\n── Detection Evidence ────────────────────────────────────────")
     print("  S3 Access Logs: failed unauthenticated GET/LIST attempts")
     print("  CloudTrail: GetObject denied events")
     print("  Bedrock Guardrails: PIIDetected metric (anonymised)")
-    print(f"\n── Summary ────────────────────────────────────────────────────")
+    print("\n── Summary ────────────────────────────────────────────────────")
     print(f"  Failures: {failures}")
     print(f"  Mitigation: {'EFFECTIVE' if failures == 0 else 'REQUIRES REVIEW'}")
     print("=" * 60 + "\n")

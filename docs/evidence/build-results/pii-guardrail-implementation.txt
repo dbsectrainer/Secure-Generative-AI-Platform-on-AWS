@@ -1,0 +1,2 @@
+$ grep -RIn "comprehend\|guardrail_identifier\|guardrailIdentifier" lambda rag genai --include="*.py"
+(no handler integration found; Terraform-only guardrail resource)

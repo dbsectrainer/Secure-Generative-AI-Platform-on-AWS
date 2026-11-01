@@ -28,7 +28,7 @@ variable "rate_limit_requests_per_5min" {
 variable "max_request_body_bytes" {
   description = "Maximum allowed request body size in bytes (to block token flooding)"
   type        = number
-  default     = 65536  # 64 KB
+  default     = 65536 # 64 KB
 }
 
 variable "block_anonymous_ip" {

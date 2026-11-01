@@ -85,7 +85,7 @@ def test_access_analyzer_findings(region: str, account_id: str) -> dict:
             "findings_count": len(public_findings),
             "mitigation_effective": len(public_findings) == 0,
             "evidence": (
-                f"PASS: Zero public/external access findings"
+                "PASS: Zero public/external access findings"
                 if len(public_findings) == 0
                 else f"FAIL: {len(public_findings)} public/external access finding(s) found"
             ),
@@ -330,19 +330,19 @@ def print_report(results: dict) -> int:
             for path in result["paths"]:
                 print(f"    ESCALATION PATH: {path}")
 
-    print(f"\n── Detection Evidence ────────────────────────────────────────")
+    print("\n── Detection Evidence ────────────────────────────────────────")
     print("  Access Analyzer: continuous monitoring for public/external access")
     print("  Config rules: real-time compliance evaluation on IAM changes")
     print("  CloudTrail: IAM API calls (iam:CreateRole, iam:AttachPolicy) logged")
     print("  GuardDuty: Policy:IAMUser/RootCredentialUsage, UnauthorizedAccess findings")
 
-    print(f"\n── Before/After Comparison ───────────────────────────────────")
+    print("\n── Before/After Comparison ───────────────────────────────────")
     print("  Before: No Access Analyzer → public S3/IAM misconfigurations undetected")
     print("  Before: No Config rules  → IAM inline policies, no MFA could go unnoticed")
     print("  After:  Access Analyzer  → zero public access findings")
     print("  After:  Config rules     → 17/17 IAM rules compliant (see iam-least-privilege-validation.md)")
 
-    print(f"\n── Summary ────────────────────────────────────────────────────")
+    print("\n── Summary ────────────────────────────────────────────────────")
     print(f"  Failures: {failures}")
     print(f"  Mitigation: {'EFFECTIVE' if failures == 0 else 'REQUIRES REVIEW'}")
     print("=" * 60 + "\n")

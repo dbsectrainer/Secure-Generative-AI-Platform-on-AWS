@@ -20,6 +20,10 @@ Resources:
     Properties:
       LayerName: prompt-builder
       Description: Shared prompt builder module for injection-safe prompt construction
+      # `make layer-prepare` places builder.py/templates.py at this directory's
+      # root. SAM's Python builder then packages them as python/<module>.py.
+      # Do not commit a nested python/ directory here: it would be wrapped a
+      # second time (python/python/...) and fail with ImportModuleError.
       ContentUri: layers/prompt_builder/
       CompatibleRuntimes:
         - python3.13
@@ -39,6 +43,7 @@ Resources:
         Variables:
           BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
           BEDROCK_REGION: eu-west-1
+          BEDROCK_ENDPOINT_URL: ""
           DOCUMENT_BUCKET: local-test-document-bucket
           MAX_TOKENS: "1024"
           LOG_LEVEL: DEBUG
@@ -62,6 +67,7 @@ Resources:
         Variables:
           DOCUMENT_BUCKET: local-test-document-bucket
           EMBEDDING_LAMBDA_ARN: rag-embedding
+          LAMBDA_ENDPOINT_URL: ""
           CHUNK_SIZE: "1000"
           CHUNK_OVERLAP: "200"
           LOG_LEVEL: DEBUG
@@ -79,6 +85,7 @@ Resources:
         Variables:
           BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
           BEDROCK_REGION: eu-west-1
+          BEDROCK_ENDPOINT_URL: ""
           OPENSEARCH_ENDPOINT: https://localhost:9200
           OPENSEARCH_INDEX: rag-documents
           LOG_LEVEL: DEBUG
@@ -102,6 +109,7 @@ Resources:
         Variables:
           BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
           BEDROCK_REGION: eu-west-1
+          BEDROCK_ENDPOINT_URL: ""
           OPENSEARCH_ENDPOINT: https://localhost:9200
           OPENSEARCH_INDEX: rag-documents
           TOP_K: "5"
@@ -128,6 +136,8 @@ Resources:
         Variables:
           BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
           BEDROCK_REGION: eu-west-1
+          BEDROCK_ENDPOINT_URL: ""
+          LAMBDA_ENDPOINT_URL: ""
           RETRIEVAL_LAMBDA_ARN: rag-retrieval
           MAX_TOKENS: "2048"
           TOP_K: "5"

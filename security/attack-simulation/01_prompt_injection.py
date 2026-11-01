@@ -217,7 +217,7 @@ def print_report(local_results: list[dict], live_results: list[dict] | None = No
 
     total = len(local_results) + (len(live_results) if live_results else 0)
     passed = total - failures
-    print(f"\n── Summary ────────────────────────────────────────────────────")
+    print("\n── Summary ────────────────────────────────────────────────────")
     print(f"  Tests run:  {total}")
     print(f"  Passed:     {passed}")
     print(f"  Failed:     {failures}")

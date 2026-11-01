@@ -228,9 +228,9 @@ resource "aws_iam_policy" "lambda_document_ingestion" {
         Resource = "${var.document_bucket_arn}/*"
       },
       {
-        Sid    = "S3ListBucket"
-        Effect = "Allow"
-        Action = ["s3:ListBucket"]
+        Sid      = "S3ListBucket"
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
         Resource = var.document_bucket_arn
       },
       {

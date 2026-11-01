@@ -2,17 +2,22 @@
 
 Test Lambda functions and API endpoints locally using Docker containers that replicate the AWS Lambda runtime. **SAM is used for local testing only** — Terraform remains the deployment IaC.
 
+> **Two local modes:**
+>
+> 1. **Real AWS mode** (`make sam-api`, `make sam-invoke-*`): requires AWS credentials, may incur Bedrock/OpenSearch charges, and is not used by the committed verification evidence.
+> 2. **Local-doubles mode** (`make mock-aws` + `make sam-api-mock`): deterministic Bedrock/OpenSearch/Lambda responses, placeholder credentials, no network access to AWS. This is the mode used by `make e2e` and the screenshots. It verifies application wiring, not live AWS authorization.
+
 ## Prerequisites
 
 | Tool           | Install                                                       | Purpose                                        |
 | -------------- | ------------------------------------------------------------- | ---------------------------------------------- |
 | Docker Desktop | [docker.com](https://www.docker.com/products/docker-desktop/) | Container runtime for Lambda emulation         |
 | AWS SAM CLI    | `brew install aws-sam-cli`                                    | Local invoke and API Gateway emulation         |
-| AWS CLI        | `brew install awscli`                                         | Credential configuration                       |
+| AWS CLI        | `brew install awscli`                                         | Credential configuration (real AWS mode only)  |
 | GNU Make       | Pre-installed on macOS                                        | Build orchestration                            |
-| Python 3.13    | `brew install python@3.13`                                    | Required if building without `--use-container` |
+| Python 3.12+   | `brew install python@3.13`                                    | Tests/tooling; Lambda runtime is Python 3.13   |
 
-**AWS credentials** are required even locally because the Lambda functions call real AWS services (Bedrock, OpenSearch). Run `aws configure` or set `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` environment variables.
+**AWS credentials** are only required for real AWS mode. The local-doubles mode applies placeholder credentials to the SAM process so requests cannot be signed against AWS.
 
 ## Quick Start
 
@@ -20,12 +25,31 @@ Test Lambda functions and API endpoints locally using Docker containers that rep
 # 1. Build all functions and the Lambda layer
 make sam-build
 
-# 2. Invoke a single function with a sample event
+# 2. Invoke a single function with a sample event (real AWS mode)
 make sam-invoke-bedrock
 
-# 3. Start a local API Gateway on port 3000
+# 3. Start a local API Gateway on port 3000 (real AWS mode)
 make sam-api
 ```
+
+### Verified mode: local service doubles
+
+```bash
+# Terminal 1 — deterministic Bedrock/OpenSearch/Lambda endpoints on :9000
+make mock-aws
+
+# Terminal 2 — SAM API using env.mock.json and placeholder credentials
+make sam-api-mock
+
+# Terminal 3 — run the 11-case HTTP verification matrix
+make e2e
+make screenshots
+```
+
+`env.mock.json` points each handler at `http://host.docker.internal:9000` through
+`BEDROCK_ENDPOINT_URL` / `LAMBDA_ENDPOINT_URL` and `OPENSEARCH_ENDPOINT`.
+The endpoint overrides are optional in production and are deliberately not named
+`AWS_ENDPOINT_URL_*`, which SAM reserves and filters.
 
 ## Testing Individual Functions
 
@@ -82,6 +106,10 @@ curl -s -X POST http://localhost:3000/retrieve \
   -d '{"query": "data retention policy", "top_k": 5}'
 ```
 
+All endpoints return `Content-Type: application/json`. Validation failures return a JSON object such as `{"error":"..."}` with HTTP 400. The handlers accept both API Gateway proxy events (the HTTP path) and direct Lambda payloads (`sam local invoke`).
+
+For a no-AWS verification run, use `make sam-api-mock` instead of `make sam-api` and run `make e2e`. See [docs/evidence/verification-report.md](evidence/verification-report.md).
+
 ### API Endpoints
 
 | Method | Path        | Function            | Description                  |
@@ -118,6 +146,18 @@ sam local invoke BedrockOrchestratorFunction \
 
 `env.local.json` is gitignored and should never be committed.
 
+### Local-Doubles Overrides (`env.mock.json`)
+
+`env.mock.json` is tracked because it contains only endpoint URLs and no credentials. It is used by `make sam-api-mock`:
+
+| Variable | Purpose | Production default |
+| -------- | ------- | ------------------ |
+| `BEDROCK_ENDPOINT_URL` | Redirect Bedrock Runtime calls to the local double | unset (regional AWS endpoint) |
+| `LAMBDA_ENDPOINT_URL` | Redirect Lambda Invoke calls to the local double | unset (regional AWS endpoint) |
+| `OPENSEARCH_ENDPOINT` | Point indexing/search at the local double | required endpoint |
+
+These overrides are read by the handlers at module load and are intended for local testing. Placeholder credentials are applied by the Makefile to the SAM process only; never put real credentials in `env.mock.json`.
+
 ### AWS Credentials per Function
 
 | Function            | Required AWS Access                              |
@@ -132,20 +172,27 @@ sam local invoke BedrockOrchestratorFunction \
 
 ### Lambda-to-Lambda Invocations
 
-The ingestion function calls the embedding function, and the orchestrator calls the retrieval function via `boto3.client("lambda").invoke()`. These cross-function calls **do not work in fully local mode** because SAM runs each function in an isolated Docker container.
+The ingestion function calls the embedding function, and the orchestrator calls the retrieval function via `boto3.client("lambda").invoke()`. Against real AWS these work normally. In fully local mode, SAM runs each function in an isolated Docker container, so the call targets the AWS Lambda API.
 
 **Workarounds:**
 
-- Test each function individually with its event file (recommended)
-- Point `EMBEDDING_LAMBDA_ARN` / `RETRIEVAL_LAMBDA_ARN` in `env.local.json` at deployed Lambda functions to test the full chain
+- Test each function individually with its event file (real AWS mode)
+- Point `EMBEDDING_LAMBDA_ARN` / `RETRIEVAL_LAMBDA_ARN` at deployed Lambda functions
+- Use `make mock-aws` + `make sam-api-mock`: `LAMBDA_ENDPOINT_URL` redirects the invoke call to the local double, allowing the full `/query` pipeline to be exercised without AWS
 
 ### Bedrock and OpenSearch
 
-Both require real AWS credentials — there are no local emulators. The default `env.json` uses `https://localhost:9200` for OpenSearch (will fail unless you run a local OpenSearch container).
+Real AWS mode requires credentials and model access; there are no local emulators for production services. The default `env.json` uses `https://localhost:9200` for OpenSearch and will fail unless you provide a reachable endpoint.
+
+For verification without AWS, use the deterministic doubles in `scripts/local_aws_doubles.py`. They implement only the narrow request/response surfaces the handlers use (Bedrock invoke, OpenSearch `_doc`/`_search`, Lambda invoke) and accept SigV4 headers without validating them.
 
 ### S3 Triggers
 
 `sam local start-api` does not simulate S3 events. Use `sam local invoke` with the S3 event JSON file instead.
+
+### Layer Packaging
+
+`make sam-build` copies `genai/prompt_builder/{builder,templates}.py` to the layer root before building. SAM's Python builder packages that root as `python/`. Do not create `layers/prompt_builder/python/` manually: it produces `python/python/...` and an `ImportModuleError` at runtime.
 
 ## Debugging
 
@@ -175,31 +222,35 @@ SAM outputs Lambda container logs to stdout. Set `LOG_LEVEL=DEBUG` in `env.json`
 
 ## Cleanup
 
-Remove SAM build artifacts:
+Remove SAM build artifacts and generated layer files:
 
 ```bash
 make clean-sam
 ```
 
-This removes `.aws-sam/` and `layers/prompt_builder/python/` (generated files).
+This removes `.aws-sam/`, the generated `layers/prompt_builder/{builder,templates}.py`, and any legacy `layers/prompt_builder/python/` directory. It does not delete the tracked `layers/prompt_builder/requirements.txt`.
 
 ## Project Structure
 
 ```
-template.yaml               # SAM template (local testing only)
-samconfig.toml               # SAM CLI defaults
-env.json                     # Default environment variables
-env.local.json.example       # Template for personal overrides
-Makefile                     # Build and invoke targets
-events/                      # Sample event payloads
+template.yaml                    # SAM template (local testing only)
+samconfig.toml                   # SAM CLI defaults
+env.json                         # Default environment variables (safe local defaults)
+env.local.json.example           # Template for personal real-AWS overrides
+env.mock.json                    # Local-doubles endpoint overrides (placeholder creds live only in Makefile)
+Makefile                         # Build, test, local API, and evidence targets
+scripts/
+  local_aws_doubles.py           # Deterministic Bedrock/OpenSearch/Lambda test harness
+  e2e_api_verify.py              # 11-case HTTP verification matrix
+  capture_evidence.py            # Playwright screenshots of real captured responses
+events/                          # Sample event payloads
   bedrock-invoke.json
   rag-ingestion-s3.json
   rag-embedding.json
   rag-retrieval.json
   rag-query.json
-layers/prompt_builder/       # Lambda layer source
+layers/prompt_builder/           # Layer root consumed by SAM's Python builder
   requirements.txt
-  python/                    # Generated by 'make layer-prepare'
-    builder.py
-    templates.py
+  builder.py                     # Generated by 'make layer-prepare'
+  templates.py                   # Generated by 'make layer-prepare'
 ```

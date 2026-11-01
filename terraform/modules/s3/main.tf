@@ -262,10 +262,10 @@ resource "aws_s3_bucket_notification" "documents" {
 resource "aws_lambda_permission" "s3_invoke" {
   count = var.ingestion_lambda_arn != "" ? 1 : 0
 
-  statement_id  = "AllowS3Invoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.ingestion_lambda_arn
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.documents.arn
+  statement_id   = "AllowS3Invoke"
+  action         = "lambda:InvokeFunction"
+  function_name  = var.ingestion_lambda_arn
+  principal      = "s3.amazonaws.com"
+  source_arn     = aws_s3_bucket.documents.arn
   source_account = var.account_id
 }

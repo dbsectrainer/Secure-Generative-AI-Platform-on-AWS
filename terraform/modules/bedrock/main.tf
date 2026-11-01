@@ -44,12 +44,12 @@ resource "aws_lambda_function" "bedrock_orchestrator" {
 
   environment {
     variables = {
-      BEDROCK_MODEL_ID     = var.bedrock_model_id
-      BEDROCK_REGION       = var.region
-      DOCUMENT_BUCKET      = var.document_bucket_name
-      MAX_TOKENS           = tostring(var.max_tokens)
-      LOG_LEVEL            = var.log_level
-      POWERTOOLS_LOG_LEVEL = var.log_level
+      BEDROCK_MODEL_ID        = var.bedrock_model_id
+      BEDROCK_REGION          = var.region
+      DOCUMENT_BUCKET         = var.document_bucket_name
+      MAX_TOKENS              = tostring(var.max_tokens)
+      LOG_LEVEL               = var.log_level
+      POWERTOOLS_LOG_LEVEL    = var.log_level
       POWERTOOLS_SERVICE_NAME = "${var.name_prefix}-bedrock-orchestrator"
     }
   }

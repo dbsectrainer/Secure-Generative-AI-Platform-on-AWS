@@ -57,6 +57,8 @@ node_modules/
 
 # AWS SAM CLI
 .aws-sam/
+layers/prompt_builder/builder.py
+layers/prompt_builder/templates.py
 layers/prompt_builder/python/
 env.local.json
 

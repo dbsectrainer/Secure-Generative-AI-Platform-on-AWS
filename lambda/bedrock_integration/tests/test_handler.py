@@ -171,3 +171,66 @@ class TestLambdaHandler:
 
         assert result["statusCode"] == 500
         assert result["body"]["error"] == "Internal server error."
+
+
+def _proxy_event(payload: dict | str | None) -> dict:
+    """Build an API Gateway Lambda proxy event with a JSON body."""
+    if payload is not None and not isinstance(payload, str):
+        payload = json.dumps(payload)
+    return {
+        "httpMethod": "POST",
+        "path": "/invoke",
+        "headers": {"Content-Type": "application/json"},
+        "body": payload,
+        "isBase64Encoded": False,
+        "requestContext": {"requestId": "test-request"},
+    }
+
+
+class TestApiGatewayProxy:
+    """Regression coverage for the documented `sam local start-api` contract.
+
+    Before this coverage existed, handlers read `prompt` from the top-level
+    proxy event, so every HTTP request returned 400.
+    """
+
+    def test_proxy_event_body_is_parsed_and_response_is_json(self):
+        import handler
+
+        mock_response = _make_bedrock_response("Grounded answer.")
+
+        with patch.object(handler._bedrock_client, "invoke_model", return_value=mock_response):
+            result = handler.lambda_handler(
+                _proxy_event({"prompt": "What is the policy?"}), None
+            )
+
+        assert result["statusCode"] == 200
+        assert isinstance(result["body"], str)
+        parsed = json.loads(result["body"])
+        assert parsed["output"] == "Grounded answer."
+        assert result["headers"]["Content-Type"] == "application/json"
+
+    def test_malformed_json_body_returns_400_not_500(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event("{not json"), None)
+
+        assert result["statusCode"] == 400
+        parsed = json.loads(result["body"])
+        assert "valid JSON" in parsed["error"]
+
+    def test_empty_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event(None), None)
+
+        assert result["statusCode"] == 400
+        assert "required" in json.loads(result["body"])["error"]
+
+    def test_non_object_json_body_returns_400(self):
+        import handler
+
+        result = handler.lambda_handler(_proxy_event('["not", "an", "object"]'), None)
+
+        assert result["statusCode"] == 400
+        assert "JSON object" in json.loads(result["body"])["error"]

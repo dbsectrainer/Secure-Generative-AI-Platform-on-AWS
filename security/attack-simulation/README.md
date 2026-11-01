@@ -6,11 +6,13 @@
 
 > **⚠️ WARNING:** These scripts are designed for use against your own AWS infrastructure in a controlled test environment **only**. Never run these against production environments or systems you do not own. Ensure you have explicit written authorisation before executing any simulation.
 
+> **Verification status:** These simulations were **not executed** during the 2026-10-31 audit. They require a deployed environment and AWS credentials, and several target controls (WAF, GuardDuty, Config, Guardrails, OpenSearch access policies) are not yet provisioned by the current Terraform roots. Treat the results as environment-specific, not as evidence of implemented controls.
+
 ---
 
 ## Overview
 
-This directory contains five attack simulation scripts that validate the security controls implemented in the Secure Generative AI Platform. Each script:
+This directory contains five attack simulation scripts that exercise the expected security controls in a deployed Secure Generative AI Platform. Each script:
 
 1. Simulates a specific attack category
 2. Measures the platform's response **before** mitigations (dry-run mode)

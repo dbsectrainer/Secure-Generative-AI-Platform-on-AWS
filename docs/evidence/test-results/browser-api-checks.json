@@ -1,0 +1,122 @@
+{
+  "base_url": "http://127.0.0.1:3000",
+  "results": [
+    {
+      "name": "invoke",
+      "path": "/invoke",
+      "request": {
+        "prompt": "Browser check: AWS security best practices?"
+      },
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "response": {
+        "output": "Local test double response: AWS Bedrock was not called. The request/response path completed successfully.",
+        "model_id": "anthropic.claude-sonnet-5-5",
+        "usage": {
+          "input_tokens": 128,
+          "output_tokens": 42
+        }
+      }
+    },
+    {
+      "name": "embed",
+      "path": "/embed",
+      "request": {
+        "text": "Browser check embedding text",
+        "metadata": {
+          "source": "playwright"
+        }
+      },
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "response": {
+        "indexed": true,
+        "dimensions": 1024,
+        "metadata": {
+          "source": "playwright"
+        }
+      }
+    },
+    {
+      "name": "retrieve",
+      "path": "/retrieve",
+      "request": {
+        "query": "retention policy",
+        "top_k": 2
+      },
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "response": {
+        "results": [
+          {
+            "text": "The platform encrypts documents at rest with a customer-managed KMS key and requires TLS 1.2 or later in transit.",
+            "metadata": {
+              "document_key": "raw/security-controls.txt",
+              "chunk_index": 0
+            },
+            "score": 0.94
+          },
+          {
+            "text": "Audit events are written to CloudTrail with S3 Object Lock retention for seven years.",
+            "metadata": {
+              "document_key": "raw/audit-policy.txt",
+              "chunk_index": 1
+            },
+            "score": 0.88
+          }
+        ],
+        "query": "retention policy",
+        "top_k": 2
+      }
+    },
+    {
+      "name": "query",
+      "path": "/query",
+      "request": {
+        "query": "Summarize the security controls",
+        "top_k": 2
+      },
+      "status": 200,
+      "expected_status": 200,
+      "passed": true,
+      "response": {
+        "output": "Based on the retrieved policy excerpts, the platform encrypts data with a customer-managed KMS key, retains CloudTrail audit events for seven years, and scopes retrieval results by document metadata.",
+        "model_id": "anthropic.claude-sonnet-5-5",
+        "usage": {
+          "input_tokens": 128,
+          "output_tokens": 42,
+          "prompt_token_estimate": 181,
+          "estimated_cost_usd": 0.000676
+        },
+        "retrieval": {
+          "chunks_used": 3,
+          "latency_ms": 1.7
+        },
+        "latency_ms": {
+          "retrieval": 1.7,
+          "prompt_construction": 0.0,
+          "bedrock_inference": 1.2,
+          "total": 3.1
+        }
+      }
+    },
+    {
+      "name": "validation_error",
+      "path": "/invoke",
+      "request": {
+        "prompt": "   "
+      },
+      "status": 400,
+      "expected_status": 400,
+      "passed": true,
+      "response": {
+        "error": "Request must include a non-empty 'prompt' field."
+      }
+    }
+  ],
+  "passed": 5,
+  "total": 5
+}

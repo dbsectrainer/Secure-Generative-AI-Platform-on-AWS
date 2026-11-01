@@ -19,13 +19,13 @@ resource "aws_guardduty_detector" "main" {
     }
     kubernetes {
       audit_logs {
-        enable = false  # Not using EKS in this platform
+        enable = false # Not using EKS in this platform
       }
     }
     malware_protection {
       scan_ec2_instance_with_findings {
         ebs_volumes {
-          enable = false  # Not using EC2 in this platform
+          enable = false # Not using EC2 in this platform
         }
       }
     }
@@ -46,7 +46,7 @@ resource "aws_cloudwatch_event_rule" "guardduty_findings" {
     source      = ["aws.guardduty"]
     detail-type = ["GuardDuty Finding"]
     detail = {
-      severity = [{ numeric = [">=", 7] }]  # HIGH (7.0+) and CRITICAL (9.0+)
+      severity = [{ numeric = [">=", 7] }] # HIGH (7.0+) and CRITICAL (9.0+)
     }
   })
 
@@ -158,16 +158,16 @@ resource "aws_s3_bucket_policy" "config" {
         Resource = "${aws_s3_bucket.config.arn}/AWSLogs/${var.account_id}/Config/*"
         Condition = {
           StringEquals = {
-            "s3:x-amz-acl"    = "bucket-owner-full-control"
+            "s3:x-amz-acl"      = "bucket-owner-full-control"
             "aws:SourceAccount" = var.account_id
           }
         }
       },
       {
-        Sid    = "DenyNonTLSAccess"
-        Effect = "Deny"
+        Sid       = "DenyNonTLSAccess"
+        Effect    = "Deny"
         Principal = "*"
-        Action   = "s3:*"
+        Action    = "s3:*"
         Resource = [
           aws_s3_bucket.config.arn,
           "${aws_s3_bucket.config.arn}/*"
@@ -216,23 +216,23 @@ resource "aws_config_configuration_recorder_status" "main" {
 
 locals {
   managed_config_rules = {
-    "s3-bucket-public-read-prohibited"           = {}
-    "s3-bucket-public-write-prohibited"          = {}
-    "s3-bucket-ssl-requests-only"               = {}
-    "s3-bucket-server-side-encryption-enabled"  = {}
-    "iam-no-inline-policy"                       = {}
-    "iam-root-access-key-check"                  = {}
-    "iam-user-mfa-enabled"                       = {}
-    "restricted-ssh"                             = {}
-    "restricted-common-ports"                    = {}
-    "vpc-flow-logs-enabled"                      = {}
-    "cloud-trail-enabled"                        = {}
-    "guardduty-enabled-centralized"              = {}
-    "kms-cmk-not-scheduled-for-deletion"         = {}
-    "lambda-function-public-access-prohibited"   = {}
-    "lambda-inside-vpc"                          = {}
-    "cloudtrail-s3-dataevents-enabled"           = {}
-    "cloudtrail-log-file-validation-enabled"     = {}
+    "s3-bucket-public-read-prohibited"         = {}
+    "s3-bucket-public-write-prohibited"        = {}
+    "s3-bucket-ssl-requests-only"              = {}
+    "s3-bucket-server-side-encryption-enabled" = {}
+    "iam-no-inline-policy"                     = {}
+    "iam-root-access-key-check"                = {}
+    "iam-user-mfa-enabled"                     = {}
+    "restricted-ssh"                           = {}
+    "restricted-common-ports"                  = {}
+    "vpc-flow-logs-enabled"                    = {}
+    "cloud-trail-enabled"                      = {}
+    "guardduty-enabled-centralized"            = {}
+    "kms-cmk-not-scheduled-for-deletion"       = {}
+    "lambda-function-public-access-prohibited" = {}
+    "lambda-inside-vpc"                        = {}
+    "cloudtrail-s3-dataevents-enabled"         = {}
+    "cloudtrail-log-file-validation-enabled"   = {}
   }
 }
 

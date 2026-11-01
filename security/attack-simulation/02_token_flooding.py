@@ -129,6 +129,7 @@ def test_long_query_truncation() -> dict:
     )
     user_content = result["payload"]["messages"][0]["content"]
     truncated = len(LONG_QUERY) > QUERY_MAX_CHARS
+    assert LONG_QUERY not in user_content, "oversized query was not truncated"
     return {
         "original_query_chars": len(LONG_QUERY),
         "max_query_chars": QUERY_MAX_CHARS,
@@ -285,11 +286,11 @@ def print_report(
             failures += 1
         print(f"  Rate-limit rate:       {rate_limit_pct:.0f}%  {flood_status}")
 
-    print(f"\n── Detection Evidence ────────────────────────────────────────")
+    print("\n── Detection Evidence ────────────────────────────────────────")
     print("  CloudWatch metric: AWS/ApiGateway/4XXError (should spike on flood)")
     print("  WAF metric: BlockedRequests (should spike on flood)")
     print("  Lambda metric: Throttles (should remain near 0 due to WAF blocking)")
-    print(f"\n── Summary ────────────────────────────────────────────────────")
+    print("\n── Summary ────────────────────────────────────────────────────")
     print(f"  Failures: {failures}")
     print(
         f"  Mitigation: {'EFFECTIVE' if failures == 0 else 'REQUIRES REVIEW'}"

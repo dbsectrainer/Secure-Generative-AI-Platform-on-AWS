@@ -1,10 +1,12 @@
 # PII Redaction in Generative AI Platform
 
-This document describes the Personally Identifiable Information (PII) redaction mechanisms implemented in the Secure Generative AI Platform to protect sensitive data during LLM processing.
+> **Implementation status (2026-10-31): design guidance, not wired into the Lambda handlers.** The repository's handlers do not currently call Amazon Comprehend or pass a Bedrock Guardrails `guardrailIdentifier`; with the local SAM template, model requests go directly to Bedrock Runtime. The architecture, IAM guidance, and code snippets below describe the intended production control set and must not be read as evidence that PII redaction is active. See [docs/evidence/verification-report.md](evidence/verification-report.md) for verified functionality and remaining limitations.
+
+This document describes the Personally Identifiable Information (PII) redaction mechanisms planned for the Secure Generative AI Platform to protect sensitive data during LLM processing.
 
 ## Overview
 
-The platform implements **multi-layer PII redaction** to ensure that Personally Identifiable Information is not exposed to generative AI models or stored in logs:
+The intended platform design uses **multi-layer PII redaction** to ensure that Personally Identifiable Information is not exposed to generative AI models or stored in logs:
 
 1. **Input Redaction** — Remove PII before sending to Bedrock/Claude
 2. **Compliance Audit** — Log PII detection for compliance (FISMA, FedRAMP)

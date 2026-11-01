@@ -41,6 +41,9 @@ CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE", "1000"))
 CHUNK_OVERLAP = int(os.environ.get("CHUNK_OVERLAP", "200"))
 AWS_REGION = os.environ.get("AWS_REGION", os.environ.get("AWS_DEFAULT_REGION", "eu-west-1"))
 
+# Optional endpoint override for local end-to-end tests (unset in production).
+LAMBDA_ENDPOINT_URL = os.environ.get("LAMBDA_ENDPOINT_URL") or None
+
 _lambda_config = Config(
     region_name=AWS_REGION,
     retries={"max_attempts": 3, "mode": "adaptive"},
@@ -49,7 +52,11 @@ _lambda_config = Config(
 )
 
 _s3_client = boto3.client("s3", region_name=AWS_REGION)
-_lambda_client = boto3.client("lambda", config=_lambda_config)
+_lambda_client = boto3.client(
+    "lambda",
+    config=_lambda_config,
+    **({"endpoint_url": LAMBDA_ENDPOINT_URL} if LAMBDA_ENDPOINT_URL else {}),
+)
 
 # Maximum document size (5 MB) to guard against runaway processing
 _MAX_DOCUMENT_BYTES = 5 * 1024 * 1024
