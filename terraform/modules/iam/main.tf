@@ -80,6 +80,12 @@ resource "aws_iam_policy" "lambda_bedrock_orchestrator" {
         Resource = "arn:aws:bedrock:${var.region}:${var.account_id}:guardrail/*"
       },
       {
+        Sid      = "ComprehendPiiDetection"
+        Effect   = "Allow"
+        Action   = ["comprehend:DetectPiiEntities"]
+        Resource = "*"
+      },
+      {
         Sid    = "KMSDecrypt"
         Effect = "Allow"
         Action = [
@@ -337,6 +343,12 @@ resource "aws_iam_policy" "lambda_embedding" {
         Resource = "arn:aws:aoss:${var.region}:${var.account_id}:collection/*"
       },
       {
+        Sid      = "ComprehendPiiDetection"
+        Effect   = "Allow"
+        Action   = ["comprehend:DetectPiiEntities"]
+        Resource = "*"
+      },
+      {
         Sid    = "CloudWatchLogs"
         Effect = "Allow"
         Action = [
@@ -422,6 +434,12 @@ resource "aws_iam_policy" "lambda_retrieval" {
         Effect   = "Allow"
         Action   = ["aoss:APIAccessAll"]
         Resource = "arn:aws:aoss:${var.region}:${var.account_id}:collection/*"
+      },
+      {
+        Sid      = "ComprehendPiiDetection"
+        Effect   = "Allow"
+        Action   = ["comprehend:DetectPiiEntities"]
+        Resource = "*"
       },
       {
         Sid    = "CloudWatchLogs"
@@ -515,6 +533,12 @@ resource "aws_iam_policy" "lambda_rag_orchestrator" {
         Effect   = "Allow"
         Action   = ["bedrock:ApplyGuardrail"]
         Resource = "arn:aws:bedrock:${var.region}:${var.account_id}:guardrail/*"
+      },
+      {
+        Sid      = "ComprehendPiiDetection"
+        Effect   = "Allow"
+        Action   = ["comprehend:DetectPiiEntities"]
+        Resource = "*"
       },
       {
         Sid      = "InvokeRetrievalLambda"

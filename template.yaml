@@ -30,6 +30,17 @@ Resources:
     Metadata:
       BuildMethod: python3.13
 
+  AuthLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: auth
+      Description: Shared bearer-token validation for API Gateway handlers
+      ContentUri: layers/common/
+      CompatibleRuntimes:
+        - python3.13
+    Metadata:
+      BuildMethod: python3.13
+
   # ── Bedrock Orchestrator ────────────────────────────────────────────────────
 
   BedrockOrchestratorFunction:
@@ -39,13 +50,24 @@ Resources:
       CodeUri: lambda/bedrock_integration/
       Handler: handler.lambda_handler
       Description: Direct Bedrock invocation with prompt validation
+      Layers:
+        - !Ref AuthLayer
       Environment:
         Variables:
           BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
+          BEDROCK_INFERENCE_PROFILE_ARN: ""
           BEDROCK_REGION: eu-west-1
           BEDROCK_ENDPOINT_URL: ""
           BEDROCK_GUARDRAIL_ID: ""
           BEDROCK_GUARDRAIL_VERSION: ""
+          AUTH_REQUIRED: "false"
+          AUTH_JWKS_URL: ""
+          AUTH_ISSUER: ""
+          AUTH_AUDIENCE: ""
+          AUTH_PUBLIC_KEY: ""
+          PII_REDACTION_ENABLED: "false"
+          PII_LANGUAGE_CODE: "en"
+          COMPREHEND_ENDPOINT_URL: ""
           DOCUMENT_BUCKET: local-test-document-bucket
           MAX_TOKENS: "1024"
           LOG_LEVEL: DEBUG
@@ -83,11 +105,21 @@ Resources:
       CodeUri: rag/embedding/
       Handler: handler.lambda_handler
       Description: Bedrock embedding generation and OpenSearch indexing
+      Layers:
+        - !Ref AuthLayer
       Environment:
         Variables:
           BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
           BEDROCK_REGION: eu-west-1
           BEDROCK_ENDPOINT_URL: ""
+          AUTH_REQUIRED: "false"
+          AUTH_JWKS_URL: ""
+          AUTH_ISSUER: ""
+          AUTH_AUDIENCE: ""
+          AUTH_PUBLIC_KEY: ""
+          PII_REDACTION_ENABLED: "false"
+          PII_LANGUAGE_CODE: "en"
+          COMPREHEND_ENDPOINT_URL: ""
           OPENSEARCH_ENDPOINT: https://localhost:9200
           OPENSEARCH_INDEX: rag-documents
           LOG_LEVEL: DEBUG
@@ -107,11 +139,21 @@ Resources:
       CodeUri: rag/retrieval/
       Handler: handler.lambda_handler
       Description: Vector search with metadata filtering via OpenSearch
+      Layers:
+        - !Ref AuthLayer
       Environment:
         Variables:
           BEDROCK_EMBEDDING_MODEL_ID: amazon.titan-embed-text-v2:0
           BEDROCK_REGION: eu-west-1
           BEDROCK_ENDPOINT_URL: ""
+          AUTH_REQUIRED: "false"
+          AUTH_JWKS_URL: ""
+          AUTH_ISSUER: ""
+          AUTH_AUDIENCE: ""
+          AUTH_PUBLIC_KEY: ""
+          PII_REDACTION_ENABLED: "false"
+          PII_LANGUAGE_CODE: "en"
+          COMPREHEND_ENDPOINT_URL: ""
           OPENSEARCH_ENDPOINT: https://localhost:9200
           OPENSEARCH_INDEX: rag-documents
           TOP_K: "5"
@@ -133,14 +175,24 @@ Resources:
       Handler: handler.lambda_handler
       Description: Full RAG pipeline — retrieval, prompt construction, inference
       Layers:
+        - !Ref AuthLayer
         - !Ref PromptBuilderLayer
       Environment:
         Variables:
           BEDROCK_MODEL_ID: anthropic.claude-sonnet-5-5
+          BEDROCK_INFERENCE_PROFILE_ARN: ""
           BEDROCK_REGION: eu-west-1
           BEDROCK_ENDPOINT_URL: ""
           BEDROCK_GUARDRAIL_ID: ""
           BEDROCK_GUARDRAIL_VERSION: ""
+          AUTH_REQUIRED: "false"
+          AUTH_JWKS_URL: ""
+          AUTH_ISSUER: ""
+          AUTH_AUDIENCE: ""
+          AUTH_PUBLIC_KEY: ""
+          PII_REDACTION_ENABLED: "false"
+          PII_LANGUAGE_CODE: "en"
+          COMPREHEND_ENDPOINT_URL: ""
           LAMBDA_ENDPOINT_URL: ""
           RETRIEVAL_LAMBDA_ARN: rag-retrieval
           MAX_TOKENS: "2048"

@@ -30,6 +30,16 @@ locals {
   }
 }
 
+resource "aws_api_gateway_authorizer" "cognito" {
+  count = var.enable_auth ? 1 : 0
+
+  name            = "${var.name_prefix}-cognito-authorizer"
+  rest_api_id     = aws_api_gateway_rest_api.main.id
+  type            = "COGNITO_USER_POOLS"
+  provider_arns   = [var.cognito_user_pool_arn]
+  identity_source = "method.request.header.Authorization"
+}
+
 resource "aws_api_gateway_resource" "route" {
   for_each = local.routes
 
@@ -44,7 +54,8 @@ resource "aws_api_gateway_method" "post" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
   resource_id   = aws_api_gateway_resource.route[each.key].id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = var.enable_auth ? "COGNITO_USER_POOLS" : "NONE"
+  authorizer_id = var.enable_auth ? aws_api_gateway_authorizer.cognito[0].id : null
 }
 
 resource "aws_api_gateway_integration" "proxy" {
@@ -85,6 +96,7 @@ resource "aws_api_gateway_deployment" "main" {
   depends_on = [
     aws_api_gateway_method.post,
     aws_api_gateway_integration.proxy,
+    aws_api_gateway_authorizer.cognito,
   ]
 }
 

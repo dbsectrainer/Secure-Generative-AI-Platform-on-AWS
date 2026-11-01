@@ -75,9 +75,10 @@ Baseline tests passed (`97` tests), which initially masked the HTTP integration 
 
 > **Remediation status:** F-01 through F-10 and F-12/F-13 are resolved. F-04/F-05
 > (Terraform wiring/layer/IAM) are resolved in §3.7. F-11 is partially resolved:
-> Guardrails pass-through and Terraform PII policy are implemented, but Comprehend
-> is not used and no live Guardrail call was tested. F-14 is addressed by the
-> locked dev dependency set and SBOM; current test count is 126 with 88% coverage.
+> Guardrails pass-through, the Terraform PII policy, and optional Comprehend
+> redaction are implemented; no live Guardrail/Comprehend call was tested. F-14 is
+> addressed by the locked dev dependency set and SBOM; current test count is 141
+> with 87% coverage.
 
 ## 3. Fixes Implemented
 
@@ -141,7 +142,7 @@ These are test capabilities, not substitutes for live integration verification.
 Updated:
 - `README.md` — verified status, exact commands, mock workflow, screenshots, Terraform caveats, known gaps.
 - `docs/local-testing.md` — verified local-doubles mode, layer packaging, endpoint overrides, limitations.
-- `docs/pii-redaction.md` — Guardrails pass-through status; Comprehend design-only.
+- `docs/pii-redaction.md` — Guardrails pass-through and optional Comprehend status.
 - `FEDRAMP-ALIGNMENT.md` — self-assessment disclaimer and deployment caveat.
 - `CHANGELOG.md` — added/fixed/changed entries.
 - This report and evidence artifacts.
@@ -177,26 +178,61 @@ The dev and prod roots now instantiate `network`, `s3`, `iam`, `bedrock`,
   `guardrailVersion` to `InvokeModel` when configured.
 - The Terraform guardrail anonymizes EMAIL/NAME/PHONE and blocks AWS access/secret
   keys; IAM grants `bedrock:ApplyGuardrail`.
-- Amazon Comprehend is not used; Guardrails is the deployed PII control path.
+- Optional Comprehend redaction is implemented behind `PII_REDACTION_ENABLED`; Guardrails remains the primary PII control.
 - New regression tests assert that guardrail parameters reach the Bedrock client.
 
 ### 3.9 Additional local AWS verification and quality tooling
 
 - Added Moto-backed ingestion tests using real boto3 S3 calls against in-memory
   AWS emulation.
-- Added `mypy` (16 application files, zero issues), branch coverage (88%),
+- Added `mypy` (18 application files, zero issues), branch coverage (87%),
   `pip-audit`, CycloneDX SBOM generation, and a locked development dependency set.
 - Added LocalStack/Terraform/mock tests to the CI workflow.
 
+### 3.10 API authentication (Cognito + handler JWT)
+
+- Added a Cognito user pool and app client (`terraform/modules/auth`).
+- Added an API Gateway Cognito authorizer and attached it to all four POST
+  routes.
+- Added handler-level JWT/JWKS validation (`layers/common/auth.py`) as
+  defense-in-depth; direct Lambda invocations are excluded because IAM controls
+  those calls.
+- Added local RSA token/JWKS endpoints to the service doubles and authenticated
+  the HTTP E2E matrix, including a 401 no-token case.
+- Terraform mock-provider plans include the auth module and authorizer.
+
+### 3.11 Optional Comprehend PII and inference profiles
+
+- Added optional Comprehend `DetectPiiEntities` redaction in
+  `layers/common/pii.py`, wired into the Bedrock, embedding, retrieval, and RAG
+  handlers when `PII_REDACTION_ENABLED=true`.
+- Added least-privilege `comprehend:DetectPiiEntities` permissions to the four
+  inference roles.
+- Added `BEDROCK_INFERENCE_PROFILE_ARN` support to both inference handlers and
+  Terraform modules, including a regression test for `modelId` selection.
+- Guardrails remain the primary PII/content control.
+
+### 3.12 Local RAG frontend
+
+- Added a dependency-free `frontend/` console with loading, empty, success, and
+  error states.
+- Added `scripts/serve_frontend.py`, a same-origin static/API/token proxy used
+  only for local verification.
+- Added `scripts/ui_e2e_verify.py`; Playwright validates desktop and mobile
+  queries with zero console/network errors.
+- Production hosting (S3/CloudFront, Cognito Hosted UI, CORS policy) remains out
+  of scope.
+
 ## 4. Verification Results
+
 
 ### 4.1 Unit and regression tests
 
 Command: `python3 -m pytest -vv`
-Result: **126 passed**, exit 0.
+Result: **141 passed**, exit 0.
 
 A clean virtual environment was populated from the locked
-`requirements-dev.lock`; the same 126 tests passed on Python 3.12 and Python
+`requirements-dev.lock`; the same 141 tests passed on Python 3.12 and Python
 3.13, confirming the locked development dependency set is sufficient.
 
 Logs:
@@ -282,7 +318,7 @@ make sam-api-mock    # terminal 2
 make e2e             # terminal 3
 ```
 
-Result: **11/11 cases passed** against `http://127.0.0.1:3000`.
+Result: **12/12 cases passed** against `http://127.0.0.1:3000`.
 
 | Case | Endpoint | Expected | Observed |
 | --- | --- | --- | --- |
@@ -296,6 +332,7 @@ Result: **11/11 cases passed** against `http://127.0.0.1:3000`.
 | embed_empty_text | POST /embed | 400 | 400 |
 | retrieve_invalid_top_k | POST /retrieve | 400 | 400 |
 | query_invalid_top_k | POST /query | 400 | 400 |
+| unauthorized_no_token | POST /invoke | 401 | 401 |
 | query_injection_input | POST /query | 200 | 200 |
 
 Full results: [`test-results/api-e2e-results.json`](test-results/api-e2e-results.json)
@@ -314,33 +351,51 @@ Key observations from the successful `/query` response:
 
 Playwright rendered the generated API verification console at desktop (1440×1000) and mobile (390×844) viewports, captured workflow/error sections, and called the running API through the browser context.
 
-- Browser API checks: **5/5 succeeded** ([`test-results/browser-api-checks.json`](test-results/browser-api-checks.json))
+- Browser API checks: **6/6 succeeded** (including the expected 401) ([`test-results/browser-api-checks.json`](test-results/browser-api-checks.json))
 - Browser console entries: **0**
 - Page errors / failed requests: **0**
 - Log: [`test-results/browser-console.log`](test-results/browser-console.log)
 - Capture log: [`test-results/browser-capture.log`](test-results/browser-capture.log)
 
-**Limitation:** this repository has no end-user web frontend. "Browser verification" means rendering the verification console generated from live API responses and exercising the API through Playwright's request context. It is not UI E2E testing of a product interface.
+**Limitation:** this browser check renders the verification console generated
+from API responses. The actual local RAG console is covered separately by
+§4.8.1; it is not a production-hosted frontend.
+
+### 4.8.1 Local RAG console E2E
+
+`scripts/ui_e2e_verify.py` drives the local console through the same-origin
+proxy with a real local RSA token:
+
+- **5/5** checks pass: empty state, token load, RAG answer, metrics, mobile query.
+- **0** console entries; **0** page errors or failed requests.
+- Screenshots: `ui-empty-state.png`, `ui-query-desktop.png`, `ui-query-mobile.png`.
+- Logs: [`test-results/ui-e2e-run.log`](test-results/ui-e2e-run.log), [`test-results/ui-e2e-results.json`](test-results/ui-e2e-results.json), [`test-results/ui-console.log`](test-results/ui-console.log).
+
+The console is a local verification surface, not a production-hosted frontend.
 
 ### 4.9 Screenshots
+
 
 All screenshots are rendered from the final run's captured responses.
 
 | Screenshot | Demonstrates |
 | --- | --- |
-| [`screenshots/api-verification-desktop.png`](screenshots/api-verification-desktop.png) | Desktop summary: PASS badge, 11/11 cases, disclosure, first case |
+| [`screenshots/api-verification-desktop.png`](screenshots/api-verification-desktop.png) | Desktop summary: PASS badge, 12/12 cases, disclosure, first case |
 | [`screenshots/api-verification-mobile.png`](screenshots/api-verification-mobile.png) | Responsive mobile layout at 390×844 |
 | [`screenshots/query-workflow.png`](screenshots/query-workflow.png) | Full RAG `/query` response after layer fix: output, usage, retrieval, latencies |
 | [`screenshots/error-validation.png`](screenshots/error-validation.png) | Malformed JSON returns JSON 400 instead of a crash |
 | [`screenshots/api-verification-full.png`](screenshots/api-verification-full.png) | Full desktop report, all 11 cases |
 | [`screenshots/api-verification-mobile-full.png`](screenshots/api-verification-mobile-full.png) | Full mobile report |
+| [`screenshots/ui-empty-state.png`](screenshots/ui-empty-state.png) | Local RAG console empty state |
+| [`screenshots/ui-query-desktop.png`](screenshots/ui-query-desktop.png) | Authenticated RAG query with grounded output and metrics |
+| [`screenshots/ui-query-mobile.png`](screenshots/ui-query-mobile.png) | Responsive mobile query view |
 
 HTML source: [`api-console.html`](api-console.html).
 
 ### 4.10 Dependency installation
 
 Clean Python 3.12 and 3.13 virtual environments were populated from
-`requirements-dev.lock` (exit 0). In both environments: 126 tests passed,
+`requirements-dev.lock` (exit 0). In both environments: 141 tests passed,
 Ruff passed, and mypy passed. A pip dry-run against the host environment also
 resolved all declared requirements. No production secrets are required by the
 development dependency set.
@@ -364,15 +419,13 @@ failure; the isolated venv is the relevant result.
 | Check | Result |
 | --- | --- |
 | Repository secret-pattern scan (`AKIA…`, private keys, GitHub tokens) | No matches |
-| Bandit, non-test application code | 0 high, 2 medium, 0 low |
+| Bandit, non-test application code | 0 high, 0 medium, 0 low |
 | `pip-audit -r requirements-dev.lock` | No known vulnerabilities |
 | Container image scan | Not run |
 
-The two Bandit medium findings are `B310` (`urllib.request.urlopen`) in the
-embedding and retrieval handlers. The URL comes from the operator-controlled
-`OPENSEARCH_ENDPOINT` environment variable and is not derived from request
-input; the process already trusts that variable. This is documented as an
-accepted residual risk rather than a user-reachable SSRF vector.
+The OpenSearch URL is validated as absolute HTTP(S) at module load and the
+remaining Bandit `B310` call sites carry a justified `nosec` annotation. The
+endpoint is operator-controlled, not derived from request input.
 
 Logs:
 - [`build-results/bandit-app.log`](build-results/bandit-app.log)
@@ -396,8 +449,10 @@ entire root, and assert:
 - RAG ingestion/orchestrator Lambda names use the environment prefix;
 - the Bedrock orchestrator Lambda is wired.
 
-A module-level RAG test additionally passes and asserts the prompt-builder layer
-attachment, Guardrail environment variables, and S3 `ObjectCreated` trigger.
+Two module-level tests additionally pass:
+
+- RAG: prompt-builder/auth layers, Guardrail environment variables, S3 trigger.
+- Cognito: user pool/client names and an API-capable auth flow.
 
 This verifies composition and resource wiring without credentials. Provider API
 semantics for unsupported services remain plan-only.
@@ -406,6 +461,7 @@ Logs:
 - [`build-results/terraform-test-dev.log`](build-results/terraform-test-dev.log)
 - [`build-results/terraform-test-prod.log`](build-results/terraform-test-prod.log)
 - [`build-results/terraform-test-rag.log`](build-results/terraform-test-rag.log)
+- [`build-results/terraform-test-auth.log`](build-results/terraform-test-auth.log)
 - Terraform test sources: [`terraform/environments/dev/tests/wiring.tftest.hcl`](../../terraform/environments/dev/tests/wiring.tftest.hcl), [`terraform/environments/prod/tests/wiring.tftest.hcl`](../../terraform/environments/prod/tests/wiring.tftest.hcl)
 
 ### 4.13 LocalStack infrastructure apply/verify/destroy
@@ -443,9 +499,9 @@ Those resources are covered by Terraform `validate` plus mock-provider plans.
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Coverage | `python3 -m pytest --cov ...` | **88%** application coverage (branch), 126 tests |
-| Type check | `mypy` | **Success**, 16 source files |
-| SBOM | `cyclonedx-py requirements requirements-dev.lock ...` | CycloneDX 1.6, 82 components |
+| Coverage | `python3 -m pytest --cov ...` | **87%** application coverage (branch), 141 tests |
+| Type check | `mypy` | **Success**, 18 source files |
+| SBOM | `cyclonedx-py requirements requirements-dev.lock ...` | CycloneDX 1.6, 83 components |
 | Lockfile | `requirements-dev.lock` | Installed and tested on Python 3.12 and 3.13 |
 
 Logs:
@@ -463,6 +519,8 @@ Logs:
 - Non-container build (`sam build --no-use-container`) was separately verified for the CI path; layer output remained `python/builder.py`.
 
 Verified locally:
+- Authenticated SAM API (Cognito-shaped JWT/JWKS) with 12/12 HTTP cases
+- Local RAG console with 5/5 Playwright checks at desktop/mobile
 - Terraform mock-provider full-stack plans for dev and prod
 - LocalStack S3/IAM/KMS apply/destroy with 13 boto3 assertions
 
@@ -480,7 +538,7 @@ Not verified:
 | --- | --- |
 | `README.md` | Verified status, accurate prerequisites, mock workflow, corrected Terraform commands, screenshots, limitations |
 | `docs/local-testing.md` | Two local modes, layer layout, endpoint overrides, known limitations, project structure |
-| `docs/pii-redaction.md` | Guardrails implementation path; Comprehend marked design-only |
+| `docs/pii-redaction.md` | Guardrails + optional Comprehend implementation status |
 | `FEDRAMP-ALIGNMENT.md` | Self-assessment (not authorization) disclaimer and partial-deployment caveat |
 | `security/attack-simulation/README.md` | Simulations marked as not executed; deployed controls not assumed |
 | `security/injection-mitigation-results.md` | Historical results; Guardrail pass-through now wired |
@@ -490,7 +548,10 @@ Not verified:
 | `docs/evidence/verification-report.md` | This report |
 | `docs/evidence/**` | Raw test results, build logs, screenshots, API console, LocalStack assertions, coverage, SBOM |
 | `docs/evidence/README.md` | Evidence index and test-double/emulator disclosure |
-| `terraform/modules/api/*` | New API Gateway module |
+| `terraform/modules/api/*` | New API Gateway module with Cognito authorizer |
+| `terraform/modules/auth/*` | Cognito user pool/client module |
+| `layers/common/auth.py`, `layers/common/pii.py` | Shared JWT validation and optional Comprehend redaction |
+| `frontend/*` | Local RAG console, proxy, and local-only scope note |
 | `terraform/environments/localstack/*` | LocalStack S3/IAM/KMS apply/verify root |
 | `terraform/environments/{dev,prod}/tests/*.tftest.hcl` | Mock-provider full-stack wiring tests |
 | `requirements-dev.lock`, `pyproject.toml` | Locked deps, coverage/mypy config |
@@ -503,7 +564,7 @@ Not verified:
 ### 7.1 Live AWS integration and model access
 
 - No live-deployment verification was performed.
-- The configured inference model is `anthropic.claude-sonnet-5-5`. In the test workstation's account, early read-only smoke attempts returned `ValidationException` ("on-demand throughput isn't supported; use an inference profile") and `AccessDeniedException` ("not available for this account") for inference; embedding calls completed. Model access, region availability, and inference-profile requirements must be validated per deployment account before relying on the default.
+- The configured inference model is `anthropic.claude-sonnet-5-5`. In the test workstation's account, early read-only smoke attempts returned `ValidationException` ("on-demand throughput isn't supported; use an inference profile") and `AccessDeniedException` ("not available for this account") for inference; embedding calls completed. Model access, region availability, and inference-profile requirements must be validated per deployment account before relying on the default. `BEDROCK_INFERENCE_PROFILE_ARN` support is implemented and unit-tested, but no live inference-profile call was made.
 - Terraform IAM grants `bedrock:InvokeModel` on foundation-model ARNs only; an inference-profile ARN or additional permissions may be required.
 - IAM, KMS, OpenSearch Serverless, WAF, and GuardDuty behavior were not exercised.
 
@@ -512,10 +573,10 @@ Not verified:
 - The full stack is **wired** in both roots and passes mock-provider plans, but it
   has not been applied to a live AWS account.
 - LocalStack Community covers only the S3/IAM/KMS modules. Bedrock, OpenSearch
-  Serverless, WAF, GuardDuty, Config, and API Gateway are plan-validated, not
-  apply-tested.
-- API Gateway routes use `authorization = "NONE"`. Cognito/JWT authorization is
-  not implemented; do not expose the API without adding it.
+  Serverless, WAF, GuardDuty, Config, Cognito, and API Gateway are
+  plan-validated, not apply-tested.
+- API Gateway routes use a Cognito authorizer and handlers validate JWT/JWKS,
+  but no live Cognito sign-in/authorizer flow was tested.
 - No remote S3 backend was configured or tested. `terraform init -backend=false`
   validates configuration but does not prove state migration/locking.
 - Provider-specific API semantics (Guardrail version publishing, OpenSearch
@@ -523,15 +584,16 @@ Not verified:
 
 ### 7.3 Application and security limitations
 
-- Bedrock Guardrail pass-through is implemented, including the Terraform PII
-  policy, but no live Guardrail call was tested. Amazon Comprehend is not used.
+- Bedrock Guardrail pass-through and optional Comprehend redaction are
+  implemented, but no live Guardrail or Comprehend call was tested.
 - Prompt-injection mitigation is regex sanitization plus restricted system
   prompts plus Guardrails when configured; it is defense-in-depth, not a
   guarantee.
 - The `/query` endpoint's Lambda-to-Lambda call is verified only through a local
   double. Real cross-function IAM/ARN wiring is unverified.
-- API Gateway authentication/authorization (Cognito/JWT) is not implemented;
-  CORS, usage plans, and request throttling are not configured in the API module.
+- Cognito authentication is wired, but no live Cognito sign-in/authorizer flow
+  was tested. Usage plans, request throttling, and a production CORS policy are
+  not configured; the local UI uses a same-origin proxy.
 - The local AWS doubles accept SigV4 without verification; they are not
   security or compatibility tests.
 - `pip-audit` found no known vulnerabilities in the locked dev dependencies;
@@ -539,15 +601,15 @@ Not verified:
 
 ### 7.4 Testing limitations
 
-- Coverage is measured at 88% for application modules; there is no coverage
+- Coverage is measured at 87% for application modules; there is no coverage
   threshold gate, and some urllib/OpenSearch HTTP paths remain uncovered by unit
   tests (they are exercised by the E2E doubles).
 - mypy passes on application code with `ignore_missing_imports`; it is not a
   strict-mode type gate.
 - No live integration tests, contract tests against AWS, load tests,
   failure-injection tests, or performance profiling.
-- Browser evidence is of a generated verification console, not a product UI
-  (there is no frontend).
+- The local RAG console is verified with Playwright, but production hosting and
+  Cognito Hosted UI are not included.
 - CI was added but not executed on GitHub from this environment.
 
 ### 7.5 Environment notes
@@ -564,16 +626,17 @@ Not verified:
 The locally runnable application and infrastructure code are in materially better condition than at the start:
 
 - Three critical defects that broke every documented HTTP workflow and the full RAG path were reproduced and fixed.
-- All Terraform modules are wired; API Gateway/WAF, RAG layer, S3 trigger, IAM roles, OpenSearch VPC/KMS, and Guardrail version resources were added.
+- All Terraform modules are wired; Cognito, API Gateway/WAF, RAG layer, S3 trigger, IAM roles, OpenSearch VPC/KMS, and Guardrail version resources were added.
 - Bedrock Guardrails pass-through is implemented for inference, including the Terraform PII policy.
-- 126 tests pass on Python 3.12 and 3.13; coverage is 88%; mypy, Ruff, SAM/CloudFormation validation, SAM build, Terraform format/validate, mock-provider full-stack plans, 11/11 HTTP E2E cases, 13/13 LocalStack assertions, and 5/5 browser API checks pass. Secret scanning found no committed credentials; Bandit reports no high-severity application findings.
+- 141 tests pass on Python 3.12 and 3.13; coverage is 87%; mypy, Ruff, SAM/CloudFormation validation, SAM build, Terraform format/validate, mock-provider full-stack plans, 12/12 authenticated HTTP E2E cases, 13/13 LocalStack assertions, 6/6 browser API checks, and 5/5 UI checks pass. Secret scanning found no committed credentials; Bandit reports no application findings.
 
 It remains **PARTIAL PASS** rather than PASS because:
 
 - No live AWS deployment or live Bedrock/OpenSearch/IAM verification was performed.
 - LocalStack Community covers only S3/IAM/KMS; Bedrock, OpenSearch Serverless, WAF, GuardDuty, Config, and API Gateway are plan-tested only.
-- API routes have no authentication/authorization.
-- No live Guardrail call was tested, and the configured model may require account-specific access and/or an inference profile.
+- Cognito/JWT authentication is wired but not live-verified; production hosting/CORS for the local console is not included.
+- No live Guardrail or Comprehend call was tested, and the configured model may require account-specific access and/or an inference profile.
+- The local console is not production-hosted; Cognito Hosted UI and a production CORS policy are not included.
 - CI was not executed on GitHub from this environment.
 
 These limitations are recorded here rather than treated as verified.
@@ -607,11 +670,13 @@ make localstack-infra-test
 # Build
 make sam-build
 
-# Local E2E (three terminals)
+# Local E2E and UI (terminals)
 make mock-aws
 make sam-api-mock
 make e2e
 make screenshots
+make frontend
+make ui-e2e
 ```
 
 Evidence was generated from commit state with the changes described in §3. Generated `.aws-sam/`, `layers/prompt_builder/{builder,templates}.py`, and `env.mock.json`-driven runtime do not contain production secrets.

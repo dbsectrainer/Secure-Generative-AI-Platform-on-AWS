@@ -229,6 +229,27 @@ class TestApiGatewayProxy:
         assert kwargs["guardrailIdentifier"] == "guardrail-test"
         assert kwargs["guardrailVersion"] == "3"
 
+    def test_inference_profile_overrides_model_id(self, monkeypatch):
+        import handler
+
+        monkeypatch.setattr(
+            handler,
+            "BEDROCK_INFERENCE_PROFILE_ARN",
+            "arn:aws:bedrock:eu-west-1:123456789012:inference-profile/test",
+        )
+        retrieval_mock = _make_retrieval_response(["Context."])
+        bedrock_mock = _make_bedrock_inference_response("Answer.")
+
+        with (
+            patch.object(handler._lambda_client, "invoke", return_value=retrieval_mock),
+            patch.object(
+                handler._bedrock_client, "invoke_model", return_value=bedrock_mock
+            ) as mock_invoke,
+        ):
+            handler.lambda_handler({"query": "Question?"}, None)
+
+        assert mock_invoke.call_args.kwargs["modelId"].endswith("inference-profile/test")
+
     def test_malformed_json_body_returns_400(self):
         import handler
 

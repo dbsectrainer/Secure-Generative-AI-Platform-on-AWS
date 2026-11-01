@@ -2,16 +2,28 @@
 
 $ git status --short
  M .github/workflows/ci.yml
- M .gitignore
  M CHANGELOG.md
- M FEDRAMP-ALIGNMENT.md
  M Makefile
  M README.md
  M docs/evidence/README.md
  M docs/evidence/api-console.html
+ M docs/evidence/build-results/bandit-app.log
+ M docs/evidence/build-results/bandit.log
  M docs/evidence/build-results/changed-files.txt
+ M docs/evidence/build-results/dependency-resolution.log
+ M docs/evidence/build-results/layer-artifact.txt
+ M docs/evidence/build-results/make-validate.log
+ M docs/evidence/build-results/mypy.log
+ M docs/evidence/build-results/pip-audit.log
+ M docs/evidence/build-results/sam-build.log
+ M docs/evidence/build-results/sam-local-api.log
+ M docs/evidence/build-results/sbom.cdx.json
  M docs/evidence/build-results/terraform-wiring.txt
  M docs/evidence/build-results/tool-versions.txt
+ M docs/evidence/build-results/venv-install.log
+ M docs/evidence/build-results/venv-mypy.log
+ M docs/evidence/build-results/venv313-install.log
+ M docs/evidence/build-results/venv313-mypy.log
  M docs/evidence/screenshots/api-verification-desktop.png
  M docs/evidence/screenshots/api-verification-full.png
  M docs/evidence/screenshots/api-verification-mobile-full.png
@@ -19,20 +31,46 @@ $ git status --short
  M docs/evidence/screenshots/error-validation.png
  M docs/evidence/screenshots/query-workflow.png
  M docs/evidence/test-results/api-e2e-results.json
+ M docs/evidence/test-results/api-e2e-run.log
+ M docs/evidence/test-results/api-e2e.log
  M docs/evidence/test-results/browser-api-checks.json
+ M docs/evidence/test-results/browser-capture.log
+ M docs/evidence/test-results/coverage.log
+ M docs/evidence/test-results/coverage.xml
+ M docs/evidence/test-results/local-aws-doubles.log
+ M docs/evidence/test-results/localstack-assertions.json
+ M docs/evidence/test-results/localstack-assertions.log
+ M docs/evidence/test-results/localstack-destroy.log
+ M docs/evidence/test-results/localstack-run.log
+ M docs/evidence/test-results/localstack-terraform.log
+ M docs/evidence/test-results/sam-local-invoke.log
+ M docs/evidence/test-results/unit-tests.log
+ M docs/evidence/test-results/venv-tests.log
+ M docs/evidence/test-results/venv313-tests.log
  M docs/evidence/verification-report.md
  M docs/local-testing.md
  M docs/pii-redaction.md
- M env.local.json.example
+ M env.mock.json
  M lambda/bedrock_integration/handler.py
+ M lambda/bedrock_integration/requirements.txt
+ M lambda/bedrock_integration/tests/conftest.py
  M lambda/bedrock_integration/tests/test_handler.py
  M pyproject.toml
+ M rag/embedding/handler.py
+ M rag/embedding/requirements.txt
+ M rag/embedding/tests/conftest.py
  M rag/orchestrator/handler.py
+ M rag/orchestrator/requirements.txt
+ M rag/orchestrator/tests/conftest.py
  M rag/orchestrator/tests/test_orchestrator.py
+ M rag/retrieval/handler.py
+ M rag/retrieval/requirements.txt
+ M rag/retrieval/tests/conftest.py
+ M requirements-dev.lock
  M requirements-dev.txt
- M security/attack-simulation/README.md
- M security/iam-least-privilege-validation.md
- M security/injection-mitigation-results.md
+ M scripts/capture_evidence.py
+ M scripts/e2e_api_verify.py
+ M scripts/local_aws_doubles.py
  M template.yaml
  M terraform/environments/dev/main.tf
  M terraform/environments/dev/outputs.tf
@@ -40,127 +78,115 @@ $ git status --short
  M terraform/environments/prod/main.tf
  M terraform/environments/prod/outputs.tf
  M terraform/environments/prod/variables.tf
+ M terraform/modules/api/main.tf
+ M terraform/modules/api/outputs.tf
+ M terraform/modules/api/variables.tf
  M terraform/modules/bedrock/main.tf
- M terraform/modules/bedrock/outputs.tf
+ M terraform/modules/bedrock/variables.tf
  M terraform/modules/iam/main.tf
- M terraform/modules/iam/outputs.tf
- M terraform/modules/iam/variables.tf
- M terraform/modules/opensearch/main.tf
- M terraform/modules/opensearch/variables.tf
  M terraform/modules/rag/main.tf
- M terraform/modules/rag/outputs.tf
+ M terraform/modules/rag/tests/rag.tftest.hcl
  M terraform/modules/rag/variables.tf
- M terraform/modules/s3/main.tf
- M terraform/modules/s3/variables.tf
- M terraform/modules/security/main.tf
-?? docs/evidence/build-results/bandit-app.log
-?? docs/evidence/build-results/bandit.log
-?? docs/evidence/build-results/cfn-lint.log
-?? docs/evidence/build-results/dependency-resolution.log
-?? docs/evidence/build-results/final-make-lint.log
-?? docs/evidence/build-results/final-make-sam-validate.log
-?? docs/evidence/build-results/final-make-terraform-validate.log
-?? docs/evidence/build-results/make-validate.log
-?? docs/evidence/build-results/mypy.log
-?? docs/evidence/build-results/pip-audit.log
-?? docs/evidence/build-results/ruff.log
-?? docs/evidence/build-results/sam-build.log
-?? docs/evidence/build-results/sam-local-api.log
-?? docs/evidence/build-results/sam-validate.log
-?? docs/evidence/build-results/sbom.cdx.json
-?? docs/evidence/build-results/sbom.log
-?? docs/evidence/build-results/terraform-fmt.log
-?? docs/evidence/build-results/terraform-test-dev.log
-?? docs/evidence/build-results/terraform-test-prod.log
-?? docs/evidence/build-results/terraform-test-rag.log
-?? docs/evidence/build-results/terraform-validate-dev.log
-?? docs/evidence/build-results/terraform-validate-prod.log
-?? docs/evidence/build-results/venv-install.log
-?? docs/evidence/build-results/venv-mypy.log
-?? docs/evidence/build-results/venv-ruff.log
-?? docs/evidence/build-results/venv313-install.log
-?? docs/evidence/build-results/venv313-mypy.log
-?? docs/evidence/build-results/venv313-ruff.log
-?? docs/evidence/test-results/api-e2e-run.log
-?? docs/evidence/test-results/api-e2e.log
-?? docs/evidence/test-results/browser-capture.log
-?? docs/evidence/test-results/browser-console.log
-?? docs/evidence/test-results/coverage.log
-?? docs/evidence/test-results/coverage.xml
-?? docs/evidence/test-results/final-make-test.log
-?? docs/evidence/test-results/local-aws-doubles.log
-?? docs/evidence/test-results/localstack-assertions.json
-?? docs/evidence/test-results/localstack-assertions.log
-?? docs/evidence/test-results/localstack-destroy.log
-?? docs/evidence/test-results/localstack-run.log
-?? docs/evidence/test-results/localstack-terraform.log
-?? docs/evidence/test-results/sam-local-invoke.log
-?? docs/evidence/test-results/unit-tests-quiet.log
-?? docs/evidence/test-results/unit-tests.log
-?? docs/evidence/test-results/venv-tests.log
-?? docs/evidence/test-results/venv313-tests.log
-?? rag/ingestion/tests/test_aws_moto.py
-?? requirements-dev.lock
-?? scripts/localstack_infra_test.py
-?? scripts/run_localstack_infra_test.sh
-?? terraform/environments/dev/tests/
-?? terraform/environments/localstack/
-?? terraform/environments/prod/tests/
-?? terraform/modules/api/
-?? terraform/modules/bedrock/bedrock_lambda.zip
-?? terraform/modules/rag/tests/
+?? docs/evidence/build-results/terraform-test-auth.log
+?? docs/evidence/screenshots/ui-empty-state.png
+?? docs/evidence/screenshots/ui-query-desktop.png
+?? docs/evidence/screenshots/ui-query-mobile.png
+?? docs/evidence/test-results/frontend-server.log
+?? docs/evidence/test-results/ui-console.log
+?? docs/evidence/test-results/ui-e2e-results.json
+?? docs/evidence/test-results/ui-e2e-run.log
+?? frontend/
+?? layers/common/
+?? scripts/serve_frontend.py
+?? scripts/ui_e2e_verify.py
+?? terraform/modules/auth/
+?? tests/
 
 $ git diff --stat
- .github/workflows/ci.yml                           |  52 +++-
- .gitignore                                         |   3 +
- CHANGELOG.md                                       |  12 +-
- FEDRAMP-ALIGNMENT.md                               |   2 +-
- Makefile                                           |  26 +-
- README.md                                          |  62 +++--
- docs/evidence/README.md                            |  15 +-
- docs/evidence/api-console.html                     |  40 +--
- docs/evidence/build-results/changed-files.txt      | 145 ++++++-----
- docs/evidence/build-results/terraform-wiring.txt   |  31 ++-
- docs/evidence/build-results/tool-versions.txt      |   4 +
- .../screenshots/api-verification-desktop.png       | Bin 368427 -> 367857 bytes
- .../evidence/screenshots/api-verification-full.png | Bin 856688 -> 856441 bytes
- .../screenshots/api-verification-mobile-full.png   | Bin 585398 -> 584912 bytes
- .../screenshots/api-verification-mobile.png        | Bin 145686 -> 145341 bytes
- docs/evidence/screenshots/error-validation.png     | Bin 29110 -> 28940 bytes
- docs/evidence/screenshots/query-workflow.png       | Bin 68788 -> 69287 bytes
- docs/evidence/test-results/api-e2e-results.json    |  44 ++--
- docs/evidence/test-results/browser-api-checks.json |   8 +-
- docs/evidence/verification-report.md               | 268 +++++++++++++++----
- docs/local-testing.md                              |  89 +++++++
- docs/pii-redaction.md                              |  17 +-
- env.local.json.example                             |   9 +-
- lambda/bedrock_integration/handler.py              |  29 ++-
- lambda/bedrock_integration/tests/test_handler.py   |  16 ++
- pyproject.toml                                     |  20 ++
- rag/orchestrator/handler.py                        |  23 +-
- rag/orchestrator/tests/test_orchestrator.py        |  20 ++
- requirements-dev.txt                               |   4 +
- security/attack-simulation/README.md               |   2 +-
- security/iam-least-privilege-validation.md         |   2 +-
- security/injection-mitigation-results.md           |   4 +-
- template.yaml                                      |   4 +
- terraform/environments/dev/main.tf                 |  89 +++++++
- terraform/environments/dev/outputs.tf              |  55 ++++
- terraform/environments/dev/variables.tf            |  18 ++
- terraform/environments/prod/main.tf                |  89 +++++++
- terraform/environments/prod/outputs.tf             |  55 ++++
+ .github/workflows/ci.yml                           |   8 +-
+ CHANGELOG.md                                       |   7 +
+ Makefile                                           |   9 +-
+ README.md                                          |  65 +-
+ docs/evidence/README.md                            |   8 +-
+ docs/evidence/api-console.html                     | 104 +--
+ docs/evidence/build-results/bandit-app.log         |  36 +-
+ docs/evidence/build-results/bandit.log             | 236 +++---
+ docs/evidence/build-results/changed-files.txt      | 187 ++---
+ .../build-results/dependency-resolution.log        |  60 +-
+ docs/evidence/build-results/layer-artifact.txt     |   5 +
+ docs/evidence/build-results/make-validate.log      |  32 +-
+ docs/evidence/build-results/mypy.log               |   2 +-
+ docs/evidence/build-results/pip-audit.log          |   4 +-
+ docs/evidence/build-results/sam-build.log          |  27 +-
+ docs/evidence/build-results/sam-local-api.log      | 227 +++---
+ docs/evidence/build-results/sbom.cdx.json          | 134 ++--
+ docs/evidence/build-results/terraform-wiring.txt   |  67 +-
+ docs/evidence/build-results/tool-versions.txt      |   3 +-
+ docs/evidence/build-results/venv-install.log       |  57 +-
+ docs/evidence/build-results/venv-mypy.log          |   2 +-
+ docs/evidence/build-results/venv313-install.log    |  57 +-
+ docs/evidence/build-results/venv313-mypy.log       |   2 +-
+ .../screenshots/api-verification-desktop.png       | Bin 367857 -> 365102 bytes
+ .../evidence/screenshots/api-verification-full.png | Bin 856441 -> 886342 bytes
+ .../screenshots/api-verification-mobile-full.png   | Bin 584912 -> 613620 bytes
+ .../screenshots/api-verification-mobile.png        | Bin 145341 -> 145696 bytes
+ docs/evidence/screenshots/error-validation.png     | Bin 28940 -> 29115 bytes
+ docs/evidence/screenshots/query-workflow.png       | Bin 69287 -> 69017 bytes
+ docs/evidence/test-results/api-e2e-results.json    |  69 +-
+ docs/evidence/test-results/api-e2e-run.log         |  19 +-
+ docs/evidence/test-results/api-e2e.log             |  23 +-
+ docs/evidence/test-results/browser-api-checks.json |  21 +-
+ docs/evidence/test-results/browser-capture.log     |  17 +-
+ docs/evidence/test-results/coverage.log            |  18 +-
+ docs/evidence/test-results/coverage.xml            | 881 +++++++++++++--------
+ docs/evidence/test-results/local-aws-doubles.log   |  63 +-
+ .../test-results/localstack-assertions.json        |   4 +-
+ .../test-results/localstack-assertions.log         |   2 +-
+ docs/evidence/test-results/localstack-destroy.log  | 188 +++--
+ docs/evidence/test-results/localstack-run.log      |   2 +-
+ .../evidence/test-results/localstack-terraform.log |  76 +-
+ docs/evidence/test-results/sam-local-invoke.log    |  53 +-
+ docs/evidence/test-results/unit-tests.log          | 235 +++---
+ docs/evidence/test-results/venv-tests.log          |   6 +-
+ docs/evidence/test-results/venv313-tests.log       |   6 +-
+ docs/evidence/verification-report.md               | 151 +++-
+ docs/local-testing.md                              |  62 +-
+ docs/pii-redaction.md                              |  13 +-
+ env.mock.json                                      |  28 +-
+ lambda/bedrock_integration/handler.py              |  31 +-
+ lambda/bedrock_integration/requirements.txt        |   1 +
+ lambda/bedrock_integration/tests/conftest.py       |   5 +
+ lambda/bedrock_integration/tests/test_handler.py   |  17 +
+ pyproject.toml                                     |   5 +-
+ rag/embedding/handler.py                           |  29 +-
+ rag/embedding/requirements.txt                     |   1 +
+ rag/embedding/tests/conftest.py                    |   8 +-
+ rag/orchestrator/handler.py                        |  27 +-
+ rag/orchestrator/requirements.txt                  |   1 +
+ rag/orchestrator/tests/conftest.py                 |   9 +-
+ rag/orchestrator/tests/test_orchestrator.py        |  21 +
+ rag/retrieval/handler.py                           |  29 +-
+ rag/retrieval/requirements.txt                     |   1 +
+ rag/retrieval/tests/conftest.py                    |   8 +-
+ requirements-dev.lock                              |   1 +
+ requirements-dev.txt                               |   1 +
+ scripts/capture_evidence.py                        |  20 +-
+ scripts/e2e_api_verify.py                          |  39 +-
+ scripts/local_aws_doubles.py                       |  49 ++
+ template.yaml                                      |  52 ++
+ terraform/environments/dev/main.tf                 |  23 +
+ terraform/environments/dev/outputs.tf              |  20 +
+ terraform/environments/dev/variables.tf            |  12 +
+ terraform/environments/prod/main.tf                |  23 +
+ terraform/environments/prod/outputs.tf             |  20 +
  terraform/environments/prod/variables.tf           |  12 +
- terraform/modules/bedrock/main.tf                  |  22 +-
- terraform/modules/bedrock/outputs.tf               |   5 +
- terraform/modules/iam/main.tf                      | 285 +++++++++++++++++++++
- terraform/modules/iam/outputs.tf                   |  30 +++
- terraform/modules/iam/variables.tf                 |   6 +
- terraform/modules/opensearch/main.tf               |  30 ++-
- terraform/modules/opensearch/variables.tf          |   6 +
- terraform/modules/rag/main.tf                      |  66 ++++-
- terraform/modules/rag/outputs.tf                   |   5 +
- terraform/modules/rag/variables.tf                 |  22 ++
- terraform/modules/s3/main.tf                       |  19 ++
- terraform/modules/s3/variables.tf                  |   6 +
- terraform/modules/security/main.tf                 |  25 +-
- 52 files changed, 1529 insertions(+), 267 deletions(-)
+ terraform/modules/api/main.tf                      |  14 +-
+ terraform/modules/api/outputs.tf                   |   5 +
+ terraform/modules/api/variables.tf                 |  11 +
+ terraform/modules/bedrock/main.tf                  |  50 +-
+ terraform/modules/bedrock/variables.tf             |  42 +
+ terraform/modules/iam/main.tf                      |  24 +
+ terraform/modules/rag/main.tf                      |  66 +-
+ terraform/modules/rag/tests/rag.tftest.hcl         |  11 +-
+ terraform/modules/rag/variables.tf                 |  42 +
+ 86 files changed, 2559 insertions(+), 1447 deletions(-)

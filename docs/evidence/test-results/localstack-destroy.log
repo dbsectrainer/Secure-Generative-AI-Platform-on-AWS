@@ -1,34 +1,34 @@
 data.aws_caller_identity.current: Reading...
 module.iam.aws_iam_policy.deny_privilege_escalation: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-data.aws_caller_identity.current: Read complete after 1s [id=000000000000]
+data.aws_caller_identity.current: Read complete after 0s [id=000000000000]
 aws_iam_role.kms_admin: Refreshing state... [id=secgenai-local-kms-admin]
-module.iam.aws_iam_policy.lambda_embedding: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
-module.iam.aws_iam_role.lambda_document_ingestion: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion]
 module.iam.aws_iam_role.lambda_retrieval: Refreshing state... [id=secgenai-local-role-lambda-retrieval]
+module.iam.aws_iam_policy.lambda_embedding: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator]
+module.iam.aws_iam_role.lambda_document_ingestion: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion]
 module.iam.aws_iam_policy.lambda_rag_orchestrator: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
-module.iam.aws_iam_role.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator]
+module.iam.aws_iam_policy.lambda_retrieval: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
 module.iam.aws_iam_role.lambda_embedding: Refreshing state... [id=secgenai-local-role-lambda-embedding]
 module.s3.aws_s3_bucket.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_role.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator]
-module.iam.aws_iam_policy.lambda_retrieval: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
-module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_embedding: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Refreshing state... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
-module.s3.aws_kms_key.s3_documents: Refreshing state... [id=8e74d36e-21c1-4fdb-8515-f9ef6c25df42]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator]
 module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Refreshing state... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_kms_key.s3_documents: Refreshing state... [id=bfa531af-db26-45c0-9a70-4d8610dc525b]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.s3.aws_kms_alias.s3_documents: Refreshing state... [id=alias/secgenai-local-s3-documents]
 module.s3.aws_s3_bucket_public_access_block.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
-module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
 module.s3.aws_s3_bucket_versioning.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_policy.lambda_document_ingestion: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
 module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.iam.aws_iam_policy.lambda_document_ingestion: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
 module.s3.aws_s3_bucket_policy.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
 module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -53,7 +53,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-kms-admin" -> null
       - managed_policy_arns   = [] -> null
@@ -62,7 +62,7 @@ Terraform will perform the following actions:
       - path                  = "/" -> null
       - tags                  = {} -> null
       - tags_all              = {} -> null
-      - unique_id             = "AROAQAAAAAAANCIBD3HX4" -> null
+      - unique_id             = "AROAQAAAAAAAPDGXS532L" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -121,7 +121,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "APMYWMF24AVT2FB0WB9HU" -> null
+      - policy_id        = "A3L0158FFI4ODOQE41D2Y" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -177,12 +177,20 @@ Terraform will perform the following actions:
                     },
                   - {
                       - Action   = [
+                          - "comprehend:DetectPiiEntities",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "ComprehendPiiDetection"
+                    },
+                  - {
+                      - Action   = [
                           - "kms:Decrypt",
                           - "kms:GenerateDataKey",
                           - "kms:DescribeKey",
                         ]
                       - Effect   = "Allow"
-                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b"
                       - Sid      = "KMSDecrypt"
                     },
                   - {
@@ -222,7 +230,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "A0UDNY99AJPZ7UTA7LB4O" -> null
+      - policy_id        = "AFLGGG5A3OAS7ZZ3GTGC2" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -273,7 +281,7 @@ Terraform will perform the following actions:
                           - "kms:DescribeKey",
                         ]
                       - Effect   = "Allow"
-                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b"
                       - Sid      = "KMSEncrypt"
                     },
                   - {
@@ -300,7 +308,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "A9NRYZBTIAKBN3O4QG4HM" -> null
+      - policy_id        = "ADJLDM33NVN9RH2ZHYXEV" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -335,6 +343,14 @@ Terraform will perform the following actions:
                     },
                   - {
                       - Action   = [
+                          - "comprehend:DetectPiiEntities",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "ComprehendPiiDetection"
+                    },
+                  - {
+                      - Action   = [
                           - "logs:CreateLogGroup",
                           - "logs:CreateLogStream",
                           - "logs:PutLogEvents",
@@ -366,7 +382,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "A3AKXX3QH4F7K6UH022YW" -> null
+      - policy_id        = "A9EHFMYP7Y3R68VSW4IK2" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -401,6 +417,14 @@ Terraform will perform the following actions:
                       - Effect   = "Allow"
                       - Resource = "arn:aws:bedrock:us-east-1:000000000000:guardrail/*"
                       - Sid      = "BedrockGuardrail"
+                    },
+                  - {
+                      - Action   = [
+                          - "comprehend:DetectPiiEntities",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "ComprehendPiiDetection"
                     },
                   - {
                       - Action   = [
@@ -443,7 +467,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "AZM0W6YU0BCJN0HFCZR9D" -> null
+      - policy_id        = "A4HQ88OSL0E53ZWLML4QV" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -478,6 +502,14 @@ Terraform will perform the following actions:
                     },
                   - {
                       - Action   = [
+                          - "comprehend:DetectPiiEntities",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "ComprehendPiiDetection"
+                    },
+                  - {
+                      - Action   = [
                           - "logs:CreateLogGroup",
                           - "logs:CreateLogStream",
                           - "logs:PutLogEvents",
@@ -509,7 +541,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - policy_id        = "AXBX3UKDP73UWCYZ0WRGS" -> null
+      - policy_id        = "ABNUCV64V9F6P7R56KC7G" -> null
       - tags             = {} -> null
       - tags_all         = {} -> null
         # (1 unchanged attribute hidden)
@@ -538,7 +570,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-role-lambda-bedrock-orchestrator" -> null
       - managed_policy_arns   = [
@@ -558,7 +590,7 @@ Terraform will perform the following actions:
           - "ManagedBy"   = "Terraform"
           - "Project"     = "secure-genai-platform"
         } -> null
-      - unique_id             = "AROAQAAAAAAAAZ3PLFVVK" -> null
+      - unique_id             = "AROAQAAAAAAAG72R2EQUF" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -585,7 +617,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-role-lambda-doc-ingestion" -> null
       - managed_policy_arns   = [
@@ -605,7 +637,7 @@ Terraform will perform the following actions:
           - "ManagedBy"   = "Terraform"
           - "Project"     = "secure-genai-platform"
         } -> null
-      - unique_id             = "AROAQAAAAAAANOUWOWM6Z" -> null
+      - unique_id             = "AROAQAAAAAAAAXYZLELYM" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -632,7 +664,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-role-lambda-embedding" -> null
       - managed_policy_arns   = [
@@ -652,7 +684,7 @@ Terraform will perform the following actions:
           - "ManagedBy"   = "Terraform"
           - "Project"     = "secure-genai-platform"
         } -> null
-      - unique_id             = "AROAQAAAAAAADZWS2PHZ3" -> null
+      - unique_id             = "AROAQAAAAAAAIWUQULH4K" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -679,7 +711,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-role-lambda-rag-orchestrator" -> null
       - managed_policy_arns   = [
@@ -699,7 +731,7 @@ Terraform will perform the following actions:
           - "ManagedBy"   = "Terraform"
           - "Project"     = "secure-genai-platform"
         } -> null
-      - unique_id             = "AROAQAAAAAAAKWH3CI64S" -> null
+      - unique_id             = "AROAQAAAAAAAB2BDYIS3D" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -726,7 +758,7 @@ Terraform will perform the following actions:
               - Version   = "2012-10-17"
             }
         ) -> null
-      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - create_date           = "2026-11-01T02:04:02Z" -> null
       - force_detach_policies = false -> null
       - id                    = "secgenai-local-role-lambda-retrieval" -> null
       - managed_policy_arns   = [
@@ -746,7 +778,7 @@ Terraform will perform the following actions:
           - "ManagedBy"   = "Terraform"
           - "Project"     = "secure-genai-platform"
         } -> null
-      - unique_id             = "AROAQAAAAAAAIR4VIJLT7" -> null
+      - unique_id             = "AROAQAAAAAAAMW5IWDIQL" -> null
         # (3 unchanged attributes hidden)
     }
 
@@ -826,22 +858,22 @@ Terraform will perform the following actions:
       - id             = "alias/secgenai-local-s3-documents" -> null
       - name           = "alias/secgenai-local-s3-documents" -> null
       - region         = "us-east-1" -> null
-      - target_key_arn = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
-      - target_key_id  = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - target_key_arn = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
+      - target_key_id  = "bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
         # (1 unchanged attribute hidden)
     }
 
   # module.s3.aws_kms_key.s3_documents will be destroyed
   - resource "aws_kms_key" "s3_documents" {
-      - arn                                = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - arn                                = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
       - bypass_policy_lockout_safety_check = false -> null
       - customer_master_key_spec           = "SYMMETRIC_DEFAULT" -> null
       - deletion_window_in_days            = 30 -> null
       - description                        = "secgenai-local – S3 document store CMK" -> null
       - enable_key_rotation                = true -> null
-      - id                                 = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - id                                 = "bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
       - is_enabled                         = true -> null
-      - key_id                             = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - key_id                             = "bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
       - key_usage                          = "ENCRYPT_DECRYPT" -> null
       - multi_region                       = false -> null
       - policy                             = jsonencode(
@@ -1074,7 +1106,7 @@ Terraform will perform the following actions:
               - bucket_key_enabled = true -> null
 
               - apply_server_side_encryption_by_default {
-                  - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+                  - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
                   - sse_algorithm     = "aws:kms" -> null
                 }
             }
@@ -1202,7 +1234,7 @@ Terraform will perform the following actions:
           - bucket_key_enabled       = true -> null
 
           - apply_server_side_encryption_by_default {
-              - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+              - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
               - sse_algorithm     = "aws:kms" -> null
             }
         }
@@ -1227,64 +1259,64 @@ Changes to Outputs:
   - document_bucket_arn       = "arn:aws:s3:::secgenai-local-documents-000000000000" -> null
   - document_bucket_name      = "secgenai-local-documents-000000000000" -> null
   - embedding_role_arn        = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-embedding" -> null
-  - kms_key_arn               = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+  - kms_key_arn               = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b" -> null
   - orchestrator_role_arn     = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator" -> null
   - rag_orchestrator_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-rag-orchestrator" -> null
   - retrieval_role_arn        = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-retrieval" -> null
+module.iam.aws_iam_role_policy_attachment.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destroying... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_kms_alias.s3_documents: Destroying... [id=alias/secgenai-local-s3-documents]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destroying... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
 module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Destroying... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.s3.aws_s3_bucket_policy.documents: Destroying... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
-module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destroying... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
-module.s3.aws_kms_alias.s3_documents: Destroying... [id=alias/secgenai-local-s3-documents]
-module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destroying... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.s3.aws_kms_alias.s3_documents: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destroying... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Destruction complete after 0s
-module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destruction complete after 0s
-module.s3.aws_s3_bucket_policy.documents: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Destruction complete after 0s
 module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Destroying... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.s3.aws_s3_bucket_versioning.documents: Destroying... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_role_policy_attachment.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destruction complete after 0s
-module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
-module.iam.aws_iam_policy.lambda_rag_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
-module.s3.aws_s3_bucket_versioning.documents: Destruction complete after 0s
-module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Destruction complete after 0s
 module.iam.aws_iam_role_policy_attachment.lambda_embedding: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Destruction complete after 0s
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.s3.aws_kms_alias.s3_documents: Destruction complete after 0s
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Destruction complete after 0s
+module.s3.aws_s3_bucket_policy.documents: Destruction complete after 0s
+module.s3.aws_s3_bucket_versioning.documents: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_policy.lambda_embedding: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_document_ingestion: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
 module.s3.aws_s3_bucket_public_access_block.documents: Destroying... [id=secgenai-local-documents-000000000000]
-module.iam.aws_iam_policy.lambda_rag_orchestrator: Destruction complete after 0s
-module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destruction complete after 0s
-module.iam.aws_iam_policy.deny_privilege_escalation: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator]
+module.iam.aws_iam_role.lambda_document_ingestion: Destroying... [id=secgenai-local-role-lambda-doc-ingestion]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_embedding: Destruction complete after 0s
 module.iam.aws_iam_policy.lambda_retrieval: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
 module.iam.aws_iam_role.lambda_retrieval: Destroying... [id=secgenai-local-role-lambda-retrieval]
+module.iam.aws_iam_policy.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.iam.aws_iam_role.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding]
+module.iam.aws_iam_policy.deny_privilege_escalation: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.s3.aws_s3_bucket_public_access_block.documents: Destruction complete after 0s
-module.iam.aws_iam_policy.lambda_document_ingestion: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
-module.iam.aws_iam_policy.lambda_embedding: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
-module.iam.aws_iam_role.lambda_document_ingestion: Destroying... [id=secgenai-local-role-lambda-doc-ingestion]
-module.iam.aws_iam_policy.deny_privilege_escalation: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator]
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
 module.iam.aws_iam_policy.lambda_retrieval: Destruction complete after 0s
 module.iam.aws_iam_role.lambda_retrieval: Destruction complete after 0s
-module.iam.aws_iam_role.lambda_rag_orchestrator: Destruction complete after 0s
-module.iam.aws_iam_role.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding]
-module.iam.aws_iam_policy.lambda_embedding: Destruction complete after 0s
-module.iam.aws_iam_policy.lambda_document_ingestion: Destruction complete after 0s
-module.iam.aws_iam_role.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_policy.deny_privilege_escalation: Destruction complete after 0s
 module.iam.aws_iam_role.lambda_embedding: Destruction complete after 0s
-module.s3.aws_kms_key.s3_documents: Destroying... [id=8e74d36e-21c1-4fdb-8515-f9ef6c25df42]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Destruction complete after 0s
+module.s3.aws_kms_key.s3_documents: Destroying... [id=bfa531af-db26-45c0-9a70-4d8610dc525b]
 module.s3.aws_s3_bucket.documents: Destroying... [id=secgenai-local-documents-000000000000]
-module.s3.aws_kms_key.s3_documents: Destruction complete after 0s
 module.s3.aws_s3_bucket.documents: Destruction complete after 0s
+module.s3.aws_kms_key.s3_documents: Destruction complete after 0s
 aws_iam_role.kms_admin: Destroying... [id=secgenai-local-kms-admin]
 module.iam.aws_iam_role.lambda_bedrock_orchestrator: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator]
 aws_iam_role.kms_admin: Destruction complete after 0s

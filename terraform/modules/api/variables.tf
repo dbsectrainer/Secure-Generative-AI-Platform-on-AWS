@@ -51,3 +51,14 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "cognito_user_pool_arn" {
+  description = "ARN of the Cognito user pool used by the API authorizer"
+  type        = string
+}
+
+variable "enable_auth" {
+  description = "Whether to require Cognito authentication on API routes"
+  type        = bool
+  default     = true
+}

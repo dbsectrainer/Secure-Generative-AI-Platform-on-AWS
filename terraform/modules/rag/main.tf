@@ -67,6 +67,29 @@ resource "aws_lambda_layer_version" "prompt_builder" {
   compatible_runtimes = ["python3.13"]
 }
 
+data "archive_file" "auth_layer" {
+  type        = "zip"
+  output_path = "${path.module}/auth_layer.zip"
+
+  source {
+    content  = file("${path.module}/../../../layers/common/auth.py")
+    filename = "python/auth.py"
+  }
+
+  source {
+    content  = file("${path.module}/../../../layers/common/pii.py")
+    filename = "python/pii.py"
+  }
+}
+
+resource "aws_lambda_layer_version" "auth" {
+  layer_name          = "${var.name_prefix}-auth-rag"
+  description         = "Bearer-token validation for RAG HTTP handlers"
+  filename            = data.archive_file.auth_layer.output_path
+  source_code_hash    = data.archive_file.auth_layer.output_base64sha256
+  compatible_runtimes = ["python3.13"]
+}
+
 # ── CloudWatch Log Groups ─────────────────────────────────────────────────────
 
 resource "aws_cloudwatch_log_group" "ingestion" {
@@ -149,6 +172,12 @@ resource "aws_lambda_function" "embedding" {
     variables = {
       BEDROCK_EMBEDDING_MODEL_ID = var.embedding_model_id
       BEDROCK_REGION             = var.region
+      AUTH_REQUIRED              = tostring(var.auth_required)
+      AUTH_JWKS_URL              = var.auth_jwks_url
+      AUTH_ISSUER                = var.auth_issuer
+      AUTH_AUDIENCE              = var.auth_audience
+      PII_REDACTION_ENABLED      = tostring(var.pii_redaction_enabled)
+      PII_LANGUAGE_CODE          = var.pii_language_code
       OPENSEARCH_ENDPOINT        = var.opensearch_endpoint
       OPENSEARCH_INDEX           = var.opensearch_index
       LOG_LEVEL                  = var.log_level
@@ -159,6 +188,8 @@ resource "aws_lambda_function" "embedding" {
     subnet_ids         = var.private_subnet_ids
     security_group_ids = [var.lambda_security_group_id]
   }
+
+  layers = [aws_lambda_layer_version.auth.arn]
 
   tracing_config { mode = "Active" }
 
@@ -185,6 +216,12 @@ resource "aws_lambda_function" "retrieval" {
     variables = {
       BEDROCK_EMBEDDING_MODEL_ID = var.embedding_model_id
       BEDROCK_REGION             = var.region
+      AUTH_REQUIRED              = tostring(var.auth_required)
+      AUTH_JWKS_URL              = var.auth_jwks_url
+      AUTH_ISSUER                = var.auth_issuer
+      AUTH_AUDIENCE              = var.auth_audience
+      PII_REDACTION_ENABLED      = tostring(var.pii_redaction_enabled)
+      PII_LANGUAGE_CODE          = var.pii_language_code
       OPENSEARCH_ENDPOINT        = var.opensearch_endpoint
       OPENSEARCH_INDEX           = var.opensearch_index
       TOP_K                      = tostring(var.retrieval_top_k)
@@ -196,6 +233,8 @@ resource "aws_lambda_function" "retrieval" {
     subnet_ids         = var.private_subnet_ids
     security_group_ids = [var.lambda_security_group_id]
   }
+
+  layers = [aws_lambda_layer_version.auth.arn]
 
   tracing_config { mode = "Active" }
 
@@ -220,19 +259,26 @@ resource "aws_lambda_function" "orchestrator" {
 
   environment {
     variables = {
-      BEDROCK_MODEL_ID          = var.inference_model_id
-      BEDROCK_REGION            = var.region
-      BEDROCK_GUARDRAIL_ID      = var.guardrail_id
-      BEDROCK_GUARDRAIL_VERSION = var.guardrail_version
-      RETRIEVAL_LAMBDA_ARN      = aws_lambda_function.retrieval.arn
-      MAX_TOKENS                = tostring(var.max_tokens)
-      TOP_K                     = tostring(var.retrieval_top_k)
-      PROMPT_MODE               = var.prompt_mode
-      LOG_LEVEL                 = var.log_level
+      BEDROCK_MODEL_ID              = var.inference_model_id
+      BEDROCK_INFERENCE_PROFILE_ARN = var.inference_profile_arn
+      BEDROCK_REGION                = var.region
+      BEDROCK_GUARDRAIL_ID          = var.guardrail_id
+      BEDROCK_GUARDRAIL_VERSION     = var.guardrail_version
+      AUTH_REQUIRED                 = tostring(var.auth_required)
+      AUTH_JWKS_URL                 = var.auth_jwks_url
+      AUTH_ISSUER                   = var.auth_issuer
+      AUTH_AUDIENCE                 = var.auth_audience
+      PII_REDACTION_ENABLED         = tostring(var.pii_redaction_enabled)
+      PII_LANGUAGE_CODE             = var.pii_language_code
+      RETRIEVAL_LAMBDA_ARN          = aws_lambda_function.retrieval.arn
+      MAX_TOKENS                    = tostring(var.max_tokens)
+      TOP_K                         = tostring(var.retrieval_top_k)
+      PROMPT_MODE                   = var.prompt_mode
+      LOG_LEVEL                     = var.log_level
     }
   }
 
-  layers = [aws_lambda_layer_version.prompt_builder.arn]
+  layers = [aws_lambda_layer_version.auth.arn, aws_lambda_layer_version.prompt_builder.arn]
 
   vpc_config {
     subnet_ids         = var.private_subnet_ids

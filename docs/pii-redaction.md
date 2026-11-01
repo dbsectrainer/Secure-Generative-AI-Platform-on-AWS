@@ -1,8 +1,8 @@
 # PII Redaction in Generative AI Platform
 
-> **Implementation status (2026-10-31): Bedrock Guardrails pass-through is implemented; Amazon Comprehend is not.** When `BEDROCK_GUARDRAIL_ID` and `BEDROCK_GUARDRAIL_VERSION` are configured, the Bedrock and RAG handlers pass them to `InvokeModel`, and the Terraform-created guardrail anonymizes EMAIL/NAME/PHONE and blocks AWS access/secret keys. The Comprehend-based path and its code snippets below are design guidance only. No live Guardrails call was exercised in this audit; see [docs/evidence/verification-report.md](evidence/verification-report.md).
+> **Implementation status (2026-10-31): Guardrails and optional Comprehend redaction are implemented.** When `BEDROCK_GUARDRAIL_ID` and `BEDROCK_GUARDRAIL_VERSION` are configured, the Bedrock and RAG handlers pass them to `InvokeModel`, and the Terraform-created guardrail anonymizes EMAIL/NAME/PHONE and blocks AWS access/secret keys. An optional `PII_REDACTION_ENABLED=true` path calls Comprehend and replaces detected entities before indexing/inference. Neither control was exercised against live AWS in this audit; the Comprehend unit tests use a mocked detection response. See [docs/evidence/verification-report.md](evidence/verification-report.md).
 
-This document describes PII redaction options for the Secure Generative AI Platform. The implemented path is Bedrock Guardrails; the Amazon Comprehend design is an alternative that is not wired into the handlers.
+This document describes PII redaction options for the Secure Generative AI Platform. The primary path is Bedrock Guardrails; optional Comprehend input redaction is implemented behind a flag.
 
 ## Implemented Control Path
 
@@ -13,11 +13,16 @@ This document describes PII redaction options for the Secure Generative AI Platf
   `InvokeModel` when configured; regression tests assert the parameters.
 - The SAM local template leaves the guardrail variables empty, so local-doubles
   runs do not pretend to exercise Guardrails.
-- Amazon Comprehend/Comprehend Medical is **not** called by the current code.
+- When `PII_REDACTION_ENABLED=true`, `layers/common/pii.py` calls
+  `comprehend:DetectPiiEntities` and replaces each entity with a type marker
+  before embedding, retrieval, or inference. The handler fails closed if the
+  service is unavailable.
+- Comprehend is disabled by default in the SAM template and Terraform roots.
+  No live Comprehend or Guardrail API call was made in this audit.
 
 ## Overview
 
-The intended platform design uses **multi-layer PII redaction**. The currently wired layer is Bedrock Guardrails; the remaining layers are design targets:
+The intended platform design uses **multi-layer PII redaction**. Bedrock Guardrails are wired by default; optional Comprehend input redaction is available behind a feature flag. The remaining layers are design targets:
 
 1. **Input Redaction** — Remove PII before sending to Bedrock/Claude
 2. **Compliance Audit** — Log PII detection for compliance (FISMA, FedRAMP)

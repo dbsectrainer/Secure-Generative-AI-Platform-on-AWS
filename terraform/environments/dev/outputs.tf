@@ -87,3 +87,23 @@ output "config_recorder_name" {
   description = "Name of the AWS Config recorder"
   value       = module.security.config_recorder_name
 }
+
+output "cognito_user_pool_id" {
+  description = "Cognito user pool for API access"
+  value       = module.auth.user_pool_id
+}
+
+output "cognito_client_id" {
+  description = "Cognito app client ID / JWT audience"
+  value       = module.auth.client_id
+}
+
+output "cognito_issuer" {
+  description = "Cognito JWT issuer"
+  value       = module.auth.issuer
+}
+
+output "api_authorizer_id" {
+  description = "API Gateway Cognito authorizer ID"
+  value       = module.api.authorizer_id
+}

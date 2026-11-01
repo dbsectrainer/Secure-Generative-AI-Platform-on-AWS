@@ -24,6 +24,9 @@ import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
+from auth import AuthError, require_auth
+from pii import PiiError, redact_pii
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
@@ -36,6 +39,7 @@ logger = logging.getLogger(__name__)
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 BEDROCK_MODEL_ID = os.environ["BEDROCK_MODEL_ID"]
+BEDROCK_INFERENCE_PROFILE_ARN = os.environ.get("BEDROCK_INFERENCE_PROFILE_ARN", "")
 BEDROCK_REGION = os.environ.get("BEDROCK_REGION", os.environ.get("AWS_REGION", "eu-west-1"))
 DOCUMENT_BUCKET = os.environ["DOCUMENT_BUCKET"]
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
@@ -142,13 +146,17 @@ def _validate_event(event: dict[str, Any]) -> str:
 
 # ── Bedrock invocation ────────────────────────────────────────────────────────
 
+def _effective_model_id() -> str:
+    return BEDROCK_INFERENCE_PROFILE_ARN or BEDROCK_MODEL_ID
+
+
 def _build_request_body(prompt: str, max_tokens: int) -> str:
     """Build the model-specific request body.
 
     Currently supports Claude (Messages API body). Extend this function to handle
     additional model families (Titan, Llama, etc.).
     """
-    if "anthropic.claude" in BEDROCK_MODEL_ID:
+    if "anthropic.claude" in _effective_model_id():
         body = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": max_tokens,
@@ -177,14 +185,14 @@ def _invoke_bedrock(prompt: str) -> dict[str, Any]:
     logger.info(
         "Invoking Bedrock model",
         extra={
-            "model_id": BEDROCK_MODEL_ID,
+            "model_id": _effective_model_id(),
             "prompt_length": len(prompt),
             "guardrail_enabled": bool(BEDROCK_GUARDRAIL_ID),
         },
     )
 
     invoke_kwargs: dict[str, Any] = {
-        "modelId": BEDROCK_MODEL_ID,
+        "modelId": _effective_model_id(),
         "contentType": "application/json",
         "accept": "application/json",
         "body": request_body,
@@ -199,7 +207,7 @@ def _invoke_bedrock(prompt: str) -> dict[str, Any]:
     logger.debug("Bedrock raw response received")
 
     # Extract text from Claude Messages API or generic response
-    if "anthropic.claude" in BEDROCK_MODEL_ID:
+    if "anthropic.claude" in _effective_model_id():
         output_text = response_body["content"][0]["text"]
         input_tokens = response_body.get("usage", {}).get("input_tokens", 0)
         output_tokens = response_body.get("usage", {}).get("output_tokens", 0)
@@ -218,7 +226,7 @@ def _invoke_bedrock(prompt: str) -> dict[str, Any]:
 
     return {
         "output": output_text,
-        "model_id": BEDROCK_MODEL_ID,
+        "model_id": _effective_model_id(),
         "usage": {
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
@@ -249,6 +257,10 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
         }
     """
     is_proxy = _is_api_gateway_event(event)
+    try:
+        require_auth(event)
+    except AuthError as exc:
+        return _build_response(exc.status_code, {"error": exc.message}, is_proxy)
     logger.debug(
         "Received event",
         extra={"event_keys": list(event.keys()) if isinstance(event, dict) else []},
@@ -257,6 +269,7 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     try:
         payload = _parse_event(event)
         prompt = _validate_event(payload)
+        prompt = redact_pii(prompt)
         result = _invoke_bedrock(prompt)
 
         return _build_response(200, result, is_proxy)
@@ -264,6 +277,14 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     except ValueError as exc:
         logger.warning("Invalid request: %s", exc)
         return _build_response(400, {"error": str(exc)}, is_proxy)
+
+    except PiiError as exc:
+        logger.error("PII redaction failed: %s", exc)
+        return _build_response(
+            502,
+            {"error": "PII redaction failed. Please retry later."},
+            is_proxy,
+        )
 
     except ClientError as exc:
         error_code = exc.response["Error"]["Code"]

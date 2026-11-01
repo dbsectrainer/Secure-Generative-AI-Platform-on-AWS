@@ -1,16 +1,17 @@
-Verifying http://127.0.0.1:3000 at 2026-11-01 01:11:41 UTC
-[PASS] invoke_success: HTTP 200 (37 ms)
-[PASS] embed_success: HTTP 200 (941 ms)
-[PASS] retrieve_success: HTTP 200 (644 ms)
-[PASS] query_success: HTTP 200 (667 ms)
-[PASS] invoke_empty_prompt: HTTP 400 (11 ms)
+Verifying http://127.0.0.1:3000 at 2026-11-01 02:07:59 UTC
+[PASS] invoke_success: HTTP 200 (23 ms)
+[PASS] embed_success: HTTP 200 (720 ms)
+[PASS] retrieve_success: HTTP 200 (715 ms)
+[PASS] query_success: HTTP 200 (748 ms)
+[PASS] invoke_empty_prompt: HTTP 400 (10 ms)
 [PASS] invoke_malformed_json: HTTP 400 (10 ms)
 [PASS] invoke_non_object_json: HTTP 400 (9 ms)
-[PASS] embed_empty_text: HTTP 400 (9 ms)
-[PASS] retrieve_invalid_top_k: HTTP 400 (9 ms)
+[PASS] embed_empty_text: HTTP 400 (10 ms)
+[PASS] retrieve_invalid_top_k: HTTP 400 (10 ms)
 [PASS] query_invalid_top_k: HTTP 400 (9 ms)
+[PASS] unauthorized_no_token: HTTP 401 (9 ms)
 [PASS] query_injection_input: HTTP 200 (12 ms)
 
-11/11 cases passed
+12/12 cases passed
 Evidence: docs/evidence/test-results/api-e2e-results.json
 Console:  docs/evidence/api-console.html

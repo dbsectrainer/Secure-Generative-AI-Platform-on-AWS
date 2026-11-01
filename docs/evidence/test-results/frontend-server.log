@@ -1,0 +1,11 @@
+2026-10-31 22:07:45,369 INFO frontend-proxy Frontend: http://127.0.0.1:8080 (API http://127.0.0.1:3000)
+2026-10-31 22:08:05,074 INFO frontend-proxy 127.0.0.1 - "GET / HTTP/1.1" 200 -
+2026-10-31 22:08:05,080 INFO frontend-proxy 127.0.0.1 - "GET /app.js HTTP/1.1" 200 -
+2026-10-31 22:08:05,080 INFO frontend-proxy 127.0.0.1 - "GET /styles.css HTTP/1.1" 200 -
+2026-10-31 22:08:05,347 INFO frontend-proxy 127.0.0.1 - "GET /local-token HTTP/1.1" 200 -
+2026-10-31 22:08:05,413 INFO frontend-proxy 127.0.0.1 - "POST /api/query HTTP/1.1" 200 -
+2026-10-31 22:08:05,634 INFO frontend-proxy 127.0.0.1 - "GET / HTTP/1.1" 200 -
+2026-10-31 22:08:05,638 INFO frontend-proxy 127.0.0.1 - "GET /styles.css HTTP/1.1" 200 -
+2026-10-31 22:08:05,638 INFO frontend-proxy 127.0.0.1 - "GET /app.js HTTP/1.1" 200 -
+2026-10-31 22:08:05,685 INFO frontend-proxy 127.0.0.1 - "GET /local-token HTTP/1.1" 200 -
+2026-10-31 22:08:05,768 INFO frontend-proxy 127.0.0.1 - "POST /api/query HTTP/1.1" 200 -

@@ -1,0 +1,8 @@
+$ terraform test (modules/auth)
+tests/auth.tftest.hcl... in progress
+  run "cognito_wiring"... pass
+tests/auth.tftest.hcl... tearing down
+tests/auth.tftest.hcl... pass
+
+Success! 1 passed, 0 failed.
+exit=0

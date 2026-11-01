@@ -4,7 +4,7 @@
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/) [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.5-blueviolet.svg)](https://www.terraform.io/) [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock-orange.svg)](https://aws.amazon.com/bedrock/) [![FedRAMP High](https://img.shields.io/badge/FedRAMP-High%20Alignment-red.svg)](FEDRAMP-ALIGNMENT.md) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Verification status (2026-10-31):** The SAM local API was executed end-to-end against deterministic local service doubles; 126 tests, 88% application coverage, mypy, Ruff, SAM build/validation, Terraform mock-provider plans, and a LocalStack S3/IAM/KMS infrastructure test pass. The full Terraform stack is now wired and plan-tested, with Guardrails pass-through added. Live AWS deployment, account-specific model access, and unsupported-service apply behavior remain unverified. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
+> **Verification status (2026-10-31):** The SAM local API and local RAG console were executed end-to-end against deterministic local service doubles; 141 tests, 87% application coverage, mypy, Ruff, SAM build/validation, Terraform mock-provider plans, a LocalStack S3/IAM/KMS infrastructure test, authenticated HTTP E2E (12/12), and Playwright UI E2E (5/5) pass. Cognito/JWT authentication, Guardrails pass-through, optional Comprehend PII redaction, and inference-profile configuration are wired. Live AWS deployment, live model access, and unsupported-service apply behavior remain unverified. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
 
 ---
 
@@ -13,7 +13,7 @@
 1. Provides a secure Generative AI reference implementation on AWS using Amazon Bedrock for LLM inference and Retrieval-Augmented Generation (RAG) for grounding responses in proprietary document corpora.
 2. Provides a hardened RAG pipeline that ingests documents via S3, generates embeddings, stores vectors in OpenSearch Serverless or Aurora pgvector, and retrieves context for prompt construction with injection-mitigation controls.
 3. Enforces a defense-in-depth security architecture including IAM least-privilege, KMS CMK encryption, AWS WAF, private VPC endpoints, CloudTrail audit logging, and GuardDuty threat detection.
-4. Implements adversarial resilience controls mapped to STRIDE and MITRE ATT&CK, including prompt injection sanitization, retrieval metadata filtering, and token-abuse design controls. PII anonymization/blocking is delegated to Bedrock Guardrails when configured; Amazon Comprehend is not implemented.
+4. Implements adversarial resilience controls mapped to STRIDE and MITRE ATT&CK, including prompt injection sanitization, retrieval metadata filtering, and token-abuse design controls. PII anonymization/blocking is delegated to Bedrock Guardrails when configured, with optional Amazon Comprehend input redaction behind a feature flag.
 5. Delivers a DevSecOps pipeline design with Terraform infrastructure-as-code, SAM-based local testing, automated security scanning targets, and deployment strategy documentation.
 6. Maintains a self-assessed FedRAMP High alignment of 92% (318/345 High baseline controls) across 18 of 20 NIST 800-53 Rev 5 control families. This is a mapping exercise, not an authorization; see FEDRAMP-ALIGNMENT.md.
 
@@ -99,6 +99,13 @@ The RAG pipeline supports ingestion and retrieval from document corpora and retu
 - Prompt construction via a reusable Lambda layer (layers/prompt_builder)
 - Prompt-injection input sanitization; retrieval output validation is a design target
 
+### Authentication and Local UI
+
+- Cognito user pool + API Gateway authorizer in Terraform
+- Handler-level JWT/JWKS validation (defense in depth)
+- Local test issuer and RSA/JWKS doubles for authenticated E2E
+- Dependency-free local RAG console with loading, empty, success, and error states
+
 ### Adversarial Resilience and Security
 
 The platform includes a threat model mapped to STRIDE and MITRE ATT&CK, with hands-on attack simulation scripts for red team exercises.
@@ -119,7 +126,7 @@ Attack simulation scripts are located in security/attack-simulation/ and cover p
 
 The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambda development and testing.
 
-- Terraform modules for the full stack (`network`, `s3`, `iam`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, `api`), with mock-provider plans for dev/prod and a LocalStack S3/IAM/KMS apply test
+- Terraform modules for the full stack (`network`, `s3`, `iam`, `auth`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, `api`), with mock-provider plans for dev/prod and a LocalStack S3/IAM/KMS apply test
 - GitHub Actions CI runs tests, mypy, coverage, Ruff, pip-audit, SBOM generation, Terraform format/validate/tests, SAM validate/build, cfn-lint, and a LocalStack infrastructure job
 - Deployment strategy documentation for canary/blue-green and rollback; automation is not implemented in this repository
 - SAM CLI integration for local Lambda invocation and API Gateway simulation
@@ -152,7 +159,7 @@ The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambd
 - GNU Make
 - LocalStack Community Docker image (optional, for the S3/IAM/KMS infrastructure test)
 
-> **Model access is account- and region-specific.** The default `BEDROCK_MODEL_ID` is `anthropic.claude-sonnet-5-5`. Before deploying, confirm model access in your account/region and, where required, configure a Bedrock inference profile (the local handlers currently send the model ID directly). An early live smoke test in the audit environment received `ValidationException` (on-demand throughput unsupported) and `AccessDeniedException` (model not available for the account); see the verification report.
+> **Model access is account- and region-specific.** The default `BEDROCK_MODEL_ID` is `anthropic.claude-sonnet-5-5`. Before deploying, confirm model access in your account/region and, where required, set `BEDROCK_INFERENCE_PROFILE_ARN` (or the corresponding Terraform `inference_profile_arn`). An early live smoke test in the audit environment received `ValidationException` (on-demand throughput unsupported) and `AccessDeniedException` (model not available for the account); see the verification report.
 
 ### Local Development
 
@@ -235,7 +242,7 @@ For AWS GovCloud, use the provided variable file after reviewing it:
 terraform apply -var-file="terraform/govcloud.tfvars.example"
 ```
 
-> **Deployment scope:** both environment roots now instantiate `network`, `s3`, `iam`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, and `api`. Full-stack plans are exercised with Terraform mock providers, and the S3/KMS/IAM portion is applied against LocalStack Community in the test suite. The full stack has **not** been applied to a live AWS account. Bedrock, OpenSearch Serverless, WAF, GuardDuty, and Config are not available in LocalStack Community and are therefore plan-validated only. API routes currently use `authorization = "NONE"`; add Cognito/JWT before exposing the API.
+> **Deployment scope:** both environment roots instantiate `network`, `s3`, `iam`, `auth`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, and `api`. Full-stack plans are exercised with Terraform mock providers; the S3/KMS/IAM portion is applied against LocalStack Community. API Gateway routes use a Cognito authorizer and handlers also validate JWT/JWKS. The full stack has **not** been applied to a live AWS account; Bedrock, OpenSearch Serverless, WAF, GuardDuty, Config, Cognito, and API Gateway are plan-validated only.
 
 See FEDRAMP-ALIGNMENT.md for control family mappings and docs/pii-redaction.md for PII detection design guidance.
 
@@ -254,23 +261,25 @@ See FEDRAMP-ALIGNMENT.md for control family mappings and docs/pii-redaction.md f
 | Prompt-injection sanitization | Unit-tested and exercised through `/query` |
 | SAM build, SAM validate, cfn-lint | Passing locally |
 | Terraform format/validate and full-stack mock plans | Passing for `dev` and `prod` roots |
-| Full Terraform module wiring | **Wired** — network, S3, IAM, Bedrock, OpenSearch, RAG, security, WAF, API, Guardrail version |
+| Full Terraform module wiring | **Wired** — network, S3, IAM, Cognito, Bedrock, OpenSearch, RAG, security, WAF, API, Guardrail version |
 | LocalStack infrastructure test | **13/13** S3/KMS/IAM assertions pass |
 | Live AWS Bedrock/OpenSearch authorization and semantics | **Not verified** — local doubles used; no live deployment |
 | Bedrock Guardrails PII/content controls | **Wired** when `BEDROCK_GUARDRAIL_ID` is configured; no live Guardrail call tested |
-| Amazon Comprehend PII redaction | **Not implemented** — Guardrails is the active PII control |
-| API authentication (Cognito/JWT) | **Not implemented** — API routes are `authorization = "NONE"` |
+| API authentication | **Cognito authorizer + handler JWT/JWKS validation**; local E2E uses a test RSA token |
+| Frontend | **Local RAG console** verified with Playwright desktop/mobile; no production hosting |
+| Amazon Comprehend PII redaction | **Optional, implemented** behind `PII_REDACTION_ENABLED`; unit-tested with a mocked Comprehend response, not live |
 | GitHub Actions CI | Workflow added; not executed on GitHub in this audit |
 
 Verified facts to date:
 
-- `126` tests pass (unit, regression, Moto-backed S3 integration) on Python 3.12 and 3.13 clean venvs.
-- `88%` application coverage (branch coverage; generated in `docs/evidence/test-results`).
-- `11/11` live-HTTP verification cases pass against SAM local API with local service doubles.
+- `141` tests pass (unit, regression, Moto-backed S3 integration, auth, PII) on Python 3.12 and 3.13 clean venvs.
+- `87%` application coverage (branch coverage; includes the shared auth/PII layer).
+- `12/12` authenticated HTTP verification cases pass, including a 401 no-token case.
 - `4/4` direct `sam local invoke` cases pass.
+- `5/5` Playwright UI checks pass at desktop and mobile viewports with zero console/network errors.
 - `13/13` LocalStack S3/KMS/IAM infrastructure assertions pass after a real Terraform apply/destroy.
-- Terraform full-stack mock-provider plans pass for dev and prod (`terraform test`).
-- `mypy` reports no issues in 16 application files.
+- Terraform full-stack mock-provider plans pass for dev and prod, plus the RAG module (`terraform test`).
+- `mypy` reports no issues in 18 application files.
 - SAM build produces `PromptBuilderLayer/python/builder.py` (not `python/python/`).
 - `sam validate --lint`, `cfn-lint`, and `ruff check .` pass.
 - `pip-audit` reports no known vulnerabilities; a CycloneDX SBOM is generated from the locked dev dependency set.
@@ -293,8 +302,13 @@ make sam-build
 # End-to-end HTTP verification against local service doubles
 make mock-aws        # terminal 1
 make sam-api-mock    # terminal 2
-make e2e             # terminal 3
-make screenshots     # optional: regenerate image evidence
+make e2e             # terminal 3: authenticated HTTP matrix
+make screenshots     # optional: regenerate report screenshots
+
+# Local RAG UI (same-origin proxy)
+make frontend        # terminal 3: http://127.0.0.1:8080
+make ui-e2e          # terminal 4: Playwright desktop/mobile checks
+make screenshots     # also captures the UI screenshots
 
 # Additional local gates
 make coverage
@@ -315,6 +329,10 @@ The screenshots below are rendered from the actual responses captured during the
 | --- | --- |
 | ![RAG workflow evidence](docs/evidence/screenshots/query-workflow.png) | ![Validation error evidence](docs/evidence/screenshots/error-validation.png) |
 
+| Local RAG console — desktop | Local RAG console — mobile |
+| --- | --- |
+| ![Local RAG console desktop](docs/evidence/screenshots/ui-query-desktop.png) | ![Local RAG console mobile](docs/evidence/screenshots/ui-query-mobile.png) |
+
 See [docs/evidence/verification-report.md](docs/evidence/verification-report.md) for the full methodology, commands, raw results, and limitations.
 
 ---
@@ -323,7 +341,7 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 
 ```
 .
-├── .github/workflows/ci.yml     # Python tests/lint, Terraform, SAM validation + build
+├── .github/workflows/ci.yml     # Tests, mypy, coverage, Terraform, SAM, LocalStack
 ├── architecture/               # Architecture diagrams and design documents
 │   ├── high-level-architecture.md
 │   ├── iam-role-design.md
@@ -332,14 +350,17 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 │   ├── evidence/               # Screenshots, test results, build results, report
 │   ├── local-testing.md
 │   └── pii-redaction.md
+├── frontend/                   # Local RAG console (HTML/CSS/JS + same-origin proxy)
+├── layers/common/              # Shared auth/JWT and optional Comprehend PII modules
 ├── events/                     # Sample event payloads for SAM local testing
 ├── genai/                      # Generative AI layer (prompt builder, templates, docs)
 │   ├── prompt_builder/
 │   └── tests/
 ├── lambda/                     # Lambda function handlers
 │   └── bedrock_integration/
-├── layers/                     # Lambda layer source (builder.py generated by make)
-│   └── prompt_builder/
+├── layers/                     # Lambda layer sources
+│   ├── common/                 # Shared auth/JWT + optional PII code
+│   └── prompt_builder/         # builder.py/templates.py generated by make
 ├── rag/                        # RAG pipeline implementation
 │   ├── embedding/
 │   ├── ingestion/
@@ -350,7 +371,9 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 │   ├── e2e_api_verify.py
 │   ├── local_aws_doubles.py
 │   ├── localstack_infra_test.py
-│   └── run_localstack_infra_test.sh
+│   ├── run_localstack_infra_test.sh
+│   ├── serve_frontend.py
+│   └── ui_e2e_verify.py
 ├── security/                   # Security configs, threat models, attack simulations
 │   ├── attack-simulation/
 │   ├── compliance-mapping.md
@@ -359,7 +382,7 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 ├── terraform/                  # Infrastructure as Code
 │   ├── environments/{dev,prod}/ # Full stack + mock-provider tests
 │   ├── environments/localstack/ # S3/IAM/KMS LocalStack apply test
-│   └── modules/                 # network, s3, iam, bedrock, opensearch, rag, security, waf, api
+│   └── modules/                 # network, s3, iam, auth, bedrock, opensearch, rag, security, waf, api
 ├── FEDRAMP-ALIGNMENT.md        # FedRAMP High self-assessment mapping
 ├── Makefile                    # Build, test, local API, and evidence targets
 ├── pyproject.toml              # Pytest and Ruff configuration
@@ -394,4 +417,4 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 
 For questions, partnerships, or federal engagement inquiries, open an issue or reach out directly.
 
-**Document Version:** 1.2 | **Last Updated:** 2026-10-31 | **FedRAMP High:** Self-assessed 92% control coverage (318/345; not an authorization)
+**Document Version:** 1.3 | **Last Updated:** 2026-10-31 | **FedRAMP High:** Self-assessed 92% control coverage (318/345; not an authorization)

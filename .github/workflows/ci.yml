@@ -4,6 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   python:
-    name: Python tests and lint
+    name: Python tests, typecheck, coverage, and audit
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -71,6 +72,11 @@ jobs:
         run: terraform test -no-color
       - name: RAG layer/trigger/guardrail module test
         working-directory: terraform/modules/rag
+        run: |
+          terraform init -backend=false -input=false -no-color
+          terraform test -no-color
+      - name: Cognito auth module test
+        working-directory: terraform/modules/auth
         run: |
           terraform init -backend=false -input=false -no-color
           terraform test -no-color

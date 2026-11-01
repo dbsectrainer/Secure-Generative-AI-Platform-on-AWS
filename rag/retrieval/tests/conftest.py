@@ -1,6 +1,6 @@
 """
-pytest configuration: add the rag/retrieval directory to sys.path so that
-handler.py can be imported directly.
+pytest configuration: add the rag/retrieval directory and shared auth layer
+to sys.path so handler.py and auth.py can be imported directly.
 """
 import os
 import sys
@@ -9,6 +9,10 @@ from pathlib import Path
 import pytest
 
 _HANDLER_DIR = str(Path(__file__).parent.parent)
+_COMMON_LAYER = str(Path(__file__).parents[3] / "layers" / "common")
+
+if _COMMON_LAYER not in sys.path:
+    sys.path.insert(0, _COMMON_LAYER)
 
 
 @pytest.fixture(autouse=True, scope="module")

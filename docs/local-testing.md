@@ -41,8 +41,12 @@ make mock-aws
 # Terminal 2 — SAM API using env.mock.json and placeholder credentials
 make sam-api-mock
 
-# Terminal 3 — run the 11-case HTTP verification matrix
+# Terminal 3 — run the 12-case authenticated HTTP verification matrix
 make e2e
+
+# Terminal 4 — local RAG console + Playwright desktop/mobile checks
+make frontend
+make ui-e2e
 make screenshots
 ```
 
@@ -50,6 +54,22 @@ make screenshots
 `BEDROCK_ENDPOINT_URL` / `LAMBDA_ENDPOINT_URL` and `OPENSEARCH_ENDPOINT`.
 The endpoint overrides are optional in production and are deliberately not named
 `AWS_ENDPOINT_URL_*`, which SAM reserves and filters.
+
+The local doubles also expose `/auth/token` and `/.well-known/jwks.json`. The
+`env.mock.json` sets `AUTH_REQUIRED=true`, so API calls need the bearer token
+returned by that issuer. `make e2e` and the UI fetch it automatically; the
+`sam local invoke` path bypasses API authentication because it is a direct
+Lambda invocation.
+
+### Local RAG console
+
+`make frontend` serves `frontend/` on port 8080 and proxies `/api/*` to the
+SAM API and `/local-token` to the local issuer. It is same-origin, so no CORS is
+required for local verification. `make ui-e2e` drives it with Playwright and
+captures desktop/mobile screenshots.
+
+Production hosting (S3/CloudFront, Cognito Hosted UI, CORS policy) is not
+included; the console is an explicitly local verification surface.
 
 
 ## AWS Code and Infrastructure Tests Without a Live Account
@@ -108,6 +128,23 @@ attached least-privilege and deny-escalation policies.
 GuardDuty, Config, and API Gateway are not applied in the LocalStack test. The
 full stack is plan-tested with Terraform mocks and `terraform validate`; those
 services remain unverified against a live AWS account.
+
+## Authentication, Guardrails, and PII
+
+The SAM template exposes `AUTH_*` settings on the HTTP functions. Local doubles
+enable them; direct Lambda invokes bypass. Terraform creates a Cognito user pool
+and API Gateway authorizer, and passes the issuer/JWKS/audience to handlers.
+
+Set `BEDROCK_GUARDRAIL_ID` / `BEDROCK_GUARDRAIL_VERSION` to exercise Guardrail
+pass-through; local calls verify the parameters but not live Guardrail policy
+enforcement.
+
+`PII_REDACTION_ENABLED=true` optionally invokes Amazon Comprehend before
+indexing/inference. It is disabled by default; Guardrails remain the primary
+PII control. No live Comprehend call was made in this audit.
+
+`BEDROCK_INFERENCE_PROFILE_ARN` optionally overrides the foundation model ID for
+accounts that require an inference profile; unset by default.
 
 ## Testing Individual Functions
 
@@ -177,7 +214,7 @@ For a no-AWS verification run, use `make sam-api-mock` instead of `make sam-api`
 | POST   | `/retrieve` | RagRetrieval        | Search for relevant chunks   |
 | POST   | `/query`    | RagOrchestrator     | Full RAG pipeline            |
 
-> **Note:** The ingestion function is triggered by S3 events, not HTTP. Test it with `make sam-invoke-ingestion`.
+> **Note:** The ingestion function is triggered by S3 events, not HTTP. Test it with `make sam-invoke-ingestion`. All HTTP routes require a bearer token when `AUTH_REQUIRED=true`; `env.mock.json` enables it.
 
 ## Environment Configuration
 
@@ -258,9 +295,11 @@ providers; those service APIs remain unverified until a live deployment.
 
 ### API Authentication
 
-The SAM local API and the Terraform API Gateway routes use `authorization =
-"NONE"` for local verification. Add a Cognito/JWT authorizer before exposing
-the API. Do not treat the local API as an authenticated production boundary.
+Terraform attaches a Cognito authorizer to the API Gateway routes, and the
+handlers validate JWT/JWKS as defense-in-depth. SAM local uses `AUTH_REQUIRED`
+plus the local RSA issuer; direct `sam local invoke` calls bypass bearer-token
+validation and rely on IAM in production. Cognito Hosted UI/sign-in was not
+live-verified, and the local console token is a test credential only.
 
 ### Guardrails and PII
 
@@ -270,11 +309,16 @@ wiring but not Guardrail content/PII enforcement. Set both values (and have the
 guardrail in the same region/account) to exercise the pass-through; unit tests
 assert that the parameters reach the Bedrock client.
 
+`PII_REDACTION_ENABLED=true` enables optional Comprehend redaction; it is
+disabled by default and uses `COMPREHEND_ENDPOINT_URL` for local doubles/tests.
+Guardrails remain the primary PII control.
+
 ### Model Access
 
 `anthropic.claude-sonnet-5-5` may require account-specific model access and/or a
-Bedrock inference profile. The local doubles ignore model availability. Verify
-this in the target account before relying on the default.
+Bedrock inference profile. Set `BEDROCK_INFERENCE_PROFILE_ARN` when the account
+requires one. The local doubles ignore model availability; verify this in the
+target account before relying on the default.
 
 ### Layer Packaging
 
@@ -320,6 +364,8 @@ This removes `.aws-sam/`, the generated `layers/prompt_builder/{builder,template
 
 ```
 template.yaml                    # SAM template (local testing only)
+frontend/                        # Local RAG console (HTML/CSS/JS)
+layers/common/                   # Shared auth/JWT + optional Comprehend PII code
 samconfig.toml                   # SAM CLI defaults
 env.json                         # Default environment variables (safe local defaults)
 env.local.json.example           # Template for personal real-AWS overrides
@@ -327,7 +373,7 @@ env.mock.json                    # Local-doubles endpoint overrides (placeholder
 Makefile                         # Build, test, local API, and evidence targets
 scripts/
   local_aws_doubles.py           # Deterministic Bedrock/OpenSearch/Lambda test harness
-  e2e_api_verify.py              # 11-case HTTP verification matrix
+  e2e_api_verify.py              # 12-case authenticated HTTP verification matrix
   capture_evidence.py            # Playwright screenshots of real captured responses
   localstack_infra_test.py       # boto3 assertions against Terraform-created LocalStack resources
   run_localstack_infra_test.sh   # Start LocalStack, apply, verify, destroy

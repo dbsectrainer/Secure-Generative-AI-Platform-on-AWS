@@ -23,6 +23,7 @@ import logging
 import os
 import time
 from typing import Any
+from urllib.parse import urlparse
 
 import boto3
 from botocore.auth import SigV4Auth
@@ -30,6 +31,9 @@ from botocore.awsrequest import AWSRequest
 from botocore.config import Config
 from botocore.credentials import Credentials
 from botocore.exceptions import ClientError
+
+from auth import AuthError, require_auth
+from pii import PiiError, redact_pii
 
 try:
     import urllib.request as urllib_request
@@ -52,7 +56,15 @@ BEDROCK_EMBEDDING_MODEL_ID = os.environ.get(
     "BEDROCK_EMBEDDING_MODEL_ID", "amazon.titan-embed-text-v2:0"
 )
 BEDROCK_REGION = os.environ.get("BEDROCK_REGION", os.environ.get("AWS_REGION", "eu-west-1"))
-OPENSEARCH_ENDPOINT = os.environ["OPENSEARCH_ENDPOINT"].rstrip("/")
+def _validated_endpoint(value: str) -> str:
+    """Require an absolute HTTP(S) endpoint; avoid file/custom URL schemes."""
+    parsed = urlparse(value.rstrip("/"))
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        raise ValueError("OPENSEARCH_ENDPOINT must be an absolute http(s) URL")
+    return value.rstrip("/")
+
+
+OPENSEARCH_ENDPOINT = _validated_endpoint(os.environ["OPENSEARCH_ENDPOINT"])
 OPENSEARCH_INDEX = os.environ.get("OPENSEARCH_INDEX", "rag-documents")
 TOP_K = int(os.environ.get("TOP_K", "5"))
 
@@ -246,7 +258,7 @@ def _search_opensearch(
 
     try:
         start = time.monotonic()
-        with urllib_request.urlopen(req, timeout=10) as resp:  # noqa: S310
+        with urllib_request.urlopen(req, timeout=10) as resp:  # noqa: S310  # nosec B310
             latency_ms = (time.monotonic() - start) * 1000
             response_body = json.loads(resp.read().decode("utf-8"))
     except urllib_error.HTTPError as exc:
@@ -310,10 +322,15 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     logger.debug("Received retrieval event")
 
     is_proxy = _is_api_gateway_event(event)
+    try:
+        require_auth(event)
+    except AuthError as exc:
+        return _build_response(exc.status_code, {"error": exc.message}, is_proxy)
 
     try:
         payload = _parse_event(event)
         query, filters, top_k = _validate_event(payload)
+        query = redact_pii(query)
         embedding = _embed_query(query)
         results = _search_opensearch(embedding, filters, top_k)
 
@@ -330,6 +347,14 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     except ValueError as exc:
         logger.warning("Invalid retrieval request: %s", exc)
         return _build_response(400, {"error": str(exc)}, is_proxy)
+
+    except PiiError as exc:
+        logger.error("PII redaction failed: %s", exc)
+        return _build_response(
+            502,
+            {"error": "PII redaction failed. Please retry later."},
+            is_proxy,
+        )
 
     except ClientError as exc:
         error_code = exc.response["Error"]["Code"]

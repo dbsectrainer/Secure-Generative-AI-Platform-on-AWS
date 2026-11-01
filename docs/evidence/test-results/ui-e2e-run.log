@@ -1,0 +1,35 @@
+{
+  "frontend_url": "http://127.0.0.1:8080",
+  "checks": [
+    {
+      "name": "empty_state_visible",
+      "passed": true
+    },
+    {
+      "name": "local_token_loaded",
+      "passed": true
+    },
+    {
+      "name": "rag_answer_rendered",
+      "passed": true,
+      "detail": "Based on the retrieved policy excerpts, the platform encrypts data with a customer-managed KMS key, retains CloudTrail audit events for seven years, and scopes retrieval results by"
+    },
+    {
+      "name": "metrics_rendered",
+      "passed": true,
+      "detail": {
+        "model": "anthropic.claude-sonnet-5-5",
+        "chunks": "3",
+        "latency": "3 ms"
+      }
+    },
+    {
+      "name": "mobile_query_rendered",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "total": 5,
+  "console_entries": 0,
+  "failures": []
+}

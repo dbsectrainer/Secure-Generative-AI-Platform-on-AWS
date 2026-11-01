@@ -17,6 +17,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Terraform mock-provider full-stack wiring tests for dev and prod
 - Full Terraform composition: OpenSearch Serverless, RAG layer/S3 trigger, security, WAF, API Gateway, Guardrail version, and embedding/retrieval/RAG IAM roles
 - Optional Bedrock Guardrails pass-through for content filtering and PII anonymization/blocking
+- Cognito user pool/API Gateway authorizer and handler-level JWT/JWKS validation
+- Local RSA token/JWKS issuer and authenticated HTTP + browser E2E coverage
+- Optional Amazon Comprehend PII redaction behind `PII_REDACTION_ENABLED`
+- Optional Bedrock inference-profile ARN support
+- Local RAG console with same-origin proxy and Playwright desktop/mobile tests
 - Optional `BEDROCK_ENDPOINT_URL` / `LAMBDA_ENDPOINT_URL` test overrides
 - Phase 3 security hardening: threat model, attack simulations, WAF/GuardDuty/Config modules, extended injection patterns
 - Phase 2 RAG pipeline implementation
@@ -39,6 +44,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - RAG package lacked the prompt-builder layer, S3 trigger, guardrail env, and invoke permissions
 - OpenSearch network policy did not reference the module-created VPC endpoint; added KMS option
 - API Gateway had no module; added routes, stage, Lambda permissions, and WAF association
+- API routes had no authentication; added Cognito authorizer and handler JWT validation
+- Bandit B310 findings were resolved by validating the OpenSearch URL scheme
 - Ruff lint findings in handlers, tests, and attack-simulation scripts
 
 ### Changed

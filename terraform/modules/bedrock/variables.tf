@@ -105,3 +105,45 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "auth_required" {
+  description = "Whether the API Gateway handler requires bearer-token authentication"
+  type        = bool
+  default     = true
+}
+
+variable "auth_jwks_url" {
+  description = "JWKS URL for handler-level JWT validation"
+  type        = string
+  default     = ""
+}
+
+variable "auth_issuer" {
+  description = "Expected JWT issuer"
+  type        = string
+  default     = ""
+}
+
+variable "auth_audience" {
+  description = "Expected JWT audience (Cognito app client ID)"
+  type        = string
+  default     = ""
+}
+
+variable "pii_redaction_enabled" {
+  description = "Whether to redact PII with Amazon Comprehend before inference/indexing"
+  type        = bool
+  default     = false
+}
+
+variable "pii_language_code" {
+  description = "Amazon Comprehend language code"
+  type        = string
+  default     = "en"
+}
+
+variable "inference_profile_arn" {
+  description = "Optional Bedrock inference-profile ARN; overrides the foundation model ID when set"
+  type        = string
+  default     = ""
+}

@@ -105,3 +105,15 @@ variable "github_repo" {
   type        = string
   default     = ""
 }
+
+variable "pii_redaction_enabled" {
+  description = "Whether to enable Amazon Comprehend PII redaction in HTTP handlers"
+  type        = bool
+  default     = false
+}
+
+variable "inference_profile_arn" {
+  description = "Optional Bedrock inference-profile ARN used instead of the model ID"
+  type        = string
+  default     = ""
+}

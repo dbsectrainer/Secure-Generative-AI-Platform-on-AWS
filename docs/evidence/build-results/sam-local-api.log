@@ -1,170 +1,197 @@
 No current session found, using default AWS::AccountId
 Initializing the lambda functions containers.
-PromptBuilderLayer is a local Layer in the template
+AuthLayer is a local Layer in the template
 Local image is up-to-date
-Local image is up-to-date
-Building image...Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+Building image....................
+Using local image: samcli/lambda-python:3.13-arm64-7dcb45ff369bee6156b816774.
 
 Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagEmbeddingFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: fca40fa24683fa348ec535d133d237a189ca20ad14add6ddf01ad5831408065a
+SAM_CONTAINER_ID: e9f5936b5f84bfd21c832198ac5f35eaa8e9d04dc38dfb00f5591be033ded9fa
 Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
 
 Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagIngestionFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: 4429135b7da6c9d12f907997ffd9df492654d07046949f0a5f070a74703fe5e5
-Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+SAM_CONTAINER_ID: d5661c52ad7fa54829771a34a7c454f3d643d5cc416dfe7fc30e5d1d4df61fab
+AuthLayer is a local Layer in the template
+Building image.....................
+Using local image: samcli/lambda-python:3.13-arm64-7dcb45ff369bee6156b816774.
 
 Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/BedrockOrchestratorFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: 21d4edba98818dbc72c34e426d9bec338cf9cb66783e9d9a27ac8d424fabaa85
-..................
-Using local image: samcli/lambda-python:3.13-arm64-20c3c6e7f2c03ffc45516bf68.
+SAM_CONTAINER_ID: 6234406a11d106aab5cb2a539597de8a5432052512288b86e97cf544b392d22c
+AuthLayer is a local Layer in the template
+PromptBuilderLayer is a local Layer in the template
+Building image.............................
+Using local image: samcli/lambda-python:3.13-arm64-2566d25eb38b79ff9aee75164.
 
 Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagOrchestratorFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: 3950ca15034b263f7a039bca5c90532da0b9e68593bce32be9646b590862f701
-Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+SAM_CONTAINER_ID: 1ba5e2384b073fcf14dea95b2ffe1a8d1cf7eec2a15131bad3757e541c04f2da
+AuthLayer is a local Layer in the template
+Building image.....................
+Using local image: samcli/lambda-python:3.13-arm64-7dcb45ff369bee6156b816774.
 
 Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagRetrievalFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: 0f781cac40a61f08a0f3195722e01e1d7918504f39e971f387754c0f4727861c
+SAM_CONTAINER_ID: a30fad45a9a3743bd7fbdca626532e25ad31f5248004f44ac0c604aa64868aa7
 Containers created. Waiting for readiness...
 Waiting for 5 containers to be running...
 All 5 containers running after 0.0 seconds
 All containers are ready.
-Mounting RagEmbeddingFunction at http://127.0.0.1:3000/embed [POST]
-Mounting RagOrchestratorFunction at http://127.0.0.1:3000/query [POST]
-Mounting RagRetrievalFunction at http://127.0.0.1:3000/retrieve [POST]
 Mounting BedrockOrchestratorFunction at http://127.0.0.1:3000/invoke [POST]
+Mounting RagRetrievalFunction at http://127.0.0.1:3000/retrieve [POST]
+Mounting RagOrchestratorFunction at http://127.0.0.1:3000/query [POST]
+Mounting RagEmbeddingFunction at http://127.0.0.1:3000/embed [POST]
 You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. If you used sam build before running local commands, you will need to re-run sam build for the changes to be picked up. You only need to restart SAM CLI if you update your AWS SAM template
-2026-10-31 21:11:40 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2026-10-31 22:07:57 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:3000
-2026-10-31 21:11:40 [33mPress CTRL+C to quit[0m
-Invoking handler.lambda_handler (python3.13)
-Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
-
-Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/BedrockOrchestratorFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: e52287a5a6a9dfdf1a85be4992bb12646a89acba5895e0b155e38ae14bf53ae4
-END RequestId: 819c26dd-275b-4bd3-ad7c-f795699d6ad8
-REPORT RequestId: 819c26dd-275b-4bd3-ad7c-f795699d6ad8	Init Duration: 0.02 ms	Duration: 638.69 ms	Billed Duration: 639 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:41 127.0.0.1 - - [31/Oct/2026 21:11:41] "POST /invoke HTTP/1.1" 200 -
+2026-10-31 22:07:57 [33mPress CTRL+C to quit[0m
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: 28d24924-7cb5-4252-9797-9801af22bfaf Version: $LATEST
-END RequestId: af51ed45-330d-4521-8111-280f9be110f0
-REPORT RequestId: af51ed45-330d-4521-8111-280f9be110f0	Duration: 3.19 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+END RequestId: 3e3621f3-e4cb-48d7-b6f8-ce841bdef4ef
+REPORT RequestId: 3e3621f3-e4cb-48d7-b6f8-ce841bdef4ef	Init Duration: 0.04 ms	Duration: 648.86 ms	Billed Duration: 649 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:41 127.0.0.1 - - [31/Oct/2026 21:11:41] "POST /invoke HTTP/1.1" 200 -
-Invoking handler.lambda_handler (python3.13)
-Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
-
-Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagEmbeddingFunction as /var/task:ro,delegated, inside runtime container
-SAM_CONTAINER_ID: 6baefc0913464bf1b1491af09e28093ddfe145d5fceb79bfd81e1052448b1769
-START RequestId: cf3c9e18-2bab-45d1-8d4c-4a687fe233ff Version: $LATEST
-END RequestId: 9dc5d180-88b4-4788-ae05-31714d2ce167
-REPORT RequestId: 9dc5d180-88b4-4788-ae05-31714d2ce167	Init Duration: 0.02 ms	Duration: 619.63 ms	Billed Duration: 620 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:42 127.0.0.1 - - [31/Oct/2026 21:11:42] "POST /embed HTTP/1.1" 200 -
-Invoking handler.lambda_handler (python3.13)
-Lambda function 'RagRetrievalFunction' is already running
-START RequestId: 9950099d-ba79-4216-b120-a8c4168c2ddf Version: $LATEST
-END RequestId: a63c9f11-d279-44d5-850a-19b1c4f80eef
-REPORT RequestId: a63c9f11-d279-44d5-850a-19b1c4f80eef	Init Duration: 0.03 ms	Duration: 633.87 ms	Billed Duration: 634 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "POST /retrieve HTTP/1.1" 200 -
-Invoking handler.lambda_handler (python3.13)
-Lambda function 'RagOrchestratorFunction' is already running
-START RequestId: f3f34ac8-ca93-4a79-ae0c-c32b4b7caa1f Version: $LATEST
-END RequestId: 8b7c8b02-0971-437d-b4ac-958e0fe5fa32
-REPORT RequestId: 8b7c8b02-0971-437d-b4ac-958e0fe5fa32	Init Duration: 0.03 ms	Duration: 657.05 ms	Billed Duration: 658 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "POST /query HTTP/1.1" 200 -
+2026-10-31 22:07:59 127.0.0.1 - - [31/Oct/2026 22:07:59] "[31m[1mPOST /invoke HTTP/1.1[0m" 401 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: 54bdfc72-259b-4048-89da-a8bc058d21a0 Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.860Z	ec34b038-11fb-462a-9dc9-b620cbfe66a8	Invalid request: Request must include a non-empty 'prompt' field.
-END RequestId: ec34b038-11fb-462a-9dc9-b620cbfe66a8
-REPORT RequestId: ec34b038-11fb-462a-9dc9-b620cbfe66a8	Duration: 1.08 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: fa5c2d73-06b9-4d6c-8583-237692ea5ce6 Version: $LATEST
+END RequestId: 46bcadd2-ec27-4c01-85a6-27fa4a42532c
+REPORT RequestId: 46bcadd2-ec27-4c01-85a6-27fa4a42532c	Duration: 14.05 ms	Billed Duration: 15 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
-Invoking handler.lambda_handler (python3.13)
-Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: 6c0c2c9a-8a9c-4ead-b455-06c8d6ea864d Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.870Z	d6cd15f0-f8f2-4766-a408-2ca647b2b073	Invalid request: Request body must contain valid JSON.
-END RequestId: d6cd15f0-f8f2-4766-a408-2ca647b2b073
-REPORT RequestId: d6cd15f0-f8f2-4766-a408-2ca647b2b073	Duration: 1.00 ms	Billed Duration: 1 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
-Invoking handler.lambda_handler (python3.13)
-Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: ccde201a-2766-4911-8371-82f4d3c1bbed Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.880Z	cb29cce8-78f7-4cb9-a935-1a2c6378a5bf	Invalid request: Request body must contain a JSON object.
-END RequestId: cb29cce8-78f7-4cb9-a935-1a2c6378a5bf
-REPORT RequestId: cb29cce8-78f7-4cb9-a935-1a2c6378a5bf	Duration: 0.94 ms	Billed Duration: 1 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
+2026-10-31 22:07:59 127.0.0.1 - - [31/Oct/2026 22:07:59] "POST /invoke HTTP/1.1" 200 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagEmbeddingFunction' is already running
-START RequestId: e07bf7b0-ad6d-41be-8b74-4a49699cb619 Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.888Z	d5313164-6600-443f-a486-d5633de607e5	Invalid embedding request: Event must include a non-empty 'text' field.
-END RequestId: d5313164-6600-443f-a486-d5633de607e5
-REPORT RequestId: d5313164-6600-443f-a486-d5633de607e5	Duration: 1.07 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: 88a230e6-7845-481f-93fc-f26840a7fbd7 Version: $LATEST
+END RequestId: 196a3515-2366-477c-80eb-7be76ef44ac4
+REPORT RequestId: 196a3515-2366-477c-80eb-7be76ef44ac4	Init Duration: 0.02 ms	Duration: 710.84 ms	Billed Duration: 711 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /embed HTTP/1.1[0m" 400 -
+2026-10-31 22:08:00 127.0.0.1 - - [31/Oct/2026 22:08:00] "POST /embed HTTP/1.1" 200 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagRetrievalFunction' is already running
-START RequestId: 3979a270-8ec3-4cb2-af2d-d07e09ac28f6 Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.898Z	84d70c50-eea7-4580-aacc-95f455b15a9f	Invalid retrieval request: top_k must be an integer between 1 and 100.
-END RequestId: 84d70c50-eea7-4580-aacc-95f455b15a9f
-REPORT RequestId: 84d70c50-eea7-4580-aacc-95f455b15a9f	Duration: 1.22 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: d4b9a3db-30ea-4b25-8e71-bb2a446487b5 Version: $LATEST
+END RequestId: 02cc30a4-c909-44a7-8ee1-e9e113f60f3f
+REPORT RequestId: 02cc30a4-c909-44a7-8ee1-e9e113f60f3f	Init Duration: 0.03 ms	Duration: 704.53 ms	Billed Duration: 705 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /retrieve HTTP/1.1[0m" 400 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "POST /retrieve HTTP/1.1" 200 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagOrchestratorFunction' is already running
-START RequestId: ddd74c64-395d-457e-8280-d9dff12ff62d Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.907Z	789f15c1-2a0d-446b-9479-b6f95c958e12	Invalid RAG request: top_k must be between 1 and 100.
-END RequestId: 789f15c1-2a0d-446b-9479-b6f95c958e12
-REPORT RequestId: 789f15c1-2a0d-446b-9479-b6f95c958e12	Duration: 1.31 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+END RequestId: 2ef291ef-18d2-47d3-a1e3-16278fb002d5
+REPORT RequestId: 2ef291ef-18d2-47d3-a1e3-16278fb002d5	Init Duration: 0.04 ms	Duration: 736.88 ms	Billed Duration: 737 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "[31m[1mPOST /query HTTP/1.1[0m" 400 -
-Invoking handler.lambda_handler (python3.13)
-Lambda function 'RagOrchestratorFunction' is already running
-START RequestId: 79f8e4d7-89ce-4951-bdb9-bd9519911f2e Version: $LATEST
-[WARNING]	2026-11-01T01:11:43.918Z	e4c3872f-a6bf-4278-8461-5dc18a358e28	Potential prompt injection detected and removed
-END RequestId: e4c3872f-a6bf-4278-8461-5dc18a358e28
-REPORT RequestId: e4c3872f-a6bf-4278-8461-5dc18a358e28	Duration: 3.84 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
-
-2026-10-31 21:11:43 127.0.0.1 - - [31/Oct/2026 21:11:43] "POST /query HTTP/1.1" 200 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "POST /query HTTP/1.1" 200 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: 938ee47d-387c-46bd-948a-389483e684c0 Version: $LATEST
-END RequestId: 468f23a8-ab05-4688-bea2-878437a28b4e
-REPORT RequestId: 468f23a8-ab05-4688-bea2-878437a28b4e	Duration: 2.75 ms	Billed Duration: 3 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: c0a4e811-7d8f-4155-932d-b5d4d05569d1 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.782Z	e2bfed71-6832-40f7-9c80-c8431892113e	Invalid request: Request must include a non-empty 'prompt' field.
+END RequestId: e2bfed71-6832-40f7-9c80-c8431892113e
+REPORT RequestId: e2bfed71-6832-40f7-9c80-c8431892113e	Duration: 1.36 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:46 127.0.0.1 - - [31/Oct/2026 21:11:46] "POST /invoke HTTP/1.1" 200 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'BedrockOrchestratorFunction' is already running
+START RequestId: bf75a16a-2f75-4c21-bbda-a6737a329ca2 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.792Z	7d506483-26df-419a-af5d-e2908043e53e	Invalid request: Request body must contain valid JSON.
+END RequestId: 7d506483-26df-419a-af5d-e2908043e53e
+REPORT RequestId: 7d506483-26df-419a-af5d-e2908043e53e	Duration: 1.07 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'BedrockOrchestratorFunction' is already running
+START RequestId: ce15363c-fc21-47ed-b7f5-86def7f72369 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.801Z	cc3dee09-eeb5-402b-b7f1-ecc634b7223c	Invalid request: Request body must contain a JSON object.
+END RequestId: cc3dee09-eeb5-402b-b7f1-ecc634b7223c
+REPORT RequestId: cc3dee09-eeb5-402b-b7f1-ecc634b7223c	Duration: 1.06 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagEmbeddingFunction' is already running
-START RequestId: fc9f1024-e648-48a2-b220-0e9dbddd3946 Version: $LATEST
-END RequestId: 3bb38e32-8138-4fdd-b1e3-8ec2bd7d7f8b
-REPORT RequestId: 3bb38e32-8138-4fdd-b1e3-8ec2bd7d7f8b	Duration: 5.42 ms	Billed Duration: 6 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: 839df158-d3f4-4b9c-96bf-b5e8261e1787 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.811Z	a6a51994-38a5-40af-b257-99522ce2c883	Invalid embedding request: Event must include a non-empty 'text' field.
+END RequestId: a6a51994-38a5-40af-b257-99522ce2c883
+REPORT RequestId: a6a51994-38a5-40af-b257-99522ce2c883	Duration: 1.76 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:46 127.0.0.1 - - [31/Oct/2026 21:11:46] "POST /embed HTTP/1.1" 200 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /embed HTTP/1.1[0m" 400 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagRetrievalFunction' is already running
-START RequestId: 6895ae19-7dbd-401c-b64a-163fb23aab20 Version: $LATEST
-END RequestId: 5871bb3c-e2d6-477c-a4c1-d8a3fef11152
-REPORT RequestId: 5871bb3c-e2d6-477c-a4c1-d8a3fef11152	Duration: 5.13 ms	Billed Duration: 6 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: 6906b7f2-89fa-4c10-a518-f91473891165 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.821Z	f4e6911f-fef1-439f-b85e-ea671280bf1a	Invalid retrieval request: top_k must be an integer between 1 and 100.
+END RequestId: f4e6911f-fef1-439f-b85e-ea671280bf1a
+REPORT RequestId: f4e6911f-fef1-439f-b85e-ea671280bf1a	Duration: 1.75 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:46 127.0.0.1 - - [31/Oct/2026 21:11:46] "POST /retrieve HTTP/1.1" 200 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /retrieve HTTP/1.1[0m" 400 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'RagOrchestratorFunction' is already running
-START RequestId: cde1a757-5d03-4d10-999b-373a1f507f62 Version: $LATEST
-END RequestId: 3a1b5ce5-31b8-4106-ae57-c08331f0a12d
-REPORT RequestId: 3a1b5ce5-31b8-4106-ae57-c08331f0a12d	Duration: 3.39 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: 007c8a1d-bc41-4dfe-9005-b5c9f009bf76 Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.831Z	31146658-3922-47d8-ac78-f8c42643dd80	Invalid RAG request: top_k must be between 1 and 100.
+END RequestId: 31146658-3922-47d8-ac78-f8c42643dd80
+REPORT RequestId: 31146658-3922-47d8-ac78-f8c42643dd80	Duration: 1.38 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:46 127.0.0.1 - - [31/Oct/2026 21:11:46] "POST /query HTTP/1.1" 200 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /query HTTP/1.1[0m" 400 -
 Invoking handler.lambda_handler (python3.13)
 Lambda function 'BedrockOrchestratorFunction' is already running
-START RequestId: c6a7f541-66a9-43af-8c26-9fe7b4411edd Version: $LATEST
-[WARNING]	2026-11-01T01:11:46.657Z	c261a6a9-f7a1-480c-9984-e1085bad33b1	Invalid request: Request must include a non-empty 'prompt' field.
-END RequestId: c261a6a9-f7a1-480c-9984-e1085bad33b1
-REPORT RequestId: c261a6a9-f7a1-480c-9984-e1085bad33b1	Duration: 1.12 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+START RequestId: 9af5a1fa-f6b4-4ca2-822e-ee5e01eb1c6e Version: $LATEST
+END RequestId: 030b36d4-b12e-4ca9-8fc6-011da85e5dff
+REPORT RequestId: 030b36d4-b12e-4ca9-8fc6-011da85e5dff	Duration: 0.77 ms	Billed Duration: 1 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
 
-2026-10-31 21:11:46 127.0.0.1 - - [31/Oct/2026 21:11:46] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "[31m[1mPOST /invoke HTTP/1.1[0m" 401 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagOrchestratorFunction' is already running
+START RequestId: 0fe821dd-4457-411e-a620-6f7a8ffd25df Version: $LATEST
+[WARNING]	2026-11-01T02:08:01.850Z	62438311-76d7-4eec-824c-bb2821bde0c6	Potential prompt injection detected and removed
+END RequestId: 62438311-76d7-4eec-824c-bb2821bde0c6
+REPORT RequestId: 62438311-76d7-4eec-824c-bb2821bde0c6	Duration: 4.04 ms	Billed Duration: 5 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:01 127.0.0.1 - - [31/Oct/2026 22:08:01] "POST /query HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'BedrockOrchestratorFunction' is already running
+START RequestId: c0085bc6-0014-43af-86e6-8289e5eb0b48 Version: $LATEST
+END RequestId: 0589cac0-adb4-42ed-9bcb-2bc4c40063be
+REPORT RequestId: 0589cac0-adb4-42ed-9bcb-2bc4c40063be	Duration: 3.07 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "POST /invoke HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagEmbeddingFunction' is already running
+START RequestId: 03ff06df-7257-424c-b38b-9e61fda1a44b Version: $LATEST
+END RequestId: 775f7908-f5df-4142-b29c-9c3532858070
+REPORT RequestId: 775f7908-f5df-4142-b29c-9c3532858070	Duration: 6.30 ms	Billed Duration: 7 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "POST /embed HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagRetrievalFunction' is already running
+START RequestId: 15479d43-071c-42eb-8196-9ec994e5df6a Version: $LATEST
+END RequestId: d693b84c-db57-4db5-ae51-6eb865078efc
+REPORT RequestId: d693b84c-db57-4db5-ae51-6eb865078efc	Duration: 5.56 ms	Billed Duration: 6 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "POST /retrieve HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagOrchestratorFunction' is already running
+START RequestId: 422cc8a7-b198-4027-b413-450ac44a6be7 Version: $LATEST
+END RequestId: fadd4e47-eeb0-4057-a41a-f39121f83e5b
+REPORT RequestId: fadd4e47-eeb0-4057-a41a-f39121f83e5b	Duration: 3.69 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "POST /query HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'BedrockOrchestratorFunction' is already running
+START RequestId: 17e2f712-3dbc-41ce-a542-ca5dbbd95ab5 Version: $LATEST
+[WARNING]	2026-11-01T02:08:04.647Z	4f2a41bd-75be-4667-a7e9-a37b21026ec7	Invalid request: Request must include a non-empty 'prompt' field.
+END RequestId: 4f2a41bd-75be-4667-a7e9-a37b21026ec7
+REPORT RequestId: 4f2a41bd-75be-4667-a7e9-a37b21026ec7	Duration: 1.35 ms	Billed Duration: 2 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "[31m[1mPOST /invoke HTTP/1.1[0m" 400 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'BedrockOrchestratorFunction' is already running
+START RequestId: 9a08f49d-67f0-4a20-8a78-1bafdd464b9a Version: $LATEST
+END RequestId: 873b7811-de97-4b6a-871c-abef7b04a43b
+REPORT RequestId: 873b7811-de97-4b6a-871c-abef7b04a43b	Duration: 0.81 ms	Billed Duration: 1 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:04 127.0.0.1 - - [31/Oct/2026 22:08:04] "[31m[1mPOST /invoke HTTP/1.1[0m" 401 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagOrchestratorFunction' is already running
+START RequestId: 1b96c2a3-f8e0-4dfe-b539-02a0acf55f19 Version: $LATEST
+END RequestId: 5c53ff29-67c3-41a0-bbe3-7012b52c62f3
+REPORT RequestId: 5c53ff29-67c3-41a0-bbe3-7012b52c62f3	Duration: 3.81 ms	Billed Duration: 4 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:05 127.0.0.1 - - [31/Oct/2026 22:08:05] "POST /query HTTP/1.1" 200 -
+Invoking handler.lambda_handler (python3.13)
+Lambda function 'RagOrchestratorFunction' is already running
+START RequestId: a9556714-a907-416d-a009-1c5bb6b1ef08 Version: $LATEST
+END RequestId: a62b0b68-8d3e-4610-b28c-e5f8dcd42059
+REPORT RequestId: a62b0b68-8d3e-4610-b28c-e5f8dcd42059	Duration: 4.45 ms	Billed Duration: 5 ms	Memory Size: 256 MB	Max Memory Used: 256 MB
+
+2026-10-31 22:08:05 127.0.0.1 - - [31/Oct/2026 22:08:05] "POST /query HTTP/1.1" 200 -

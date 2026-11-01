@@ -7,7 +7,7 @@
         sam-invoke-bedrock sam-invoke-ingestion sam-invoke-embedding \
         sam-invoke-retrieval sam-invoke-rag \
         sam-api sam-api-mock mock-aws e2e screenshots \
-        coverage typecheck sbom localstack-infra-test \
+        coverage typecheck sbom localstack-infra-test frontend ui-e2e \
         terraform-validate sam-generate-s3-event clean-sam
 
 LAYER_DIR := layers/prompt_builder
@@ -54,6 +54,12 @@ sbom:
 localstack-infra-test:
 	scripts/run_localstack_infra_test.sh
 
+frontend:
+	python3 scripts/serve_frontend.py --port 8080
+
+ui-e2e:
+	python3 scripts/ui_e2e_verify.py
+
 lint:
 	ruff check .
 
@@ -61,6 +67,7 @@ terraform-validate:
 	cd terraform/environments/dev && terraform init -backend=false -input=false && terraform validate && terraform test -no-color
 	cd terraform/environments/prod && terraform init -backend=false -input=false && terraform validate && terraform test -no-color
 	cd terraform/modules/rag && terraform init -backend=false -input=false && terraform test -no-color
+	cd terraform/modules/auth && terraform init -backend=false -input=false && terraform test -no-color
 
 validate: lint test typecheck sam-validate terraform-validate
 

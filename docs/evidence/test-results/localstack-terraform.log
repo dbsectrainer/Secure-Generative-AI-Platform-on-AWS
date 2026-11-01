@@ -173,6 +173,14 @@ Terraform will perform the following actions:
                     },
                   + {
                       + Action   = [
+                          + "comprehend:DetectPiiEntities",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                      + Sid      = "ComprehendPiiDetection"
+                    },
+                  + {
+                      + Action   = [
                           + "logs:CreateLogGroup",
                           + "logs:CreateLogStream",
                           + "logs:PutLogEvents",
@@ -238,6 +246,14 @@ Terraform will perform the following actions:
                       + Effect   = "Allow"
                       + Resource = "arn:aws:bedrock:us-east-1:000000000000:guardrail/*"
                       + Sid      = "BedrockGuardrail"
+                    },
+                  + {
+                      + Action   = [
+                          + "comprehend:DetectPiiEntities",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                      + Sid      = "ComprehendPiiDetection"
                     },
                   + {
                       + Action   = [
@@ -311,6 +327,14 @@ Terraform will perform the following actions:
                       + Effect   = "Allow"
                       + Resource = "arn:aws:aoss:us-east-1:000000000000:collection/*"
                       + Sid      = "OpenSearchServerlessAccess"
+                    },
+                  + {
+                      + Action   = [
+                          + "comprehend:DetectPiiEntities",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                      + Sid      = "ComprehendPiiDetection"
                     },
                   + {
                       + Action   = [
@@ -806,44 +830,44 @@ Changes to Outputs:
   + rag_orchestrator_role_arn = (known after apply)
   + retrieval_role_arn        = (known after apply)
 module.iam.aws_iam_policy.deny_privilege_escalation: Creating...
-module.iam.aws_iam_policy.lambda_retrieval: Creating...
+aws_iam_role.kms_admin: Creating...
+module.iam.aws_iam_role.lambda_retrieval: Creating...
 module.iam.aws_iam_policy.lambda_embedding: Creating...
 module.iam.aws_iam_role.lambda_bedrock_orchestrator: Creating...
-module.iam.aws_iam_role.lambda_rag_orchestrator: Creating...
 module.iam.aws_iam_role.lambda_document_ingestion: Creating...
-module.iam.aws_iam_policy.lambda_rag_orchestrator: Creating...
-module.iam.aws_iam_role.lambda_retrieval: Creating...
-aws_iam_role.kms_admin: Creating...
-module.s3.aws_s3_bucket.documents: Creating...
-module.iam.aws_iam_role.lambda_document_ingestion: Creation complete after 0s [id=secgenai-local-role-lambda-doc-ingestion]
-aws_iam_role.kms_admin: Creation complete after 0s [id=secgenai-local-kms-admin]
-module.iam.aws_iam_role.lambda_retrieval: Creation complete after 0s [id=secgenai-local-role-lambda-retrieval]
+module.iam.aws_iam_policy.lambda_retrieval: Creating...
 module.iam.aws_iam_role.lambda_embedding: Creating...
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Creating...
+module.s3.aws_s3_bucket.documents: Creating...
 module.iam.aws_iam_policy.lambda_embedding: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
-module.iam.aws_iam_policy.lambda_rag_orchestrator: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
-module.iam.aws_iam_policy.lambda_retrieval: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
-module.iam.aws_iam_policy.deny_privilege_escalation: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role.lambda_rag_orchestrator: Creation complete after 0s [id=secgenai-local-role-lambda-rag-orchestrator]
 module.iam.aws_iam_role.lambda_bedrock_orchestrator: Creation complete after 0s [id=secgenai-local-role-lambda-bedrock-orchestrator]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Creating...
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role.lambda_document_ingestion: Creation complete after 0s [id=secgenai-local-role-lambda-doc-ingestion]
+module.iam.aws_iam_role.lambda_retrieval: Creation complete after 0s [id=secgenai-local-role-lambda-retrieval]
 module.iam.aws_iam_role.lambda_embedding: Creation complete after 0s [id=secgenai-local-role-lambda-embedding]
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Creating...
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Creating...
+module.iam.aws_iam_policy.lambda_retrieval: Creation complete after 1s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_policy.deny_privilege_escalation: Creation complete after 1s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+aws_iam_role.kms_admin: Creation complete after 1s [id=secgenai-local-kms-admin]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Creation complete after 1s [id=secgenai-local-role-lambda-rag-orchestrator]
 module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Creating...
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Creating...
 module.iam.aws_iam_role_policy_attachment.lambda_embedding: Creating...
 module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Creating...
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Creating...
 module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Creating...
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Creating...
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Creating...
 module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Creating...
 module.s3.aws_kms_key.s3_documents: Creating...
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Creation complete after 0s [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
 module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Creation complete after 0s [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.iam.aws_iam_role_policy_attachment.lambda_embedding: Creation complete after 0s [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
 module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
-module.s3.aws_s3_bucket.documents: Creation complete after 0s [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Creation complete after 0s [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Creation complete after 0s [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_s3_bucket.documents: Creation complete after 1s [id=secgenai-local-documents-000000000000]
 module.s3.aws_s3_bucket_versioning.documents: Creating...
 module.s3.aws_s3_bucket_public_access_block.documents: Creating...
 module.s3.aws_s3_bucket_public_access_block.documents: Creation complete after 0s [id=secgenai-local-documents-000000000000]
@@ -851,17 +875,17 @@ module.s3.aws_s3_bucket_policy.documents: Creating...
 module.s3.aws_s3_bucket_policy.documents: Creation complete after 0s [id=secgenai-local-documents-000000000000]
 module.s3.aws_s3_bucket_versioning.documents: Creation complete after 1s [id=secgenai-local-documents-000000000000]
 module.s3.aws_kms_key.s3_documents: Still creating... [00m10s elapsed]
-module.s3.aws_kms_key.s3_documents: Creation complete after 12s [id=8e74d36e-21c1-4fdb-8515-f9ef6c25df42]
+module.s3.aws_kms_key.s3_documents: Creation complete after 12s [id=bfa531af-db26-45c0-9a70-4d8610dc525b]
 module.s3.aws_kms_alias.s3_documents: Creating...
 module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Creating...
-module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Creating...
 module.iam.aws_iam_policy.lambda_document_ingestion: Creating...
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Creating...
 module.s3.aws_kms_alias.s3_documents: Creation complete after 0s [id=alias/secgenai-local-s3-documents]
-module.iam.aws_iam_policy.lambda_document_ingestion: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
 module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Creation complete after 0s [id=secgenai-local-documents-000000000000]
 module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
-module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Creating...
+module.iam.aws_iam_policy.lambda_document_ingestion: Creation complete after 0s [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
 module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Creating...
+module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Creating...
 module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Creation complete after 0s [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
 module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Creation complete after 0s [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
 
@@ -872,7 +896,7 @@ Outputs:
 document_bucket_arn = "arn:aws:s3:::secgenai-local-documents-000000000000"
 document_bucket_name = "secgenai-local-documents-000000000000"
 embedding_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-embedding"
-kms_key_arn = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+kms_key_arn = "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b"
 orchestrator_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator"
 rag_orchestrator_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-rag-orchestrator"
 retrieval_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-retrieval"

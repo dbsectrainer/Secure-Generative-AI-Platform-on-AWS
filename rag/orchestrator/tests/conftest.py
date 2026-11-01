@@ -1,6 +1,6 @@
 """
-pytest configuration: add the rag/orchestrator and genai/prompt_builder
-directories to sys.path so that handler.py and builder.py can be imported
+pytest configuration: add the rag/orchestrator, genai/prompt_builder, and
+shared auth layer directories to sys.path so their modules can be imported
 directly.
 """
 import os
@@ -11,6 +11,11 @@ import pytest
 
 _ORCHESTRATOR_DIR = str(Path(__file__).parent.parent)
 _PROMPT_BUILDER_DIR = str(Path(__file__).parent.parent.parent.parent / "genai" / "prompt_builder")
+_COMMON_LAYER = str(Path(__file__).parents[3] / "layers" / "common")
+
+for _path in (_COMMON_LAYER, _PROMPT_BUILDER_DIR):
+    if _path not in sys.path:
+        sys.path.insert(0, _path)
 
 
 @pytest.fixture(autouse=True, scope="module")

@@ -20,3 +20,8 @@ output "routes" {
     key => "https://${aws_api_gateway_rest_api.main.id}.execute-api.${var.region}.amazonaws.com/${aws_api_gateway_stage.main.stage_name}/${resource.path_part}"
   }
 }
+
+output "authorizer_id" {
+  description = "ID of the Cognito API Gateway authorizer (empty when disabled)"
+  value       = var.enable_auth ? aws_api_gateway_authorizer.cognito[0].id : ""
+}

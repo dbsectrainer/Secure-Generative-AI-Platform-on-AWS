@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Secure Generative AI Platform - local RAG console">
+  <title>Secure GenAI Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">SG</span>
+        <div>
+          <p class="eyebrow">BE EASY ENTERPRISES</p>
+          <h1>Secure GenAI Platform</h1>
+        </div>
+      </div>
+      <span class="pill" title="Requests require a bearer token">JWT protected</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Grounded generative AI</p>
+        <h2>Ask your secure document corpus.</h2>
+        <p class="lede">
+          The RAG pipeline retrieves policy excerpts, builds a constrained prompt,
+          and returns a grounded answer with token and latency accounting.
+        </p>
+        <div class="chips" aria-label="Pipeline stages">
+          <span>Retrieve</span><span>Build</span><span>Guardrail</span><span>Answer</span>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="query-heading">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Workspace</p>
+            <h3 id="query-heading">Run a request</h3>
+          </div>
+          <span class="pill subtle">Local verification</span>
+        </div>
+
+        <form id="query-form" novalidate>
+          <label for="query">Question</label>
+          <textarea id="query" name="query" rows="4" required
+            placeholder="e.g. Summarize the security controls">Summarize the security controls</textarea>
+
+          <div class="row">
+            <div class="field">
+              <label for="mode">Endpoint</label>
+              <select id="mode" name="mode">
+                <option value="/query">RAG query · /query</option>
+                <option value="/invoke">Direct invoke · /invoke</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="top-k">Retrieved chunks (RAG only)</label>
+              <input id="top-k" name="top-k" type="number" min="1" max="10" value="3">
+            </div>
+          </div>
+
+          <label for="token">Bearer token</label>
+          <div class="token-row">
+            <input id="token" name="token" type="password" autocomplete="off"
+              placeholder="Paste a Cognito access token, or load a local test token">
+            <button type="button" id="load-token" class="button secondary">Get local test token</button>
+          </div>
+          <p class="hint">The local token is issued by the test doubles. Production uses Cognito.</p>
+
+          <div class="actions">
+            <button type="submit" id="run" class="button primary">Run request</button>
+            <button type="reset" id="reset" class="button ghost">Clear</button>
+          </div>
+        </form>
+        <p id="form-error" class="form-error" role="alert" hidden></p>
+      </section>
+
+      <section class="panel response" aria-labelledby="response-heading">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Response</p>
+            <h3 id="response-heading">Model output</h3>
+          </div>
+          <span id="response-status" class="pill" data-testid="response-status">Idle</span>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <p>No request yet.</p>
+          <p class="hint">Load a token and run a request to see a grounded answer.</p>
+        </div>
+
+        <div id="loading" class="loading" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Retrieving context and invoking the model…</span>
+        </div>
+
+        <div id="result" hidden>
+          <p id="output" class="output" data-testid="output"></p>
+          <dl class="metrics">
+            <div><dt>Model</dt><dd id="metric-model">—</dd></div>
+            <div><dt>Input tokens</dt><dd id="metric-input">—</dd></div>
+            <div><dt>Output tokens</dt><dd id="metric-output">—</dd></div>
+            <div><dt>Chunks used</dt><dd id="metric-chunks">—</dd></div>
+            <div><dt>Estimated cost</dt><dd id="metric-cost">—</dd></div>
+            <div><dt>Total latency</dt><dd id="metric-latency">—</dd></div>
+          </dl>
+          <details>
+            <summary>Raw JSON response</summary>
+            <pre id="raw" tabindex="0"></pre>
+          </details>
+        </div>
+
+        <div id="error-state" class="error-state" role="alert" hidden>
+          <strong>Request failed.</strong>
+          <p id="error-message"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Local development console · API calls are proxied same-origin · No document data is stored in this page.</p>
+    </footer>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>

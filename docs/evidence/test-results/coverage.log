@@ -1,20 +1,22 @@
-........................................................................ [ 57%]
-......................................................                   [100%]
+........................................................................ [ 51%]
+.....................................................................    [100%]
 
 ---------- coverage: platform darwin, python 3.12.7-final-0 ----------
 Name                                    Stmts   Miss Branch BrPart  Cover   Missing
 -----------------------------------------------------------------------------------
 genai/prompt_builder/builder.py            60      2     22      2    95%   120, 206
-lambda/bedrock_integration/handler.py      99      7     28      5    91%   88, 97, 99, 161, 207-209
-rag/embedding/handler.py                  116     24     24      5    78%   87, 95, 97, 103, 172-175, 184-207, 272
+lambda/bedrock_integration/handler.py     112      7     28      3    93%   92, 101, 103, 262-263, 282-283
+layers/common/auth.py                      78     12     24      4    84%   55, 68, 79, 89-93, 114, 139-141
+layers/common/pii.py                       38      4      8      0    87%   44-55
+rag/embedding/handler.py                  132     29     26      6    77%   62, 99, 107, 109, 115, 184-187, 196-219, 256-257, 281-282, 297
 rag/ingestion/handler.py                   75      0     22      3    97%   89->109, 95->98, 99->102
-rag/orchestrator/handler.py               138      8     32      9    90%   37->40, 107, 113, 115, 117, 123, 163, 168, 357
-rag/retrieval/handler.py                  135     26     28      6    80%   88, 94, 96, 98, 104, 190-193, 238-267, 343
+rag/orchestrator/handler.py               151     12     32      9    89%   37->40, 111, 117, 119, 121, 127, 167, 172, 295-296, 362-363, 378
+rag/retrieval/handler.py                  151     31     30      7    79%   63, 100, 106, 108, 110, 116, 202-205, 250-279, 327-328, 352-353, 368
 -----------------------------------------------------------------------------------
-TOTAL                                     639     67    156     30    88%
+TOTAL                                     813     97    192     34    87%
 
 10 files skipped due to complete coverage.
 Coverage HTML written to dir docs/evidence/test-results/htmlcov
 Coverage XML written to file docs/evidence/test-results/coverage.xml
 
-126 passed in 1.35s
+141 passed in 1.97s

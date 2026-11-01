@@ -2,6 +2,7 @@
 minversion = "8.0"
 testpaths = [
     "genai/tests",
+    "tests/layers_common",
     "lambda/bedrock_integration/tests",
     "rag/ingestion/tests",
     "rag/embedding/tests",
@@ -25,7 +26,7 @@ extend-exclude = [
 select = ["E4", "E7", "E9", "F"]
 
 [tool.coverage.run]
-source = ["genai", "lambda", "rag"]
+source = ["genai", "lambda", "layers/common", "rag"]
 branch = true
 omit = ["*/tests/*", "*/__pycache__/*"]
 
@@ -39,7 +40,7 @@ exclude_lines = [
 
 [tool.mypy]
 python_version = "3.12"
-files = ["genai", "lambda", "rag"]
+files = ["genai", "lambda", "layers/common", "rag"]
 exclude = ["/tests/", "/__pycache__/"]
 ignore_missing_imports = true
 warn_unused_ignores = false

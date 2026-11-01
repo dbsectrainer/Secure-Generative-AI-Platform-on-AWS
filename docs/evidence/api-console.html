@@ -68,8 +68,8 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
       workflows. Response bodies are embedded verbatim from that run.
     </p>
     <div class="meta">
-      <span class="badge pass">PASS — 11/11 checks passed</span>
-      <span>Generated: 2026-11-01 01:11:41 UTC</span>
+      <span class="badge pass">PASS — 12/12 checks passed</span>
+      <span>Generated: 2026-11-01 02:07:59 UTC</span>
       <span>Runtime: AWS SAM CLI + Docker Lambda emulation</span>
     </div>
     <div class="notice">
@@ -80,18 +80,18 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
       availability, or OpenSearch index semantics.
     </div>
     <div class="summary">
-      <div class="stat"><div class="value">11</div><div class="label">HTTP cases</div></div>
-      <div class="stat"><div class="value">11</div><div class="label">Passed</div></div>
+      <div class="stat"><div class="value">12</div><div class="label">HTTP cases</div></div>
+      <div class="stat"><div class="value">12</div><div class="label">Passed</div></div>
       <div class="stat"><div class="value">0</div><div class="label">Failed</div></div>
       <div class="stat"><div class="value">5</div><div class="label">2xx responses</div></div>
     </div>
-    
+
             <section class="case" id="invoke_success">
               <div class="case-head">
                 <h2>invoke success</h2>
                 <span class="status pass">PASS · HTTP 200</span>
               </div>
-              <div class="path">POST /invoke · 37.4 ms</div>
+              <div class="path">POST /invoke · 23.4 ms</div>
               <div class="path">Direct Bedrock invocation returns grounded model output and usage.</div>
               <pre>{
   &quot;output&quot;: &quot;Local test double response: AWS Bedrock was not called. The request/response path completed successfully.&quot;,
@@ -102,15 +102,15 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   }
 }</pre>
               <div class="checks"><span class="check">HTTP 200 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_invoke_success passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="embed_success">
               <div class="case-head">
                 <h2>embed success</h2>
                 <span class="status pass">PASS · HTTP 200</span>
               </div>
-              <div class="path">POST /embed · 941.3 ms</div>
+              <div class="path">POST /embed · 720.4 ms</div>
               <div class="path">Embedding generation accepts text and returns 1024-dimensional vector status.</div>
               <pre>{
   &quot;indexed&quot;: true,
@@ -121,15 +121,15 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   }
 }</pre>
               <div class="checks"><span class="check">HTTP 200 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_embed_success passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="retrieve_success">
               <div class="case-head">
                 <h2>retrieve success</h2>
                 <span class="status pass">PASS · HTTP 200</span>
               </div>
-              <div class="path">POST /retrieve · 643.9 ms</div>
+              <div class="path">POST /retrieve · 715.3 ms</div>
               <div class="path">Vector retrieval returns metadata-scoped chunks bounded by top_k.</div>
               <pre>{
   &quot;results&quot;: [
@@ -154,15 +154,15 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   &quot;top_k&quot;: 2
 }</pre>
               <div class="checks"><span class="check">HTTP 200 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_retrieve_success passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="query_success">
               <div class="case-head">
                 <h2>query success</h2>
                 <span class="status pass">PASS · HTTP 200</span>
               </div>
-              <div class="path">POST /query · 666.5 ms</div>
+              <div class="path">POST /query · 747.6 ms</div>
               <div class="path">Full RAG pipeline: retrieval -&gt; prompt construction -&gt; inference, including the prompt-builder Lambda layer import.</div>
               <pre>{
   &quot;output&quot;: &quot;Based on the retrieved policy excerpts, the platform encrypts data with a customer-managed KMS key, retains CloudTrail audit events for seven years, and scopes retrieval results by document metadata.&quot;,
@@ -175,47 +175,47 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   },
   &quot;retrieval&quot;: {
     &quot;chunks_used&quot;: 3,
-    &quot;latency_ms&quot;: 5.6
+    &quot;latency_ms&quot;: 4.6
   },
   &quot;latency_ms&quot;: {
-    &quot;retrieval&quot;: 5.6,
+    &quot;retrieval&quot;: 4.6,
     &quot;prompt_construction&quot;: 0.0,
-    &quot;bedrock_inference&quot;: 3.7,
-    &quot;total&quot;: 9.5
+    &quot;bedrock_inference&quot;: 3.9,
+    &quot;total&quot;: 18.6
   }
 }</pre>
               <div class="checks"><span class="check">HTTP 200 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_query_success passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="invoke_empty_prompt">
               <div class="case-head">
                 <h2>invoke empty prompt</h2>
                 <span class="status pass">PASS · HTTP 400</span>
               </div>
-              <div class="path">POST /invoke · 10.6 ms</div>
+              <div class="path">POST /invoke · 10.3 ms</div>
               <div class="path">Empty prompt is rejected as a 400 validation error.</div>
               <pre>{
   &quot;error&quot;: &quot;Request must include a non-empty &#x27;prompt&#x27; field.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="invoke_malformed_json">
               <div class="case-head">
                 <h2>invoke malformed json</h2>
                 <span class="status pass">PASS · HTTP 400</span>
               </div>
-              <div class="path">POST /invoke · 10.0 ms</div>
+              <div class="path">POST /invoke · 9.8 ms</div>
               <div class="path">Malformed JSON body is rejected as 400 rather than crashing the handler.</div>
               <pre>{
   &quot;error&quot;: &quot;Request body must contain valid JSON.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="invoke_non_object_json">
               <div class="case-head">
                 <h2>invoke non object json</h2>
@@ -227,57 +227,71 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   &quot;error&quot;: &quot;Request body must contain a JSON object.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="embed_empty_text">
               <div class="case-head">
                 <h2>embed empty text</h2>
                 <span class="status pass">PASS · HTTP 400</span>
               </div>
-              <div class="path">POST /embed · 8.9 ms</div>
+              <div class="path">POST /embed · 9.6 ms</div>
               <div class="path">Missing embedding text is rejected as a 400 validation error.</div>
               <pre>{
   &quot;error&quot;: &quot;Event must include a non-empty &#x27;text&#x27; field.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="retrieve_invalid_top_k">
               <div class="case-head">
                 <h2>retrieve invalid top k</h2>
                 <span class="status pass">PASS · HTTP 400</span>
               </div>
-              <div class="path">POST /retrieve · 9.2 ms</div>
+              <div class="path">POST /retrieve · 10.1 ms</div>
               <div class="path">Null top_k is rejected as 400 instead of raising TypeError/500.</div>
               <pre>{
   &quot;error&quot;: &quot;top_k must be an integer between 1 and 100.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
             <section class="case" id="query_invalid_top_k">
               <div class="case-head">
                 <h2>query invalid top k</h2>
                 <span class="status pass">PASS · HTTP 400</span>
               </div>
-              <div class="path">POST /query · 9.3 ms</div>
+              <div class="path">POST /query · 9.5 ms</div>
               <div class="path">Out-of-range top_k is rejected as 400 before any AWS call.</div>
               <pre>{
   &quot;error&quot;: &quot;top_k must be between 1 and 100.&quot;
 }</pre>
               <div class="checks"><span class="check">HTTP 400 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
-              
+
             </section>
-            
+
+            <section class="case" id="unauthorized_no_token">
+              <div class="case-head">
+                <h2>unauthorized no token</h2>
+                <span class="status pass">PASS · HTTP 401</span>
+              </div>
+              <div class="path">POST /invoke · 8.7 ms</div>
+              <div class="path">A protected API route rejects a request without a bearer token.</div>
+              <pre>{
+  &quot;error&quot;: &quot;A valid bearer token is required.&quot;
+}</pre>
+              <div class="checks"><span class="check">HTTP 401 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_error passed</span></div>
+
+            </section>
+
             <section class="case" id="query_injection_input">
               <div class="case-head">
                 <h2>query injection input</h2>
                 <span class="status pass">PASS · HTTP 200</span>
               </div>
-              <div class="path">POST /query · 12.2 ms</div>
+              <div class="path">POST /query · 11.7 ms</div>
               <div class="path">A prompt-injection phrase is sanitized by PromptBuilder and the pipeline still completes with a grounded response.</div>
               <pre>{
   &quot;output&quot;: &quot;Based on the retrieved policy excerpts, the platform encrypts data with a customer-managed KMS key, retains CloudTrail audit events for seven years, and scopes retrieval results by document metadata.&quot;,
@@ -290,19 +304,19 @@ footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--borde
   },
   &quot;retrieval&quot;: {
     &quot;chunks_used&quot;: 3,
-    &quot;latency_ms&quot;: 1.5
+    &quot;latency_ms&quot;: 1.4
   },
   &quot;latency_ms&quot;: {
-    &quot;retrieval&quot;: 1.5,
+    &quot;retrieval&quot;: 1.4,
     &quot;prompt_construction&quot;: 0.1,
-    &quot;bedrock_inference&quot;: 1.3,
-    &quot;total&quot;: 3.0
+    &quot;bedrock_inference&quot;: 1.2,
+    &quot;total&quot;: 3.1
   }
 }</pre>
               <div class="checks"><span class="check">HTTP 200 as expected</span><span class="check">Content-Type is application/json</span><span class="check">response body is valid JSON</span><span class="check">_query_success passed</span></div>
-              
+
             </section>
-            
+
     <footer>
       Generated by <code>scripts/e2e_api_verify.py</code>. This artifact is
       verification evidence, not a production dashboard. Screenshots of this

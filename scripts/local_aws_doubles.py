@@ -31,12 +31,33 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
+import jwt
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+
 LOG = logging.getLogger("local-aws-doubles")
+
+# ── Local auth issuer (test-only RSA signing key) ────────────────────────────
+
+AUTH_ISSUER = os.environ.get("AUTH_ISSUER", "http://host.docker.internal:9000")
+AUTH_AUDIENCE = os.environ.get("AUTH_AUDIENCE", "secgenai-api")
+AUTH_KEY_ID = "local-auth-key"
+
+_PRIVATE_KEY = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+_PUBLIC_KEY = _PRIVATE_KEY.public_key()
+_PUBLIC_PEM = _PUBLIC_KEY.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+)
+_PUBLIC_JWK = json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(_PUBLIC_KEY))
+_PUBLIC_JWK.update({"kid": AUTH_KEY_ID, "use": "sig", "alg": "RS256"})
 
 # Deterministic 1024-dimensional embedding (Titan Text Embeddings v2 default).
 EMBEDDING = [round(((i * 37) % 200 - 100) / 1000.0, 4) for i in range(1024)]
@@ -140,6 +161,34 @@ class Handler(BaseHTTPRequestHandler):
     # ── Routing ────────────────────────────────────────────────────────────
 
     def do_GET(self) -> None:  # noqa: N802
+        if self.path == "/auth/token":
+            now = int(time.time())
+            token = jwt.encode(
+                {
+                    "sub": "local-test-user",
+                    "iss": AUTH_ISSUER,
+                    "aud": AUTH_AUDIENCE,
+                    "iat": now,
+                    "exp": now + 3600,
+                },
+                _PRIVATE_KEY,
+                algorithm="RS256",
+                headers={"kid": AUTH_KEY_ID},
+            )
+            self._send_json(
+                200,
+                {
+                    "access_token": token,
+                    "token_type": "Bearer",
+                    "expires_in": 3600,
+                    "issuer": AUTH_ISSUER,
+                    "audience": AUTH_AUDIENCE,
+                },
+            )
+            return
+        if self.path == "/.well-known/jwks.json":
+            self._send_json(200, {"keys": [_PUBLIC_JWK]})
+            return
         if self.path.rstrip("/") in ("", "/health"):
             self._send_json(
                 200,

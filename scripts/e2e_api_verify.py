@@ -39,6 +39,7 @@ class Case:
     body: str
     expected_status: int
     assertions: list[Callable[[Any], None]] = field(default_factory=list)
+    auth: bool = True
 
 
 @dataclass
@@ -191,6 +192,15 @@ CASES: list[Case] = [
         assertions=[_error],
     ),
     Case(
+        name="unauthorized_no_token",
+        description="A protected API route rejects a request without a bearer token.",
+        path="/invoke",
+        body=json.dumps({"prompt": "no token"}),
+        expected_status=401,
+        assertions=[_error],
+        auth=False,
+    ),
+    Case(
         name="query_injection_input",
         description=(
             "A prompt-injection phrase is sanitized by PromptBuilder and the pipeline "
@@ -209,11 +219,14 @@ CASES: list[Case] = [
 ]
 
 
-def _post(base_url: str, path: str, body: str) -> tuple[int, str, str, float]:
+def _post(base_url: str, path: str, body: str, token: str) -> tuple[int, str, str, float]:
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
     request = urllib.request.Request(
         f"{base_url.rstrip('/')}{path}",
         data=body.encode("utf-8"),
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        headers=headers,
         method="POST",
     )
     started = time.monotonic()
@@ -230,10 +243,22 @@ def _post(base_url: str, path: str, body: str) -> tuple[int, str, str, float]:
     return status, content_type, raw, duration_ms
 
 
-def run_cases(base_url: str) -> list[Result]:
+def _fetch_token(token_url: str) -> str:
+    with urllib.request.urlopen(token_url, timeout=30) as response:  # noqa: S310
+        payload = json.loads(response.read().decode("utf-8"))
+    token = payload.get("access_token")
+    if not isinstance(token, str) or not token:
+        raise RuntimeError("local auth token endpoint did not return access_token")
+    return token
+
+
+def run_cases(base_url: str, token: str) -> list[Result]:
     results: list[Result] = []
     for case in CASES:
-        status, content_type, raw, duration_ms = _post(base_url, case.path, case.body)
+        request_token = token if case.auth else ""
+        status, content_type, raw, duration_ms = _post(
+            base_url, case.path, case.body, request_token
+        )
         failures: list[str] = []
         checks: list[str] = []
         parsed: Any = None
@@ -427,6 +452,9 @@ def build_html(base_url: str, results: list[Result], generated_at: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://127.0.0.1:3000")
+    parser.add_argument(
+        "--token-url", default="http://127.0.0.1:9000/auth/token"
+    )
     parser.add_argument("--output-dir", default="docs/evidence")
     args = parser.parse_args()
 
@@ -436,7 +464,8 @@ def main() -> int:
 
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     print(f"Verifying {args.base_url} at {generated_at}")
-    results = run_cases(args.base_url)
+    token = _fetch_token(args.token_url)
+    results = run_cases(args.base_url, token)
 
     summary = {
         "generated_at": generated_at,

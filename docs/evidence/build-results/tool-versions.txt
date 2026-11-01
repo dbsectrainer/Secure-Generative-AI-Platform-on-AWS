@@ -6,6 +6,7 @@ on darwin_arm64
 v26.13.0
 aws-cli/2.39.1 Python/3.15.2 Darwin/27.0.0 source/arm64
 moto 5.2.3
+PyJWT 2.10.1
 mypy 1.11.2 (compiled: yes)
 Coverage.py, version 7.17.0 with C extension
-LocalStack image: localstack/localstack:3.8
+LocalStack image: localstack/localstack:3.8 (Community 3.8.1)

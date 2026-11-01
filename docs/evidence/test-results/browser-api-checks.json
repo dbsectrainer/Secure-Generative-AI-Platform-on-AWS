@@ -98,8 +98,8 @@
         "latency_ms": {
           "retrieval": 1.4,
           "prompt_construction": 0.0,
-          "bedrock_inference": 1.1,
-          "total": 2.5
+          "bedrock_inference": 1.0,
+          "total": 2.9
         }
       }
     },
@@ -115,8 +115,21 @@
       "response": {
         "error": "Request must include a non-empty 'prompt' field."
       }
+    },
+    {
+      "name": "unauthorized",
+      "path": "/invoke",
+      "request": {
+        "prompt": "no token"
+      },
+      "status": 401,
+      "expected_status": 401,
+      "passed": true,
+      "response": {
+        "error": "A valid bearer token is required."
+      }
     }
   ],
-  "passed": 5,
-  "total": 5
+  "passed": 6,
+  "total": 6
 }

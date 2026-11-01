@@ -2,7 +2,7 @@
   "endpoint": "http://127.0.0.1:4566",
   "terraform_dir": "/Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/terraform/environments/localstack",
   "bucket": "secgenai-local-documents-000000000000",
-  "kms_key_arn": "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42",
+  "kms_key_arn": "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b",
   "checks": [
     {
       "name": "s3_bucket_exists",
@@ -19,7 +19,7 @@
       "passed": true,
       "detail": {
         "SSEAlgorithm": "aws:kms",
-        "KMSMasterKeyID": "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+        "KMSMasterKeyID": "arn:aws:kms:us-east-1:000000000000:key/bfa531af-db26-45c0-9a70-4d8610dc525b"
       }
     },
     {

@@ -98,6 +98,16 @@ module "iam" {
   tags                         = local.common_tags
 }
 
+# ── Cognito Authentication Module ─────────────────────────────────────────────
+
+module "auth" {
+  source = "../../modules/auth"
+
+  name_prefix = local.name_prefix
+  region      = var.region
+  tags        = local.common_tags
+}
+
 # ── Bedrock Module ────────────────────────────────────────────────────────────
 
 module "bedrock" {
@@ -111,6 +121,12 @@ module "bedrock" {
   document_bucket_name           = module.s3.bucket_id
   kms_key_arn                    = module.s3.kms_key_arn
   bedrock_model_id               = var.bedrock_model_id
+  inference_profile_arn          = var.inference_profile_arn
+  auth_required                  = true
+  auth_jwks_url                  = module.auth.jwks_url
+  auth_issuer                    = module.auth.issuer
+  auth_audience                  = module.auth.client_id
+  pii_redaction_enabled          = var.pii_redaction_enabled
   max_tokens                     = var.max_tokens
   log_retention_days             = 90
   reserved_concurrent_executions = var.reserved_concurrent_executions
@@ -156,6 +172,12 @@ module "rag" {
   opensearch_endpoint          = module.opensearch.collection_endpoint
   embedding_model_id           = var.embedding_model_id
   inference_model_id           = var.bedrock_model_id
+  inference_profile_arn        = var.inference_profile_arn
+  auth_required                = true
+  auth_jwks_url                = module.auth.jwks_url
+  auth_issuer                  = module.auth.issuer
+  auth_audience                = module.auth.client_id
+  pii_redaction_enabled        = var.pii_redaction_enabled
   ingestion_lambda_role_arn    = module.iam.lambda_ingestion_role_arn
   embedding_lambda_role_arn    = module.iam.lambda_embedding_role_arn
   retrieval_lambda_role_arn    = module.iam.lambda_retrieval_role_arn
@@ -206,5 +228,6 @@ module "api" {
   retrieval_lambda_arn     = module.rag.retrieval_lambda_arn
   rag_orchestrator_arn     = module.rag.orchestrator_lambda_arn
   waf_web_acl_arn          = module.waf.web_acl_arn
+  cognito_user_pool_arn    = module.auth.user_pool_arn
   tags                     = local.common_tags
 }

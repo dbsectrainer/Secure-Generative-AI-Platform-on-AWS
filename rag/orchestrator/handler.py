@@ -39,6 +39,9 @@ if _GENAI_PATH not in sys.path:
 
 from builder import PromptBuilder  # noqa: E402
 
+from auth import AuthError, require_auth  # noqa: E402
+from pii import PiiError, redact_pii  # noqa: E402
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
@@ -51,6 +54,7 @@ logger = logging.getLogger(__name__)
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 BEDROCK_MODEL_ID = os.environ["BEDROCK_MODEL_ID"]
+BEDROCK_INFERENCE_PROFILE_ARN = os.environ.get("BEDROCK_INFERENCE_PROFILE_ARN", "")
 BEDROCK_REGION = os.environ.get("BEDROCK_REGION", os.environ.get("AWS_REGION", "eu-west-1"))
 RETRIEVAL_LAMBDA_ARN = os.environ["RETRIEVAL_LAMBDA_ARN"]
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
@@ -206,11 +210,15 @@ def _invoke_retrieval(
 
 # ── Bedrock inference ─────────────────────────────────────────────────────────
 
+def _effective_model_id() -> str:
+    return BEDROCK_INFERENCE_PROFILE_ARN or BEDROCK_MODEL_ID
+
+
 def _invoke_bedrock(payload: dict[str, Any]) -> tuple[str, dict[str, int], float]:
     """Call Bedrock with *payload* and return (output_text, usage, latency_ms)."""
     start = time.monotonic()
     invoke_kwargs: dict[str, Any] = {
-        "modelId": BEDROCK_MODEL_ID,
+        "modelId": _effective_model_id(),
         "contentType": "application/json",
         "accept": "application/json",
         "body": json.dumps(payload),
@@ -233,7 +241,7 @@ def _invoke_bedrock(payload: dict[str, Any]) -> tuple[str, dict[str, int], float
     logger.info(
         "Bedrock inference complete",
         extra={
-            "model_id": BEDROCK_MODEL_ID,
+            "model_id": _effective_model_id(),
             "input_tokens": usage["input_tokens"],
             "output_tokens": usage["output_tokens"],
             "latency_ms": round(latency_ms, 1),
@@ -282,11 +290,16 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     """
     pipeline_start = time.monotonic()
     is_proxy = _is_api_gateway_event(event)
+    try:
+        require_auth(event)
+    except AuthError as exc:
+        return _build_response(exc.status_code, {"error": exc.message}, is_proxy)
     logger.debug("RAG orchestrator received event")
 
     try:
         payload = _parse_event(event)
         query, filters, top_k = _validate_event(payload)
+        query = redact_pii(query)
 
         # ── Stage 1: Retrieval ─────────────────────────────────────────────
         retrieval_results, retrieval_latency = _invoke_retrieval(query, filters, top_k)
@@ -320,7 +333,7 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
             200,
             {
                 "output": output_text,
-                "model_id": BEDROCK_MODEL_ID,
+                "model_id": _effective_model_id(),
                 "usage": {
                     "input_tokens": usage["input_tokens"],
                     "output_tokens": usage["output_tokens"],
@@ -344,6 +357,14 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # no
     except ValueError as exc:
         logger.warning("Invalid RAG request: %s", exc)
         return _build_response(400, {"error": str(exc)}, is_proxy)
+
+    except PiiError as exc:
+        logger.error("PII redaction failed: %s", exc)
+        return _build_response(
+            502,
+            {"error": "PII redaction failed. Please retry later."},
+            is_proxy,
+        )
 
     except ClientError as exc:
         error_code = exc.response["Error"]["Code"]

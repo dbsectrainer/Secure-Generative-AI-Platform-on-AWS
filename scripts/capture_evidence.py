@@ -38,7 +38,9 @@ def _record_browser_events(page: Page, console_lines: list[str], failures: list[
     )
 
 
-def _browser_api_checks(context: Any, base_url: str, output: Path) -> dict[str, Any]:
+def _browser_api_checks(
+    context: Any, base_url: str, token: str, output: Path
+) -> dict[str, Any]:
     """Exercise the documented endpoints through Playwright's HTTP client."""
     cases = [
         (
@@ -56,13 +58,17 @@ def _browser_api_checks(context: Any, base_url: str, output: Path) -> dict[str, 
         ("retrieve", "/retrieve", {"query": "retention policy", "top_k": 2}, 200),
         ("query", "/query", {"query": "Summarize the security controls", "top_k": 2}, 200),
         ("validation_error", "/invoke", {"prompt": "   "}, 400),
+        ("unauthorized", "/invoke", {"prompt": "no token"}, 401),
     ]
     results: list[dict[str, Any]] = []
     for name, path, payload, expected_status in cases:
+        headers = {"Content-Type": "application/json"}
+        if name != "unauthorized":
+            headers["Authorization"] = f"Bearer {token}"
         response = context.request.post(
             f"{base_url.rstrip('/')}{path}",
             data=json.dumps(payload),
-            headers={"Content-Type": "application/json"},
+            headers=headers,
             timeout=120_000,
         )
         try:
@@ -96,6 +102,9 @@ def main() -> int:
     parser.add_argument("--output-dir", default="docs/evidence/screenshots")
     parser.add_argument("--evidence-dir", default="docs/evidence")
     parser.add_argument("--api-base-url", default="http://127.0.0.1:3000")
+    parser.add_argument(
+        "--token-url", default="http://127.0.0.1:9000/auth/token"
+    )
     args = parser.parse_args()
 
     html_path = Path(args.html).resolve()
@@ -165,9 +174,16 @@ def main() -> int:
         api_checks: dict[str, Any] | None = None
         try:
             api_context = browser.new_context()
+            token_response = api_context.request.get(args.token_url, timeout=30_000)
+            if not token_response.ok:
+                raise RuntimeError(
+                    f"local token endpoint returned HTTP {token_response.status}"
+                )
+            token = token_response.json()["access_token"]
             api_checks = _browser_api_checks(
                 api_context,
                 args.api_base_url,
+                token,
                 test_results / "browser-api-checks.json",
             )
             api_context.close()

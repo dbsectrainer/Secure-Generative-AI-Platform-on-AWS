@@ -20,16 +20,25 @@ run "rag_wiring" {
     orchestrator_lambda_role_arn = "arn:aws:iam::123456789012:role/orchestrator"
     guardrail_id                 = "guardrail-test"
     guardrail_version            = "1"
+    auth_required                = true
+    auth_jwks_url                = "https://issuer.test/.well-known/jwks.json"
+    auth_issuer                  = "https://issuer.test"
+    auth_audience                = "client-test"
   }
 
   assert {
-    condition     = length(aws_lambda_function.orchestrator.layers) == 1
+    condition     = length(aws_lambda_function.orchestrator.layers) == 2
     error_message = "RAG orchestrator must attach the prompt-builder layer"
   }
 
   assert {
     condition     = aws_lambda_function.orchestrator.environment[0].variables["BEDROCK_GUARDRAIL_ID"] == "guardrail-test"
     error_message = "RAG orchestrator must receive the configured guardrail ID"
+  }
+
+  assert {
+    condition     = aws_lambda_function.orchestrator.environment[0].variables["AUTH_REQUIRED"] == "true"
+    error_message = "RAG orchestrator must receive the auth configuration"
   }
 
   assert {

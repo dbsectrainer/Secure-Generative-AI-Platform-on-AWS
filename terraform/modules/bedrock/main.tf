@@ -30,6 +30,29 @@ data "archive_file" "bedrock_lambda" {
   output_path = "${path.module}/bedrock_lambda.zip"
 }
 
+data "archive_file" "auth_layer" {
+  type        = "zip"
+  output_path = "${path.module}/auth_layer.zip"
+
+  source {
+    content  = file("${path.module}/../../../layers/common/auth.py")
+    filename = "python/auth.py"
+  }
+
+  source {
+    content  = file("${path.module}/../../../layers/common/pii.py")
+    filename = "python/pii.py"
+  }
+}
+
+resource "aws_lambda_layer_version" "auth" {
+  layer_name          = "${var.name_prefix}-auth-bedrock"
+  description         = "Bearer-token validation for the Bedrock orchestrator"
+  filename            = data.archive_file.auth_layer.output_path
+  source_code_hash    = data.archive_file.auth_layer.output_base64sha256
+  compatible_runtimes = ["python3.13"]
+}
+
 # ── Lambda Function ───────────────────────────────────────────────────────────
 
 resource "aws_lambda_function" "bedrock_orchestrator" {
@@ -44,15 +67,22 @@ resource "aws_lambda_function" "bedrock_orchestrator" {
 
   environment {
     variables = {
-      BEDROCK_MODEL_ID          = var.bedrock_model_id
-      BEDROCK_REGION            = var.region
-      BEDROCK_GUARDRAIL_ID      = var.enable_bedrock_guardrail ? aws_bedrock_guardrail.main[0].guardrail_id : ""
-      BEDROCK_GUARDRAIL_VERSION = var.enable_bedrock_guardrail ? aws_bedrock_guardrail_version.main[0].version : ""
-      DOCUMENT_BUCKET           = var.document_bucket_name
-      MAX_TOKENS                = tostring(var.max_tokens)
-      LOG_LEVEL                 = var.log_level
-      POWERTOOLS_LOG_LEVEL      = var.log_level
-      POWERTOOLS_SERVICE_NAME   = "${var.name_prefix}-bedrock-orchestrator"
+      BEDROCK_MODEL_ID              = var.bedrock_model_id
+      BEDROCK_INFERENCE_PROFILE_ARN = var.inference_profile_arn
+      BEDROCK_REGION                = var.region
+      BEDROCK_GUARDRAIL_ID          = var.enable_bedrock_guardrail ? aws_bedrock_guardrail.main[0].guardrail_id : ""
+      BEDROCK_GUARDRAIL_VERSION     = var.enable_bedrock_guardrail ? aws_bedrock_guardrail_version.main[0].version : ""
+      AUTH_REQUIRED                 = tostring(var.auth_required)
+      AUTH_JWKS_URL                 = var.auth_jwks_url
+      AUTH_ISSUER                   = var.auth_issuer
+      AUTH_AUDIENCE                 = var.auth_audience
+      PII_REDACTION_ENABLED         = tostring(var.pii_redaction_enabled)
+      PII_LANGUAGE_CODE             = var.pii_language_code
+      DOCUMENT_BUCKET               = var.document_bucket_name
+      MAX_TOKENS                    = tostring(var.max_tokens)
+      LOG_LEVEL                     = var.log_level
+      POWERTOOLS_LOG_LEVEL          = var.log_level
+      POWERTOOLS_SERVICE_NAME       = "${var.name_prefix}-bedrock-orchestrator"
     }
   }
 
@@ -64,6 +94,8 @@ resource "aws_lambda_function" "bedrock_orchestrator" {
   tracing_config {
     mode = "Active"
   }
+
+  layers = [aws_lambda_layer_version.auth.arn]
 
   reserved_concurrent_executions = var.reserved_concurrent_executions
 

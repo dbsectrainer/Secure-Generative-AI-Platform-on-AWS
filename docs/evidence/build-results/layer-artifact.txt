@@ -1,3 +1,8 @@
+PromptBuilderLayer:
 .aws-sam/build/PromptBuilderLayer/python/requirements.txt
 .aws-sam/build/PromptBuilderLayer/python/builder.py
 .aws-sam/build/PromptBuilderLayer/python/templates.py
+AuthLayer:
+.aws-sam/build/AuthLayer/python/auth.py
+.aws-sam/build/AuthLayer/python/requirements.txt
+.aws-sam/build/AuthLayer/python/pii.py

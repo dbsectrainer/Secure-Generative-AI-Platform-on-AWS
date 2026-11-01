@@ -1,0 +1,3 @@
+# The auth module uses PyJWT, which is declared by each HTTP Lambda function.
+# Keeping this file dependency-free avoids a second copy of cryptography in the
+# layer artifact.
