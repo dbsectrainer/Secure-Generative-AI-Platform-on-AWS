@@ -1,0 +1,8 @@
+$ terraform test (dev)
+tests/wiring.tftest.hcl... in progress
+  run "full_stack_plan"... pass
+tests/wiring.tftest.hcl... tearing down
+tests/wiring.tftest.hcl... pass
+
+Success! 1 passed, 0 failed.
+exit=0

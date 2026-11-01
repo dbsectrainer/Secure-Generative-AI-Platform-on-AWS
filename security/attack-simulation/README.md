@@ -6,7 +6,7 @@
 
 > **⚠️ WARNING:** These scripts are designed for use against your own AWS infrastructure in a controlled test environment **only**. Never run these against production environments or systems you do not own. Ensure you have explicit written authorisation before executing any simulation.
 
-> **Verification status:** These simulations were **not executed** during the 2026-10-31 audit. They require a deployed environment and AWS credentials, and several target controls (WAF, GuardDuty, Config, Guardrails, OpenSearch access policies) are not yet provisioned by the current Terraform roots. Treat the results as environment-specific, not as evidence of implemented controls.
+> **Verification status:** These simulations were **not executed** during the 2026-10-31 audit. They require a deployed environment and AWS credentials. The Terraform roots now wire WAF, GuardDuty, Config, Guardrails, and OpenSearch policies, but those services are not available in LocalStack Community and were plan-tested only. Treat the results as environment-specific, not as evidence of live controls.
 
 ---
 

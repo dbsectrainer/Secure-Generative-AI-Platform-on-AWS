@@ -32,3 +32,8 @@ output "guardrail_arn" {
   description = "ARN of the Bedrock Guardrail (empty when not enabled)"
   value       = var.enable_bedrock_guardrail ? aws_bedrock_guardrail.main[0].guardrail_arn : ""
 }
+
+output "guardrail_version" {
+  description = "Published version of the Bedrock Guardrail (empty when not enabled)"
+  value       = var.enable_bedrock_guardrail ? aws_bedrock_guardrail_version.main[0].version : ""
+}

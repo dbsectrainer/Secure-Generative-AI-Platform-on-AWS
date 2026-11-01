@@ -2,14 +2,35 @@ $ grep -n "^module \\"" terraform/environments/dev/main.tf terraform/environment
 terraform/environments/dev/main.tf:52:module "network" {
 terraform/environments/dev/main.tf:70:module "s3" {
 terraform/environments/dev/main.tf:84:module "iam" {
-terraform/environments/dev/main.tf:101:module "bedrock" {
+terraform/environments/dev/main.tf:102:module "bedrock" {
+terraform/environments/dev/main.tf:122:module "opensearch" {
+terraform/environments/dev/main.tf:140:module "rag" {
+terraform/environments/dev/main.tf:167:module "security" {
+terraform/environments/dev/main.tf:180:module "waf" {
+terraform/environments/dev/main.tf:193:module "api" {
 terraform/environments/prod/main.tf:52:module "network" {
 terraform/environments/prod/main.tf:70:module "s3" {
 terraform/environments/prod/main.tf:85:module "iam" {
-terraform/environments/prod/main.tf:102:module "bedrock" {
+terraform/environments/prod/main.tf:103:module "bedrock" {
+terraform/environments/prod/main.tf:127:module "opensearch" {
+terraform/environments/prod/main.tf:145:module "rag" {
+terraform/environments/prod/main.tf:172:module "security" {
+terraform/environments/prod/main.tf:185:module "waf" {
+terraform/environments/prod/main.tf:198:module "api" {
 
 $ grep -n "aws_lambda_layer_version\|Layers\|layers" terraform/modules/rag/main.tf
-(no layer attachment found)
+62:resource "aws_lambda_layer_version" "prompt_builder" {
+235:  layers = [aws_lambda_layer_version.prompt_builder.arn]
 
-$ grep -n "ingestion_lambda_arn" terraform/environments/dev/main.tf terraform/environments/prod/main.tf
-(not passed by either environment root)
+$ grep -n "BEDROCK_GUARDRAIL\|aws_bedrock_guardrail" terraform/modules/rag/main.tf terraform/modules/bedrock/main.tf
+terraform/modules/rag/main.tf:225:      BEDROCK_GUARDRAIL_ID      = var.guardrail_id
+terraform/modules/rag/main.tf:226:      BEDROCK_GUARDRAIL_VERSION = var.guardrail_version
+terraform/modules/bedrock/main.tf:49:      BEDROCK_GUARDRAIL_ID      = var.enable_bedrock_guardrail ? aws_bedrock_guardrail.main[0].guardrail_id : ""
+terraform/modules/bedrock/main.tf:50:      BEDROCK_GUARDRAIL_VERSION = var.enable_bedrock_guardrail ? aws_bedrock_guardrail_version.main[0].version : ""
+terraform/modules/bedrock/main.tf:130:resource "aws_bedrock_guardrail" "main" {
+terraform/modules/bedrock/main.tf:191:resource "aws_bedrock_guardrail_version" "main" {
+terraform/modules/bedrock/main.tf:193:  guardrail_arn = aws_bedrock_guardrail.main[0].guardrail_arn
+
+$ grep -n "aws_s3_bucket_notification\|aws_lambda_permission.s3" terraform/modules/rag/main.tf
+262:resource "aws_s3_bucket_notification" "documents" {
+271:  depends_on = [aws_lambda_permission.s3_invoke_ingestion]

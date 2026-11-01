@@ -13,27 +13,16 @@ terraform {
 resource "aws_guardduty_detector" "main" {
   enable = true
 
-  datasources {
-    s3_logs {
-      enable = true
-    }
-    kubernetes {
-      audit_logs {
-        enable = false # Not using EKS in this platform
-      }
-    }
-    malware_protection {
-      scan_ec2_instance_with_findings {
-        ebs_volumes {
-          enable = false # Not using EC2 in this platform
-        }
-      }
-    }
-  }
-
   tags = merge(var.tags, {
     Name = "${var.name_prefix}-guardduty"
   })
+}
+
+# S3 protection is the relevant data source for the document/RAG workload.
+resource "aws_guardduty_detector_feature" "s3_logs" {
+  detector_id = aws_guardduty_detector.main.id
+  name        = "S3_DATA_EVENTS"
+  status      = "ENABLED"
 }
 
 # ── GuardDuty SNS notification for findings ───────────────────────────────────

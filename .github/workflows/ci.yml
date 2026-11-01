@@ -26,14 +26,22 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - name: Install development dependencies
-        run: pip install -r requirements-dev.txt
+      - name: Install locked development dependencies
+        run: pip install -r requirements-dev.lock
       - name: Lint
         run: ruff check .
-      - name: Unit and regression tests
+      - name: Static type check
+        run: mypy
+      - name: Unit, regression, and Moto integration tests
         run: python -m pytest -q
+      - name: Coverage
+        run: |
+          python -m pytest --cov --cov-report=term-missing \
+            --cov-report=xml:coverage.xml -q
       - name: Dependency audit
-        run: pip-audit -r requirements-dev.txt
+        run: pip-audit -r requirements-dev.lock
+      - name: Generate CycloneDX SBOM
+        run: cyclonedx-py requirements requirements-dev.lock --of json -o sbom.cdx.json --validate
 
   terraform:
     name: Terraform format and validate
@@ -55,6 +63,17 @@ jobs:
         run: |
           terraform init -backend=false -input=false -no-color
           terraform validate -no-color
+      - name: Mock-provider full-stack wiring tests (dev)
+        working-directory: terraform/environments/dev
+        run: terraform test -no-color
+      - name: Mock-provider full-stack wiring tests (prod)
+        working-directory: terraform/environments/prod
+        run: terraform test -no-color
+      - name: RAG layer/trigger/guardrail module test
+        working-directory: terraform/modules/rag
+        run: |
+          terraform init -backend=false -input=false -no-color
+          terraform test -no-color
 
   sam:
     name: SAM template, build, and cfn-lint
@@ -77,3 +96,28 @@ jobs:
         # Use the local Python toolchain rather than an arm64 build container on
         # the x86_64 runner; this job validates packaging, not deployment.
         run: sam build --no-use-container
+
+
+  localstack:
+    name: LocalStack Terraform infrastructure test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      localstack:
+        image: localstack/localstack:3.8
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: s3,iam,kms,sts,logs,lambda,ec2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.17.1"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install boto3
+        run: pip install boto3
+      - name: Run LocalStack S3/IAM/KMS infrastructure test
+        run: scripts/run_localstack_infra_test.sh

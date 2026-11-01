@@ -1,0 +1,1293 @@
+data.aws_caller_identity.current: Reading...
+module.iam.aws_iam_policy.deny_privilege_escalation: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+data.aws_caller_identity.current: Read complete after 1s [id=000000000000]
+aws_iam_role.kms_admin: Refreshing state... [id=secgenai-local-kms-admin]
+module.iam.aws_iam_policy.lambda_embedding: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role.lambda_document_ingestion: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion]
+module.iam.aws_iam_role.lambda_retrieval: Refreshing state... [id=secgenai-local-role-lambda-retrieval]
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator]
+module.iam.aws_iam_role.lambda_embedding: Refreshing state... [id=secgenai-local-role-lambda-embedding]
+module.s3.aws_s3_bucket.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator]
+module.iam.aws_iam_policy.lambda_retrieval: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding: Refreshing state... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Refreshing state... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.s3.aws_kms_key.s3_documents: Refreshing state... [id=8e74d36e-21c1-4fdb-8515-f9ef6c25df42]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Refreshing state... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_kms_alias.s3_documents: Refreshing state... [id=alias/secgenai-local-s3-documents]
+module.s3.aws_s3_bucket_public_access_block.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
+module.s3.aws_s3_bucket_versioning.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_policy.lambda_document_ingestion: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Refreshing state... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.s3.aws_s3_bucket_policy.documents: Refreshing state... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Refreshing state... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Refreshing state... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_iam_role.kms_admin will be destroyed
+  - resource "aws_iam_role" "kms_admin" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-kms-admin" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = "arn:aws:iam::000000000000:root"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-kms-admin" -> null
+      - managed_policy_arns   = [] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-kms-admin" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {} -> null
+      - unique_id             = "AROAQAAAAAAANCIBD3HX4" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_policy.deny_privilege_escalation will be destroyed
+  - resource "aws_iam_policy" "deny_privilege_escalation" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - attachment_count = 5 -> null
+      - description      = "Explicitly deny IAM privilege escalation actions" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - name             = "secgenai-local-policy-deny-privilege-escalation" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "iam:CreateRole",
+                          - "iam:DeleteRole",
+                          - "iam:AttachRolePolicy",
+                          - "iam:DetachRolePolicy",
+                          - "iam:PutRolePolicy",
+                          - "iam:DeleteRolePolicy",
+                          - "iam:CreatePolicy",
+                          - "iam:DeletePolicy",
+                          - "iam:CreatePolicyVersion",
+                          - "iam:DeletePolicyVersion",
+                          - "iam:SetDefaultPolicyVersion",
+                          - "iam:PassRole",
+                          - "sts:AssumeRole",
+                        ]
+                      - Effect   = "Deny"
+                      - Resource = "*"
+                      - Sid      = "DenyIAMEscalation"
+                    },
+                  - {
+                      - Action   = [
+                          - "kms:ScheduleKeyDeletion",
+                          - "kms:DisableKey",
+                          - "kms:DeleteImportedKeyMaterial",
+                        ]
+                      - Effect   = "Deny"
+                      - Resource = "*"
+                      - Sid      = "DenyKMSAdminActions"
+                    },
+                  - {
+                      - Action   = [
+                          - "s3:DeleteBucket",
+                          - "s3:DeleteBucketPolicy",
+                          - "s3:PutBucketPublicAccessBlock",
+                        ]
+                      - Effect   = "Deny"
+                      - Resource = "*"
+                      - Sid      = "DenyS3BucketAdminActions"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "APMYWMF24AVT2FB0WB9HU" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_policy.lambda_bedrock_orchestrator will be destroyed
+  - resource "aws_iam_policy" "lambda_bedrock_orchestrator" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator" -> null
+      - attachment_count = 1 -> null
+      - description      = "Permissions for Lambda Bedrock orchestrator" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator" -> null
+      - name             = "secgenai-local-policy-lambda-bedrock-orchestrator" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = [
+                          - "bedrock:InvokeModel",
+                          - "bedrock:InvokeModelWithResponseStream",
+                        ]
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:RequestedRegion" = "us-east-1"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Resource  = [
+                          - "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+                        ]
+                      - Sid       = "BedrockInvoke"
+                    },
+                  - {
+                      - Action   = [
+                          - "s3:GetObject",
+                          - "s3:GetObjectVersion",
+                          - "s3:ListBucket",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = [
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000",
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000/*",
+                        ]
+                      - Sid      = "S3DocumentRead"
+                    },
+                  - {
+                      - Action   = [
+                          - "bedrock:ApplyGuardrail",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:bedrock:us-east-1:000000000000:guardrail/*"
+                      - Sid      = "BedrockGuardrail"
+                    },
+                  - {
+                      - Action   = [
+                          - "kms:Decrypt",
+                          - "kms:GenerateDataKey",
+                          - "kms:DescribeKey",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+                      - Sid      = "KMSDecrypt"
+                    },
+                  - {
+                      - Action   = [
+                          - "logs:CreateLogGroup",
+                          - "logs:CreateLogStream",
+                          - "logs:PutLogEvents",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:logs:us-east-1:000000000000:log-group:/aws/lambda/*"
+                      - Sid      = "CloudWatchLogs"
+                    },
+                  - {
+                      - Action   = [
+                          - "xray:PutTraceSegments",
+                          - "xray:PutTelemetryRecords",
+                          - "xray:GetSamplingRules",
+                          - "xray:GetSamplingTargets",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "XRayTrace"
+                    },
+                  - {
+                      - Action   = [
+                          - "ec2:CreateNetworkInterface",
+                          - "ec2:DescribeNetworkInterfaces",
+                          - "ec2:DeleteNetworkInterface",
+                          - "ec2:AssignPrivateIpAddresses",
+                          - "ec2:UnassignPrivateIpAddresses",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "VPCAccess"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "A0UDNY99AJPZ7UTA7LB4O" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_policy.lambda_document_ingestion will be destroyed
+  - resource "aws_iam_policy" "lambda_document_ingestion" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion" -> null
+      - attachment_count = 1 -> null
+      - description      = "Permissions for Lambda document ingestion function" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion" -> null
+      - name             = "secgenai-local-policy-lambda-doc-ingestion" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "s3:PutObject",
+                          - "s3:PutObjectTagging",
+                          - "s3:GetObject",
+                          - "s3:GetObjectAttributes",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid      = "S3DocumentWrite"
+                    },
+                  - {
+                      - Action   = [
+                          - "s3:ListBucket",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:s3:::secgenai-local-documents-000000000000"
+                      - Sid      = "S3ListBucket"
+                    },
+                  - {
+                      - Action   = [
+                          - "lambda:InvokeFunction",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:lambda:us-east-1:000000000000:function:secgenai-local-rag-embedding"
+                      - Sid      = "InvokeEmbeddingLambda"
+                    },
+                  - {
+                      - Action   = [
+                          - "kms:GenerateDataKey",
+                          - "kms:Decrypt",
+                          - "kms:DescribeKey",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+                      - Sid      = "KMSEncrypt"
+                    },
+                  - {
+                      - Action   = [
+                          - "logs:CreateLogGroup",
+                          - "logs:CreateLogStream",
+                          - "logs:PutLogEvents",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:logs:us-east-1:000000000000:log-group:/aws/lambda/*"
+                      - Sid      = "CloudWatchLogs"
+                    },
+                  - {
+                      - Action   = [
+                          - "ec2:CreateNetworkInterface",
+                          - "ec2:DescribeNetworkInterfaces",
+                          - "ec2:DeleteNetworkInterface",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "VPCAccess"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "A9NRYZBTIAKBN3O4QG4HM" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_policy.lambda_embedding will be destroyed
+  - resource "aws_iam_policy" "lambda_embedding" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding" -> null
+      - attachment_count = 1 -> null
+      - description      = "Permissions for the RAG embedding Lambda" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding" -> null
+      - name             = "secgenai-local-policy-lambda-embedding" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "bedrock:InvokeModel",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+                      - Sid      = "BedrockEmbeddingInvoke"
+                    },
+                  - {
+                      - Action   = [
+                          - "aoss:APIAccessAll",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:aoss:us-east-1:000000000000:collection/*"
+                      - Sid      = "OpenSearchServerlessAccess"
+                    },
+                  - {
+                      - Action   = [
+                          - "logs:CreateLogGroup",
+                          - "logs:CreateLogStream",
+                          - "logs:PutLogEvents",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:logs:us-east-1:000000000000:log-group:/aws/lambda/*"
+                      - Sid      = "CloudWatchLogs"
+                    },
+                  - {
+                      - Action   = [
+                          - "xray:PutTraceSegments",
+                          - "xray:PutTelemetryRecords",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "XRayTrace"
+                    },
+                  - {
+                      - Action   = [
+                          - "ec2:CreateNetworkInterface",
+                          - "ec2:DescribeNetworkInterfaces",
+                          - "ec2:DeleteNetworkInterface",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "VPCAccess"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "A3AKXX3QH4F7K6UH022YW" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_policy.lambda_rag_orchestrator will be destroyed
+  - resource "aws_iam_policy" "lambda_rag_orchestrator" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator" -> null
+      - attachment_count = 1 -> null
+      - description      = "Permissions for the RAG orchestrator Lambda" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator" -> null
+      - name             = "secgenai-local-policy-lambda-rag-orchestrator" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "bedrock:InvokeModel",
+                          - "bedrock:InvokeModelWithResponseStream",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = [
+                          - "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-5-5",
+                        ]
+                      - Sid      = "BedrockInvoke"
+                    },
+                  - {
+                      - Action   = [
+                          - "bedrock:ApplyGuardrail",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:bedrock:us-east-1:000000000000:guardrail/*"
+                      - Sid      = "BedrockGuardrail"
+                    },
+                  - {
+                      - Action   = [
+                          - "lambda:InvokeFunction",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:lambda:us-east-1:000000000000:function:secgenai-local-rag-retrieval"
+                      - Sid      = "InvokeRetrievalLambda"
+                    },
+                  - {
+                      - Action   = [
+                          - "logs:CreateLogGroup",
+                          - "logs:CreateLogStream",
+                          - "logs:PutLogEvents",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:logs:us-east-1:000000000000:log-group:/aws/lambda/*"
+                      - Sid      = "CloudWatchLogs"
+                    },
+                  - {
+                      - Action   = [
+                          - "xray:PutTraceSegments",
+                          - "xray:PutTelemetryRecords",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "XRayTrace"
+                    },
+                  - {
+                      - Action   = [
+                          - "ec2:CreateNetworkInterface",
+                          - "ec2:DescribeNetworkInterfaces",
+                          - "ec2:DeleteNetworkInterface",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "VPCAccess"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "AZM0W6YU0BCJN0HFCZR9D" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_policy.lambda_retrieval will be destroyed
+  - resource "aws_iam_policy" "lambda_retrieval" {
+      - arn              = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval" -> null
+      - attachment_count = 1 -> null
+      - description      = "Permissions for the RAG retrieval Lambda" -> null
+      - id               = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval" -> null
+      - name             = "secgenai-local-policy-lambda-retrieval" -> null
+      - path             = "/" -> null
+      - policy           = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "bedrock:InvokeModel",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+                      - Sid      = "BedrockEmbeddingInvoke"
+                    },
+                  - {
+                      - Action   = [
+                          - "aoss:APIAccessAll",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:aoss:us-east-1:000000000000:collection/*"
+                      - Sid      = "OpenSearchServerlessAccess"
+                    },
+                  - {
+                      - Action   = [
+                          - "logs:CreateLogGroup",
+                          - "logs:CreateLogStream",
+                          - "logs:PutLogEvents",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:logs:us-east-1:000000000000:log-group:/aws/lambda/*"
+                      - Sid      = "CloudWatchLogs"
+                    },
+                  - {
+                      - Action   = [
+                          - "xray:PutTraceSegments",
+                          - "xray:PutTelemetryRecords",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "XRayTrace"
+                    },
+                  - {
+                      - Action   = [
+                          - "ec2:CreateNetworkInterface",
+                          - "ec2:DescribeNetworkInterfaces",
+                          - "ec2:DeleteNetworkInterface",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "*"
+                      - Sid      = "VPCAccess"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - policy_id        = "AXBX3UKDP73UWCYZ0WRGS" -> null
+      - tags             = {} -> null
+      - tags_all         = {} -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.iam.aws_iam_role.lambda_bedrock_orchestrator will be destroyed
+  - resource "aws_iam_role" "lambda_bedrock_orchestrator" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "lambda.amazonaws.com"
+                        }
+                      - Sid       = "AllowLambdaAssume"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-role-lambda-bedrock-orchestrator" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation",
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-role-lambda-bedrock-orchestrator" -> null
+      - path                  = "/" -> null
+      - tags                  = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all              = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - unique_id             = "AROAQAAAAAAAAZ3PLFVVK" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_role.lambda_document_ingestion will be destroyed
+  - resource "aws_iam_role" "lambda_document_ingestion" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-doc-ingestion" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "lambda.amazonaws.com"
+                        }
+                      - Sid       = "AllowLambdaAssume"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-role-lambda-doc-ingestion" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation",
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-role-lambda-doc-ingestion" -> null
+      - path                  = "/" -> null
+      - tags                  = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all              = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - unique_id             = "AROAQAAAAAAANOUWOWM6Z" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_role.lambda_embedding will be destroyed
+  - resource "aws_iam_role" "lambda_embedding" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-embedding" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "lambda.amazonaws.com"
+                        }
+                      - Sid       = "AllowLambdaAssume"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-role-lambda-embedding" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation",
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-role-lambda-embedding" -> null
+      - path                  = "/" -> null
+      - tags                  = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all              = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - unique_id             = "AROAQAAAAAAADZWS2PHZ3" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_role.lambda_rag_orchestrator will be destroyed
+  - resource "aws_iam_role" "lambda_rag_orchestrator" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-rag-orchestrator" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "lambda.amazonaws.com"
+                        }
+                      - Sid       = "AllowLambdaAssume"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-role-lambda-rag-orchestrator" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation",
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-role-lambda-rag-orchestrator" -> null
+      - path                  = "/" -> null
+      - tags                  = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all              = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - unique_id             = "AROAQAAAAAAAKWH3CI64S" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_role.lambda_retrieval will be destroyed
+  - resource "aws_iam_role" "lambda_retrieval" {
+      - arn                   = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-retrieval" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "lambda.amazonaws.com"
+                        }
+                      - Sid       = "AllowLambdaAssume"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-01T01:22:51Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "secgenai-local-role-lambda-retrieval" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation",
+          - "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "secgenai-local-role-lambda-retrieval" -> null
+      - path                  = "/" -> null
+      - tags                  = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all              = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - unique_id             = "AROAQAAAAAAAIR4VIJLT7" -> null
+        # (3 unchanged attributes hidden)
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_bedrock_orchestrator" {
+      - id         = "secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator" -> null
+      - role       = "secgenai-local-role-lambda-bedrock-orchestrator" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_deny_escalation" {
+      - id         = "secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - role       = "secgenai-local-role-lambda-bedrock-orchestrator" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_document_ingestion" {
+      - id         = "secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion" -> null
+      - role       = "secgenai-local-role-lambda-doc-ingestion" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_embedding will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_embedding" {
+      - id         = "secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding" -> null
+      - role       = "secgenai-local-role-lambda-embedding" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_embedding_deny_escalation" {
+      - id         = "secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - role       = "secgenai-local-role-lambda-embedding" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_ingestion_deny_escalation" {
+      - id         = "secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - role       = "secgenai-local-role-lambda-doc-ingestion" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_rag_orchestrator" {
+      - id         = "secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator" -> null
+      - role       = "secgenai-local-role-lambda-rag-orchestrator" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_rag_orchestrator_deny_escalation" {
+      - id         = "secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - role       = "secgenai-local-role-lambda-rag-orchestrator" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_retrieval will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_retrieval" {
+      - id         = "secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval" -> null
+      - role       = "secgenai-local-role-lambda-retrieval" -> null
+    }
+
+  # module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation will be destroyed
+  - resource "aws_iam_role_policy_attachment" "lambda_retrieval_deny_escalation" {
+      - id         = "secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - policy_arn = "arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation" -> null
+      - role       = "secgenai-local-role-lambda-retrieval" -> null
+    }
+
+  # module.s3.aws_kms_alias.s3_documents will be destroyed
+  - resource "aws_kms_alias" "s3_documents" {
+      - arn            = "arn:aws:kms:us-east-1:000000000000:alias/secgenai-local-s3-documents" -> null
+      - id             = "alias/secgenai-local-s3-documents" -> null
+      - name           = "alias/secgenai-local-s3-documents" -> null
+      - region         = "us-east-1" -> null
+      - target_key_arn = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - target_key_id  = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.s3.aws_kms_key.s3_documents will be destroyed
+  - resource "aws_kms_key" "s3_documents" {
+      - arn                                = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - bypass_policy_lockout_safety_check = false -> null
+      - customer_master_key_spec           = "SYMMETRIC_DEFAULT" -> null
+      - deletion_window_in_days            = 30 -> null
+      - description                        = "secgenai-local – S3 document store CMK" -> null
+      - enable_key_rotation                = true -> null
+      - id                                 = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - is_enabled                         = true -> null
+      - key_id                             = "8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+      - key_usage                          = "ENCRYPT_DECRYPT" -> null
+      - multi_region                       = false -> null
+      - policy                             = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = [
+                          - "kms:Create*",
+                          - "kms:Describe*",
+                          - "kms:Enable*",
+                          - "kms:List*",
+                          - "kms:Put*",
+                          - "kms:Update*",
+                          - "kms:Revoke*",
+                          - "kms:Disable*",
+                          - "kms:Get*",
+                          - "kms:Delete*",
+                          - "kms:ScheduleKeyDeletion",
+                          - "kms:CancelKeyDeletion",
+                          - "kms:GenerateDataKey*",
+                          - "kms:TagResource",
+                          - "kms:UntagResource",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:root",
+                              - "arn:aws:iam::000000000000:role/secgenai-local-kms-admin",
+                            ]
+                        }
+                      - Resource  = "*"
+                      - Sid       = "AllowKeyAdministration"
+                    },
+                  - {
+                      - Action    = [
+                          - "kms:GenerateDataKey*",
+                          - "kms:Decrypt",
+                        ]
+                      - Condition = {
+                          - StringEquals = {
+                              - "kms:CallerAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "s3.amazonaws.com"
+                        }
+                      - Resource  = "*"
+                      - Sid       = "AllowS3ServiceUse"
+                    },
+                  - {
+                      - Action    = [
+                          - "kms:Decrypt",
+                          - "kms:GenerateDataKey*",
+                          - "kms:DescribeKey",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator",
+                            ]
+                        }
+                      - Resource  = "*"
+                      - Sid       = "AllowLambdaDecrypt"
+                    },
+                  - {
+                      - Action    = [
+                          - "kms:Decrypt",
+                          - "kms:GenerateDataKey*",
+                          - "kms:DescribeKey",
+                        ]
+                      - Condition = {
+                          - StringEquals = {
+                              - "aws:SourceAccount" = "000000000000"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "aoss.amazonaws.com"
+                        }
+                      - Resource  = "*"
+                      - Sid       = "AllowOpenSearchServerlessUse"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - region                             = "us-east-1" -> null
+      - rotation_period_in_days            = 0 -> null
+      - tags                               = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Name"        = "secgenai-local-kms-s3-documents"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all                           = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Name"        = "secgenai-local-kms-s3-documents"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+        # (2 unchanged attributes hidden)
+    }
+
+  # module.s3.aws_s3_bucket.documents will be destroyed
+  - resource "aws_s3_bucket" "documents" {
+      - arn                         = "arn:aws:s3:::secgenai-local-documents-000000000000" -> null
+      - bucket                      = "secgenai-local-documents-000000000000" -> null
+      - bucket_domain_name          = "secgenai-local-documents-000000000000.s3.amazonaws.com" -> null
+      - bucket_namespace            = "global" -> null
+      - bucket_region               = "us-east-1" -> null
+      - bucket_regional_domain_name = "secgenai-local-documents-000000000000.s3.us-east-1.amazonaws.com" -> null
+      - force_destroy               = false -> null
+      - hosted_zone_id              = "Z3AQBSTGFYJSTF" -> null
+      - id                          = "secgenai-local-documents-000000000000" -> null
+      - object_lock_enabled         = false -> null
+      - policy                      = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "s3:*"
+                      - Condition = {
+                          - Bool = {
+                              - "aws:SecureTransport" = "false"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = [
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000",
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000/*",
+                        ]
+                      - Sid       = "DenyNonTLSRequests"
+                    },
+                  - {
+                      - Action    = "s3:PutObject"
+                      - Condition = {
+                          - StringNotEquals = {
+                              - "s3:x-amz-server-side-encryption" = "aws:kms"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "DenyUnencryptedObjectUploads"
+                    },
+                  - {
+                      - Action    = "s3:PutObject"
+                      - Condition = {
+                          - Null = {
+                              - "s3:x-amz-checksum-algorithm" = "true"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "RequireChecksumOnUpload"
+                    },
+                  - {
+                      - Action    = [
+                          - "s3:GetObject",
+                          - "s3:GetObjectVersion",
+                          - "s3:ListBucket",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator",
+                            ]
+                        }
+                      - Resource  = [
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000",
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000/*",
+                        ]
+                      - Sid       = "AllowLambdaReadAccess"
+                    },
+                  - {
+                      - Action    = [
+                          - "s3:PutObject",
+                          - "s3:PutObjectTagging",
+                          - "s3:GetObject",
+                          - "s3:GetObjectAttributes",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-doc-ingestion",
+                            ]
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "AllowIngestionWrite"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - region                      = "us-east-1" -> null
+      - request_payer               = "BucketOwner" -> null
+      - tags                        = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Name"        = "secgenai-local-documents"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+      - tags_all                    = {
+          - "Environment" = "localstack"
+          - "ManagedBy"   = "Terraform"
+          - "Name"        = "secgenai-local-documents"
+          - "Project"     = "secure-genai-platform"
+        } -> null
+        # (2 unchanged attributes hidden)
+
+      - grant {
+          - id          = "75aa57f09aa0c8caeab4f8c24e99d10f8e7faeebf76c078efc7c6caea54ba06a" -> null
+          - permissions = [
+              - "FULL_CONTROL",
+            ] -> null
+          - type        = "CanonicalUser" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - server_side_encryption_configuration {
+          - rule {
+              - bucket_key_enabled = true -> null
+
+              - apply_server_side_encryption_by_default {
+                  - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+                  - sse_algorithm     = "aws:kms" -> null
+                }
+            }
+        }
+
+      - versioning {
+          - enabled    = true -> null
+          - mfa_delete = false -> null
+        }
+    }
+
+  # module.s3.aws_s3_bucket_policy.documents will be destroyed
+  - resource "aws_s3_bucket_policy" "documents" {
+      - bucket = "secgenai-local-documents-000000000000" -> null
+      - id     = "secgenai-local-documents-000000000000" -> null
+      - policy = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "s3:*"
+                      - Condition = {
+                          - Bool = {
+                              - "aws:SecureTransport" = "false"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = [
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000",
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000/*",
+                        ]
+                      - Sid       = "DenyNonTLSRequests"
+                    },
+                  - {
+                      - Action    = "s3:PutObject"
+                      - Condition = {
+                          - StringNotEquals = {
+                              - "s3:x-amz-server-side-encryption" = "aws:kms"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "DenyUnencryptedObjectUploads"
+                    },
+                  - {
+                      - Action    = "s3:PutObject"
+                      - Condition = {
+                          - Null = {
+                              - "s3:x-amz-checksum-algorithm" = "true"
+                            }
+                        }
+                      - Effect    = "Deny"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "RequireChecksumOnUpload"
+                    },
+                  - {
+                      - Action    = [
+                          - "s3:GetObject",
+                          - "s3:GetObjectVersion",
+                          - "s3:ListBucket",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator",
+                            ]
+                        }
+                      - Resource  = [
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000",
+                          - "arn:aws:s3:::secgenai-local-documents-000000000000/*",
+                        ]
+                      - Sid       = "AllowLambdaReadAccess"
+                    },
+                  - {
+                      - Action    = [
+                          - "s3:PutObject",
+                          - "s3:PutObjectTagging",
+                          - "s3:GetObject",
+                          - "s3:GetObjectAttributes",
+                        ]
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = [
+                              - "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-doc-ingestion",
+                            ]
+                        }
+                      - Resource  = "arn:aws:s3:::secgenai-local-documents-000000000000/*"
+                      - Sid       = "AllowIngestionWrite"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - region = "us-east-1" -> null
+    }
+
+  # module.s3.aws_s3_bucket_public_access_block.documents will be destroyed
+  - resource "aws_s3_bucket_public_access_block" "documents" {
+      - block_public_acls       = true -> null
+      - block_public_policy     = true -> null
+      - bucket                  = "secgenai-local-documents-000000000000" -> null
+      - id                      = "secgenai-local-documents-000000000000" -> null
+      - ignore_public_acls      = true -> null
+      - region                  = "us-east-1" -> null
+      - restrict_public_buckets = true -> null
+    }
+
+  # module.s3.aws_s3_bucket_server_side_encryption_configuration.documents will be destroyed
+  - resource "aws_s3_bucket_server_side_encryption_configuration" "documents" {
+      - bucket                = "secgenai-local-documents-000000000000" -> null
+      - id                    = "secgenai-local-documents-000000000000" -> null
+      - region                = "us-east-1" -> null
+        # (1 unchanged attribute hidden)
+
+      - rule {
+          - blocked_encryption_types = [] -> null
+          - bucket_key_enabled       = true -> null
+
+          - apply_server_side_encryption_by_default {
+              - kms_master_key_id = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+              - sse_algorithm     = "aws:kms" -> null
+            }
+        }
+    }
+
+  # module.s3.aws_s3_bucket_versioning.documents will be destroyed
+  - resource "aws_s3_bucket_versioning" "documents" {
+      - bucket                = "secgenai-local-documents-000000000000" -> null
+      - id                    = "secgenai-local-documents-000000000000" -> null
+      - region                = "us-east-1" -> null
+        # (1 unchanged attribute hidden)
+
+      - versioning_configuration {
+          - mfa_delete = "Disabled" -> null
+          - status     = "Enabled" -> null
+        }
+    }
+
+Plan: 0 to add, 0 to change, 29 to destroy.
+
+Changes to Outputs:
+  - document_bucket_arn       = "arn:aws:s3:::secgenai-local-documents-000000000000" -> null
+  - document_bucket_name      = "secgenai-local-documents-000000000000" -> null
+  - embedding_role_arn        = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-embedding" -> null
+  - kms_key_arn               = "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42" -> null
+  - orchestrator_role_arn     = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-bedrock-orchestrator" -> null
+  - rag_orchestrator_role_arn = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-rag-orchestrator" -> null
+  - retrieval_role_arn        = "arn:aws:iam::000000000000:role/secgenai-local-role-lambda-retrieval" -> null
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Destroying... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_s3_bucket_policy.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destroying... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.s3.aws_kms_alias.s3_documents: Destroying... [id=alias/secgenai-local-s3-documents]
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator/arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.s3.aws_kms_alias.s3_documents: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_bedrock_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_ingestion_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_embedding_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destroying... [id=secgenai-local-role-lambda-retrieval/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval_deny_escalation: Destruction complete after 0s
+module.s3.aws_s3_bucket_server_side_encryption_configuration.documents: Destruction complete after 0s
+module.s3.aws_s3_bucket_policy.documents: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_rag_orchestrator_deny_escalation: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Destroying... [id=secgenai-local-role-lambda-doc-ingestion/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.s3.aws_s3_bucket_versioning.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_role_policy_attachment.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding/arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role_policy_attachment.lambda_retrieval: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-bedrock-orchestrator]
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-rag-orchestrator]
+module.s3.aws_s3_bucket_versioning.documents: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_role_policy_attachment.lambda_embedding: Destruction complete after 0s
+module.s3.aws_s3_bucket_public_access_block.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.iam.aws_iam_policy.lambda_rag_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_bedrock_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_policy.deny_privilege_escalation: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-deny-privilege-escalation]
+module.iam.aws_iam_role.lambda_rag_orchestrator: Destroying... [id=secgenai-local-role-lambda-rag-orchestrator]
+module.iam.aws_iam_policy.lambda_retrieval: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-retrieval]
+module.iam.aws_iam_role.lambda_retrieval: Destroying... [id=secgenai-local-role-lambda-retrieval]
+module.s3.aws_s3_bucket_public_access_block.documents: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_document_ingestion: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-doc-ingestion]
+module.iam.aws_iam_policy.lambda_embedding: Destroying... [id=arn:aws:iam::000000000000:policy/secgenai-local-policy-lambda-embedding]
+module.iam.aws_iam_role.lambda_document_ingestion: Destroying... [id=secgenai-local-role-lambda-doc-ingestion]
+module.iam.aws_iam_policy.deny_privilege_escalation: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_retrieval: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_retrieval: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_rag_orchestrator: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_embedding: Destroying... [id=secgenai-local-role-lambda-embedding]
+module.iam.aws_iam_policy.lambda_embedding: Destruction complete after 0s
+module.iam.aws_iam_policy.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_document_ingestion: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_embedding: Destruction complete after 0s
+module.s3.aws_kms_key.s3_documents: Destroying... [id=8e74d36e-21c1-4fdb-8515-f9ef6c25df42]
+module.s3.aws_s3_bucket.documents: Destroying... [id=secgenai-local-documents-000000000000]
+module.s3.aws_kms_key.s3_documents: Destruction complete after 0s
+module.s3.aws_s3_bucket.documents: Destruction complete after 0s
+aws_iam_role.kms_admin: Destroying... [id=secgenai-local-kms-admin]
+module.iam.aws_iam_role.lambda_bedrock_orchestrator: Destroying... [id=secgenai-local-role-lambda-bedrock-orchestrator]
+aws_iam_role.kms_admin: Destruction complete after 0s
+module.iam.aws_iam_role.lambda_bedrock_orchestrator: Destruction complete after 0s
+
+Destroy complete! Resources: 29 destroyed.

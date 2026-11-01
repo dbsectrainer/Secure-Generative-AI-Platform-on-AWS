@@ -1,0 +1,15 @@
+[PASS] s3_bucket_exists: secgenai-local-documents-000000000000
+[PASS] s3_versioning_enabled: Enabled
+[PASS] s3_kms_encryption: {'SSEAlgorithm': 'aws:kms', 'KMSMasterKeyID': 'arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42'}
+[PASS] s3_public_access_blocked: {'BlockPublicAcls': True, 'IgnorePublicAcls': True, 'BlockPublicPolicy': True, 'RestrictPublicBuckets': True}
+[PASS] s3_bucket_policy_controls: {'DenyNonTLSRequests': True, 'RequireChecksumOnUpload': True}
+[PASS] s3_write_read_roundtrip: {'bytes': 37, 'sse': 'aws:kms'}
+[PASS] kms_key_enabled: Enabled
+[PASS] kms_key_rotation_enabled: True
+[PASS] s3_versions_cleaned: 2 version(s)/delete marker(s) removed
+[PASS] iam_role_secgenai-local-role-lambda-bedrock-orchestrator: ['secgenai-local-policy-deny-privilege-escalation', 'secgenai-local-policy-lambda-bedrock-orchestrator']
+[PASS] iam_role_secgenai-local-role-lambda-embedding: ['secgenai-local-policy-deny-privilege-escalation', 'secgenai-local-policy-lambda-embedding']
+[PASS] iam_role_secgenai-local-role-lambda-retrieval: ['secgenai-local-policy-deny-privilege-escalation', 'secgenai-local-policy-lambda-retrieval']
+[PASS] iam_role_secgenai-local-role-lambda-rag-orchestrator: ['secgenai-local-policy-deny-privilege-escalation', 'secgenai-local-policy-lambda-rag-orchestrator']
+
+13/13 checks passed; evidence: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/docs/evidence/test-results/localstack-assertions.json

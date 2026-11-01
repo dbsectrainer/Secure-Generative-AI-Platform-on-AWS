@@ -66,3 +66,6 @@ env.local.json
 *.zip
 *.tar.gz
 !terraform/modules/bedrock/bedrock_lambda.zip
+
+# Verification evidence logs (keep the audit trail with the repo)
+!docs/evidence/**/*.log

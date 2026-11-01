@@ -1,0 +1,4 @@
+$ pip-audit -r requirements-dev.lock
+WARNING:pip_audit._cache:Failed to write to cache directory, performance may be degraded: [Errno 2] No such file or directory: '/Users/newtechlab/Library/Caches/pip-audit/f/7/e/1/1/tmpluucvi1g'
+No known vulnerabilities found
+exit=0

@@ -91,6 +91,7 @@ module "iam" {
   document_bucket_arn          = module.s3.bucket_arn
   kms_key_arn                  = module.s3.kms_key_arn
   bedrock_model_ids            = var.bedrock_model_ids
+  embedding_model_id           = var.embedding_model_id
   create_terraform_deploy_role = var.create_terraform_deploy_role
   github_org                   = var.github_org
   github_repo                  = var.github_repo
@@ -118,4 +119,92 @@ module "bedrock" {
   enable_bedrock_guardrail       = true
   alarm_sns_topic_arns           = var.alarm_sns_topic_arns
   tags                           = local.common_tags
+}
+
+
+# ── OpenSearch Module ─────────────────────────────────────────────────────────
+
+module "opensearch" {
+  source = "../../modules/opensearch"
+
+  name_prefix              = local.name_prefix
+  vpc_id                   = module.network.vpc_id
+  private_subnet_ids       = module.network.private_app_subnet_ids
+  lambda_security_group_id = module.network.lambda_security_group_id
+  kms_key_arn              = module.s3.kms_key_arn
+  lambda_role_arns = [
+    module.iam.lambda_embedding_role_arn,
+    module.iam.lambda_retrieval_role_arn,
+    module.iam.lambda_rag_orchestrator_role_arn,
+  ]
+  tags = local.common_tags
+}
+
+# ── RAG Pipeline Module ───────────────────────────────────────────────────────
+
+module "rag" {
+  source = "../../modules/rag"
+
+  name_prefix                  = local.name_prefix
+  region                       = var.region
+  account_id                   = data.aws_caller_identity.current.account_id
+  private_subnet_ids           = module.network.private_app_subnet_ids
+  lambda_security_group_id     = module.network.lambda_security_group_id
+  kms_key_arn                  = module.s3.kms_key_arn
+  document_bucket_name         = module.s3.bucket_id
+  document_bucket_arn          = module.s3.bucket_arn
+  opensearch_endpoint          = module.opensearch.collection_endpoint
+  embedding_model_id           = var.embedding_model_id
+  inference_model_id           = var.bedrock_model_id
+  ingestion_lambda_role_arn    = module.iam.lambda_ingestion_role_arn
+  embedding_lambda_role_arn    = module.iam.lambda_embedding_role_arn
+  retrieval_lambda_role_arn    = module.iam.lambda_retrieval_role_arn
+  orchestrator_lambda_role_arn = module.iam.lambda_rag_orchestrator_role_arn
+  guardrail_id                 = module.bedrock.guardrail_id
+  guardrail_version            = module.bedrock.guardrail_version
+  log_retention_days           = 90
+  alarm_sns_topic_arns         = var.alarm_sns_topic_arns
+  tags                         = local.common_tags
+}
+
+# ── Security Services Module ──────────────────────────────────────────────────
+
+module "security" {
+  source = "../../modules/security"
+
+  name_prefix          = local.name_prefix
+  region               = var.region
+  account_id           = data.aws_caller_identity.current.account_id
+  kms_key_arn          = module.s3.kms_key_arn
+  alarm_sns_topic_arns = var.alarm_sns_topic_arns
+  tags                 = local.common_tags
+}
+
+# ── WAF Module ────────────────────────────────────────────────────────────────
+
+module "waf" {
+  source = "../../modules/waf"
+
+  name_prefix          = local.name_prefix
+  region               = var.region
+  scope                = "REGIONAL"
+  kms_key_arn          = module.s3.kms_key_arn
+  alarm_sns_topic_arns = var.alarm_sns_topic_arns
+  tags                 = local.common_tags
+}
+
+# ── API Gateway Module ────────────────────────────────────────────────────────
+
+module "api" {
+  source = "../../modules/api"
+
+  name_prefix              = local.name_prefix
+  region                   = var.region
+  stage_name               = var.api_stage_name
+  bedrock_orchestrator_arn = module.bedrock.lambda_function_arn
+  embedding_lambda_arn     = module.rag.embedding_lambda_arn
+  retrieval_lambda_arn     = module.rag.retrieval_lambda_arn
+  rag_orchestrator_arn     = module.rag.orchestrator_lambda_arn
+  waf_web_acl_arn          = module.waf.web_acl_arn
+  tags                     = local.common_tags
 }

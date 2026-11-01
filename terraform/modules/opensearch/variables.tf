@@ -23,6 +23,12 @@ variable "lambda_role_arns" {
   type        = list(string)
 }
 
+variable "kms_key_arn" {
+  description = "KMS CMK ARN for OpenSearch Serverless encryption (empty uses an AWS-owned key)"
+  type        = string
+  default     = ""
+}
+
 variable "vpce_ids" {
   description = "OpenSearch Serverless VPC endpoint IDs for the network policy"
   type        = list(string)

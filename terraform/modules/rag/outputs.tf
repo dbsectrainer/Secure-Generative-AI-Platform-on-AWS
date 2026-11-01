@@ -37,3 +37,8 @@ output "orchestrator_lambda_name" {
   description = "Name of the RAG orchestrator Lambda"
   value       = aws_lambda_function.orchestrator.function_name
 }
+
+output "prompt_builder_layer_arn" {
+  description = "ARN of the prompt-builder Lambda layer"
+  value       = aws_lambda_layer_version.prompt_builder.arn
+}

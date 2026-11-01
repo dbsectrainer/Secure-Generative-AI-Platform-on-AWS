@@ -209,6 +209,26 @@ class TestApiGatewayProxy:
         assert parsed["output"] == "The policy states X."
         assert parsed["retrieval"]["chunks_used"] == 1
 
+    def test_guardrail_parameters_are_sent_when_configured(self, monkeypatch):
+        import handler
+
+        monkeypatch.setattr(handler, "BEDROCK_GUARDRAIL_ID", "guardrail-test")
+        monkeypatch.setattr(handler, "BEDROCK_GUARDRAIL_VERSION", "3")
+        retrieval_mock = _make_retrieval_response(["Context."])
+        bedrock_mock = _make_bedrock_inference_response("Answer.")
+
+        with (
+            patch.object(handler._lambda_client, "invoke", return_value=retrieval_mock),
+            patch.object(
+                handler._bedrock_client, "invoke_model", return_value=bedrock_mock
+            ) as mock_invoke,
+        ):
+            handler.lambda_handler({"query": "Question?"}, None)
+
+        kwargs = mock_invoke.call_args.kwargs
+        assert kwargs["guardrailIdentifier"] == "guardrail-test"
+        assert kwargs["guardrailVersion"] == "3"
+
     def test_malformed_json_body_returns_400(self):
         import handler
 

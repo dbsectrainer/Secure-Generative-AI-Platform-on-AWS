@@ -1,82 +1,166 @@
 # Working tree change set at audit completion
 
 $ git status --short
+ M .github/workflows/ci.yml
  M .gitignore
  M CHANGELOG.md
  M FEDRAMP-ALIGNMENT.md
  M Makefile
  M README.md
+ M docs/evidence/README.md
+ M docs/evidence/api-console.html
+ M docs/evidence/build-results/changed-files.txt
+ M docs/evidence/build-results/terraform-wiring.txt
+ M docs/evidence/build-results/tool-versions.txt
+ M docs/evidence/screenshots/api-verification-desktop.png
+ M docs/evidence/screenshots/api-verification-full.png
+ M docs/evidence/screenshots/api-verification-mobile-full.png
+ M docs/evidence/screenshots/api-verification-mobile.png
+ M docs/evidence/screenshots/error-validation.png
+ M docs/evidence/screenshots/query-workflow.png
+ M docs/evidence/test-results/api-e2e-results.json
+ M docs/evidence/test-results/browser-api-checks.json
+ M docs/evidence/verification-report.md
  M docs/local-testing.md
  M docs/pii-redaction.md
- M genai/prompt_builder/builder.py
+ M env.local.json.example
  M lambda/bedrock_integration/handler.py
  M lambda/bedrock_integration/tests/test_handler.py
- M rag/embedding/handler.py
- M rag/embedding/tests/test_embedding.py
- M rag/ingestion/handler.py
- M rag/ingestion/tests/test_ingestion.py
+ M pyproject.toml
  M rag/orchestrator/handler.py
  M rag/orchestrator/tests/test_orchestrator.py
- M rag/retrieval/handler.py
- M rag/retrieval/tests/test_retrieval.py
- M security/attack-simulation/01_prompt_injection.py
- M security/attack-simulation/02_token_flooding.py
- M security/attack-simulation/03_data_leakage.py
- M security/attack-simulation/04_retrieval_manipulation.py
- M security/attack-simulation/05_iam_misconfiguration.py
+ M requirements-dev.txt
  M security/attack-simulation/README.md
  M security/iam-least-privilege-validation.md
  M security/injection-mitigation-results.md
- M security/threat-model.md
  M template.yaml
+ M terraform/environments/dev/main.tf
+ M terraform/environments/dev/outputs.tf
+ M terraform/environments/dev/variables.tf
  M terraform/environments/prod/main.tf
+ M terraform/environments/prod/outputs.tf
+ M terraform/environments/prod/variables.tf
  M terraform/modules/bedrock/main.tf
+ M terraform/modules/bedrock/outputs.tf
  M terraform/modules/iam/main.tf
- M terraform/modules/network/main.tf
+ M terraform/modules/iam/outputs.tf
+ M terraform/modules/iam/variables.tf
+ M terraform/modules/opensearch/main.tf
+ M terraform/modules/opensearch/variables.tf
+ M terraform/modules/rag/main.tf
+ M terraform/modules/rag/outputs.tf
+ M terraform/modules/rag/variables.tf
  M terraform/modules/s3/main.tf
+ M terraform/modules/s3/variables.tf
  M terraform/modules/security/main.tf
- M terraform/modules/waf/variables.tf
-?? .github/workflows/
-?? docs/evidence/
-?? env.mock.json
-?? pyproject.toml
-?? requirements-dev.txt
-?? scripts/
+?? docs/evidence/build-results/bandit-app.log
+?? docs/evidence/build-results/bandit.log
+?? docs/evidence/build-results/cfn-lint.log
+?? docs/evidence/build-results/dependency-resolution.log
+?? docs/evidence/build-results/final-make-lint.log
+?? docs/evidence/build-results/final-make-sam-validate.log
+?? docs/evidence/build-results/final-make-terraform-validate.log
+?? docs/evidence/build-results/make-validate.log
+?? docs/evidence/build-results/mypy.log
+?? docs/evidence/build-results/pip-audit.log
+?? docs/evidence/build-results/ruff.log
+?? docs/evidence/build-results/sam-build.log
+?? docs/evidence/build-results/sam-local-api.log
+?? docs/evidence/build-results/sam-validate.log
+?? docs/evidence/build-results/sbom.cdx.json
+?? docs/evidence/build-results/sbom.log
+?? docs/evidence/build-results/terraform-fmt.log
+?? docs/evidence/build-results/terraform-test-dev.log
+?? docs/evidence/build-results/terraform-test-prod.log
+?? docs/evidence/build-results/terraform-test-rag.log
+?? docs/evidence/build-results/terraform-validate-dev.log
+?? docs/evidence/build-results/terraform-validate-prod.log
+?? docs/evidence/build-results/venv-install.log
+?? docs/evidence/build-results/venv-mypy.log
+?? docs/evidence/build-results/venv-ruff.log
+?? docs/evidence/build-results/venv313-install.log
+?? docs/evidence/build-results/venv313-mypy.log
+?? docs/evidence/build-results/venv313-ruff.log
+?? docs/evidence/test-results/api-e2e-run.log
+?? docs/evidence/test-results/api-e2e.log
+?? docs/evidence/test-results/browser-capture.log
+?? docs/evidence/test-results/browser-console.log
+?? docs/evidence/test-results/coverage.log
+?? docs/evidence/test-results/coverage.xml
+?? docs/evidence/test-results/final-make-test.log
+?? docs/evidence/test-results/local-aws-doubles.log
+?? docs/evidence/test-results/localstack-assertions.json
+?? docs/evidence/test-results/localstack-assertions.log
+?? docs/evidence/test-results/localstack-destroy.log
+?? docs/evidence/test-results/localstack-run.log
+?? docs/evidence/test-results/localstack-terraform.log
+?? docs/evidence/test-results/sam-local-invoke.log
+?? docs/evidence/test-results/unit-tests-quiet.log
+?? docs/evidence/test-results/unit-tests.log
+?? docs/evidence/test-results/venv-tests.log
+?? docs/evidence/test-results/venv313-tests.log
+?? rag/ingestion/tests/test_aws_moto.py
+?? requirements-dev.lock
+?? scripts/localstack_infra_test.py
+?? scripts/run_localstack_infra_test.sh
+?? terraform/environments/dev/tests/
+?? terraform/environments/localstack/
+?? terraform/environments/prod/tests/
+?? terraform/modules/api/
+?? terraform/modules/bedrock/bedrock_lambda.zip
+?? terraform/modules/rag/tests/
 
 $ git diff --stat
- .gitignore                                         |   2 +
- CHANGELOG.md                                       |  20 ++
- FEDRAMP-ALIGNMENT.md                               |  10 +-
- Makefile                                           |  70 +++++-
- README.md                                          | 251 +++++++++++++--------
- docs/local-testing.md                              |  93 ++++++--
- docs/pii-redaction.md                              |   6 +-
- genai/prompt_builder/builder.py                    |   1 -
- lambda/bedrock_integration/handler.py              | 119 +++++++---
- lambda/bedrock_integration/tests/test_handler.py   |  63 ++++++
- rag/embedding/handler.py                           |  87 +++++--
- rag/embedding/tests/test_embedding.py              |  54 +++++
- rag/ingestion/handler.py                           |   9 +-
- rag/ingestion/tests/test_ingestion.py              |   2 -
- rag/orchestrator/handler.py                        | 111 +++++++--
- rag/orchestrator/tests/test_orchestrator.py        |  62 +++++
- rag/retrieval/handler.py                           | 102 +++++++--
- rag/retrieval/tests/test_retrieval.py              |  78 +++++--
- security/attack-simulation/01_prompt_injection.py  |   2 +-
- security/attack-simulation/02_token_flooding.py    |   5 +-
- security/attack-simulation/03_data_leakage.py      |   4 +-
- .../attack-simulation/04_retrieval_manipulation.py |   4 +-
- .../attack-simulation/05_iam_misconfiguration.py   |   8 +-
- security/attack-simulation/README.md               |   4 +-
- security/iam-least-privilege-validation.md         |   2 +
+ .github/workflows/ci.yml                           |  52 +++-
+ .gitignore                                         |   3 +
+ CHANGELOG.md                                       |  12 +-
+ FEDRAMP-ALIGNMENT.md                               |   2 +-
+ Makefile                                           |  26 +-
+ README.md                                          |  62 +++--
+ docs/evidence/README.md                            |  15 +-
+ docs/evidence/api-console.html                     |  40 +--
+ docs/evidence/build-results/changed-files.txt      | 145 ++++++-----
+ docs/evidence/build-results/terraform-wiring.txt   |  31 ++-
+ docs/evidence/build-results/tool-versions.txt      |   4 +
+ .../screenshots/api-verification-desktop.png       | Bin 368427 -> 367857 bytes
+ .../evidence/screenshots/api-verification-full.png | Bin 856688 -> 856441 bytes
+ .../screenshots/api-verification-mobile-full.png   | Bin 585398 -> 584912 bytes
+ .../screenshots/api-verification-mobile.png        | Bin 145686 -> 145341 bytes
+ docs/evidence/screenshots/error-validation.png     | Bin 29110 -> 28940 bytes
+ docs/evidence/screenshots/query-workflow.png       | Bin 68788 -> 69287 bytes
+ docs/evidence/test-results/api-e2e-results.json    |  44 ++--
+ docs/evidence/test-results/browser-api-checks.json |   8 +-
+ docs/evidence/verification-report.md               | 268 +++++++++++++++----
+ docs/local-testing.md                              |  89 +++++++
+ docs/pii-redaction.md                              |  17 +-
+ env.local.json.example                             |   9 +-
+ lambda/bedrock_integration/handler.py              |  29 ++-
+ lambda/bedrock_integration/tests/test_handler.py   |  16 ++
+ pyproject.toml                                     |  20 ++
+ rag/orchestrator/handler.py                        |  23 +-
+ rag/orchestrator/tests/test_orchestrator.py        |  20 ++
+ requirements-dev.txt                               |   4 +
+ security/attack-simulation/README.md               |   2 +-
+ security/iam-least-privilege-validation.md         |   2 +-
  security/injection-mitigation-results.md           |   4 +-
- security/threat-model.md                           |   2 +-
- template.yaml                                      |  10 +
- terraform/environments/prod/main.tf                |  32 +--
- terraform/modules/bedrock/main.tf                  |  12 +-
- terraform/modules/iam/main.tf                      |   6 +-
- terraform/modules/network/main.tf                  |   2 +-
- terraform/modules/s3/main.tf                       |  10 +-
- terraform/modules/security/main.tf                 |  48 ++--
- terraform/modules/waf/variables.tf                 |   2 +-
- 35 files changed, 1003 insertions(+), 294 deletions(-)
+ template.yaml                                      |   4 +
+ terraform/environments/dev/main.tf                 |  89 +++++++
+ terraform/environments/dev/outputs.tf              |  55 ++++
+ terraform/environments/dev/variables.tf            |  18 ++
+ terraform/environments/prod/main.tf                |  89 +++++++
+ terraform/environments/prod/outputs.tf             |  55 ++++
+ terraform/environments/prod/variables.tf           |  12 +
+ terraform/modules/bedrock/main.tf                  |  22 +-
+ terraform/modules/bedrock/outputs.tf               |   5 +
+ terraform/modules/iam/main.tf                      | 285 +++++++++++++++++++++
+ terraform/modules/iam/outputs.tf                   |  30 +++
+ terraform/modules/iam/variables.tf                 |   6 +
+ terraform/modules/opensearch/main.tf               |  30 ++-
+ terraform/modules/opensearch/variables.tf          |   6 +
+ terraform/modules/rag/main.tf                      |  66 ++++-
+ terraform/modules/rag/outputs.tf                   |   5 +
+ terraform/modules/rag/variables.tf                 |  22 ++
+ terraform/modules/s3/main.tf                       |  19 ++
+ terraform/modules/s3/variables.tf                  |   6 +
+ terraform/modules/security/main.tf                 |  25 +-
+ 52 files changed, 1529 insertions(+), 267 deletions(-)

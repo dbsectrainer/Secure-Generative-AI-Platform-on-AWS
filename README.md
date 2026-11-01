@@ -4,7 +4,7 @@
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/) [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.5-blueviolet.svg)](https://www.terraform.io/) [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock-orange.svg)](https://aws.amazon.com/bedrock/) [![FedRAMP High](https://img.shields.io/badge/FedRAMP-High%20Alignment-red.svg)](FEDRAMP-ALIGNMENT.md) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Verification status (2026-10-31):** The SAM local API was executed end-to-end against deterministic local service doubles. 122 unit/regression tests pass, lint passes, SAM validates and builds, and Terraform formats/validates. Live AWS authorization, paid model access, and a deployed Terraform stack were **not** verified. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md) for evidence and remaining gaps, including the Terraform modules that are not yet instantiated.
+> **Verification status (2026-10-31):** The SAM local API was executed end-to-end against deterministic local service doubles; 126 tests, 88% application coverage, mypy, Ruff, SAM build/validation, Terraform mock-provider plans, and a LocalStack S3/IAM/KMS infrastructure test pass. The full Terraform stack is now wired and plan-tested, with Guardrails pass-through added. Live AWS deployment, account-specific model access, and unsupported-service apply behavior remain unverified. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
 
 ---
 
@@ -13,7 +13,7 @@
 1. Provides a secure Generative AI reference implementation on AWS using Amazon Bedrock for LLM inference and Retrieval-Augmented Generation (RAG) for grounding responses in proprietary document corpora.
 2. Provides a hardened RAG pipeline that ingests documents via S3, generates embeddings, stores vectors in OpenSearch Serverless or Aurora pgvector, and retrieves context for prompt construction with injection-mitigation controls.
 3. Enforces a defense-in-depth security architecture including IAM least-privilege, KMS CMK encryption, AWS WAF, private VPC endpoints, CloudTrail audit logging, and GuardDuty threat detection.
-4. Implements adversarial resilience controls mapped to STRIDE and MITRE ATT&CK, including prompt injection sanitization, retrieval metadata filtering, and token-abuse design controls. PII redaction via Amazon Comprehend and Bedrock Guardrails are documented design targets; handler integration is not implemented.
+4. Implements adversarial resilience controls mapped to STRIDE and MITRE ATT&CK, including prompt injection sanitization, retrieval metadata filtering, and token-abuse design controls. PII anonymization/blocking is delegated to Bedrock Guardrails when configured; Amazon Comprehend is not implemented.
 5. Delivers a DevSecOps pipeline design with Terraform infrastructure-as-code, SAM-based local testing, automated security scanning targets, and deployment strategy documentation.
 6. Maintains a self-assessed FedRAMP High alignment of 92% (318/345 High baseline controls) across 18 of 20 NIST 800-53 Rev 5 control families. This is a mapping exercise, not an authorization; see FEDRAMP-ALIGNMENT.md.
 
@@ -84,9 +84,9 @@ The platform integrates Amazon Bedrock as the LLM inference engine with prompt e
 
 - Claude Messages API request shaping with a generic text-completion body for other model families; explicit model routing/fallback policy is not implemented
 - Prompt engineering templates for RAG, citation, and summarization modes
-- Bedrock Guardrail provisioning in Terraform; the Lambda handlers do not yet pass a `guardrailIdentifier`
+- Bedrock Guardrails provisioned in Terraform (including PII anonymization/blocking) and applied by handlers when `BEDROCK_GUARDRAIL_ID` / `BEDROCK_GUARDRAIL_VERSION` are configured
 - Token usage and cost estimation in the response; token caps, budget alarms, and anomaly detection are deployment targets, not handler-enforced
-- Output moderation is a design target; no moderation call is made in the Lambda response path
+- Output filtering/anonymization is delegated to the configured Bedrock Guardrail; no separate moderation call is made in the Lambda response path
 
 ### RAG Pipeline
 
@@ -105,7 +105,7 @@ The platform includes a threat model mapped to STRIDE and MITRE ATT&CK, with han
 
 | Threat                 | Mitigation                                            |
 | ---------------------- | ----------------------------------------------------- |
-| Prompt Injection       | Input sanitization + retrieval filtering (Guardrails design) |
+| Prompt Injection       | Input sanitization + retrieval filtering + Guardrails |
 | Data Exfiltration      | Private VPC endpoints + IAM permission boundaries     |
 | Token Abuse            | Rate limiting + CloudWatch alarms + budget alerts     |
 | Data Tampering         | S3 versioning + checksum validation + Object Lock     |
@@ -119,11 +119,11 @@ Attack simulation scripts are located in security/attack-simulation/ and cover p
 
 The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambda development and testing.
 
-- Terraform modules for core infrastructure (`network`, `s3`, `iam`, `bedrock`); RAG/OpenSearch/security/WAF modules are scaffolded but not yet instantiated
-- GitHub Actions CI runs tests, Ruff, Terraform format/validate, SAM validate/build, and cfn-lint
+- Terraform modules for the full stack (`network`, `s3`, `iam`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, `api`), with mock-provider plans for dev/prod and a LocalStack S3/IAM/KMS apply test
+- GitHub Actions CI runs tests, mypy, coverage, Ruff, pip-audit, SBOM generation, Terraform format/validate/tests, SAM validate/build, cfn-lint, and a LocalStack infrastructure job
 - Deployment strategy documentation for canary/blue-green and rollback; automation is not implemented in this repository
 - SAM CLI integration for local Lambda invocation and API Gateway simulation
-- SAST, dependency scanning, image scanning, and SBOM generation are roadmap items, not currently wired into CI
+- CI runs `pip-audit` and generates a CycloneDX SBOM; SAST and container-image scanning remain roadmap items
 
 ### Security and Compliance
 
@@ -136,7 +136,7 @@ The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambd
 - AWS Well-Architected Framework Security Pillar guidance
 - Zero Trust network design guidance (VPC, private subnets, endpoints); the `network` module is defined but not deployed in this audit
 - CloudTrail organization-wide audit logging with S3 Object Lock (WORM, 7-year retention) is a design target; it is not instantiated by the current Terraform roots
-- KMS CMK for S3 documents is defined in the `s3` module; end-to-end encryption and TLS enforcement are not verified
+- KMS CMK encryption is defined for S3 documents and OpenSearch Serverless; end-to-end encryption and TLS enforcement are not verified in a live account
 
 ---
 
@@ -150,6 +150,7 @@ The platform uses Terraform for cloud infrastructure and AWS SAM for local Lambd
 - Terraform >= 1.5 (only for infrastructure commands)
 - AWS CLI configured with appropriate credentials (only when calling real AWS services)
 - GNU Make
+- LocalStack Community Docker image (optional, for the S3/IAM/KMS infrastructure test)
 
 > **Model access is account- and region-specific.** The default `BEDROCK_MODEL_ID` is `anthropic.claude-sonnet-5-5`. Before deploying, confirm model access in your account/region and, where required, configure a Bedrock inference profile (the local handlers currently send the model ID directly). An early live smoke test in the audit environment received `ValidationException` (on-demand throughput unsupported) and `AccessDeniedException` (model not available for the account); see the verification report.
 
@@ -234,7 +235,7 @@ For AWS GovCloud, use the provided variable file after reviewing it:
 terraform apply -var-file="terraform/govcloud.tfvars.example"
 ```
 
-> **Important:** the dev/prod roots currently instantiate the `network`, `s3`, `iam`, and `bedrock` modules. The `rag`, `opensearch`, `security`, and `waf` modules exist but are **not yet wired into either environment**, and the `rag` module does not attach the prompt-builder Lambda layer. A Terraform apply therefore does not currently produce the full RAG API / WAF / OpenSearch stack described in the architecture. This is tracked as a remaining limitation in the verification report.
+> **Deployment scope:** both environment roots now instantiate `network`, `s3`, `iam`, `bedrock`, `opensearch`, `rag`, `security`, `waf`, and `api`. Full-stack plans are exercised with Terraform mock providers, and the S3/KMS/IAM portion is applied against LocalStack Community in the test suite. The full stack has **not** been applied to a live AWS account. Bedrock, OpenSearch Serverless, WAF, GuardDuty, and Config are not available in LocalStack Community and are therefore plan-validated only. API routes currently use `authorization = "NONE"`; add Cognito/JWT before exposing the API.
 
 See FEDRAMP-ALIGNMENT.md for control family mappings and docs/pii-redaction.md for PII detection design guidance.
 
@@ -252,20 +253,27 @@ See FEDRAMP-ALIGNMENT.md for control family mappings and docs/pii-redaction.md f
 | Validation and error states | Verified: empty/malformed/non-object JSON, invalid `top_k`, downstream failures |
 | Prompt-injection sanitization | Unit-tested and exercised through `/query` |
 | SAM build, SAM validate, cfn-lint | Passing locally |
-| Terraform format and validate | Passing for `dev` and `prod` roots |
-| Full Terraform deployment of RAG/OpenSearch/WAF | **Not wired / not verified** — modules exist but are not instantiated |
+| Terraform format/validate and full-stack mock plans | Passing for `dev` and `prod` roots |
+| Full Terraform module wiring | **Wired** — network, S3, IAM, Bedrock, OpenSearch, RAG, security, WAF, API, Guardrail version |
+| LocalStack infrastructure test | **13/13** S3/KMS/IAM assertions pass |
 | Live AWS Bedrock/OpenSearch authorization and semantics | **Not verified** — local doubles used; no live deployment |
-| Bedrock Guardrails / Comprehend PII redaction in handlers | **Not implemented in application code** — design guidance only |
+| Bedrock Guardrails PII/content controls | **Wired** when `BEDROCK_GUARDRAIL_ID` is configured; no live Guardrail call tested |
+| Amazon Comprehend PII redaction | **Not implemented** — Guardrails is the active PII control |
+| API authentication (Cognito/JWT) | **Not implemented** — API routes are `authorization = "NONE"` |
 | GitHub Actions CI | Workflow added; not executed on GitHub in this audit |
 
 Verified facts to date:
 
-- `122` unit and regression tests pass in a single root-level pytest run.
+- `126` tests pass (unit, regression, Moto-backed S3 integration) on Python 3.12 and 3.13 clean venvs.
+- `88%` application coverage (branch coverage; generated in `docs/evidence/test-results`).
 - `11/11` live-HTTP verification cases pass against SAM local API with local service doubles.
+- `4/4` direct `sam local invoke` cases pass.
+- `13/13` LocalStack S3/KMS/IAM infrastructure assertions pass after a real Terraform apply/destroy.
+- Terraform full-stack mock-provider plans pass for dev and prod (`terraform test`).
+- `mypy` reports no issues in 16 application files.
 - SAM build produces `PromptBuilderLayer/python/builder.py` (not `python/python/`).
-- `sam validate --lint` and `cfn-lint template.yaml` pass.
-- `ruff check .` passes.
-- Terraform `fmt -check -recursive` and `validate` pass for both environments.
+- `sam validate --lint`, `cfn-lint`, and `ruff check .` pass.
+- `pip-audit` reports no known vulnerabilities; a CycloneDX SBOM is generated from the locked dev dependency set.
 - The RAG pipeline response includes output, token usage, retrieval count, stage latencies, and cost estimate.
 
 ### Validation Commands
@@ -287,6 +295,12 @@ make mock-aws        # terminal 1
 make sam-api-mock    # terminal 2
 make e2e             # terminal 3
 make screenshots     # optional: regenerate image evidence
+
+# Additional local gates
+make coverage
+make typecheck
+make sbom
+make localstack-infra-test   # Docker + LocalStack Community required
 ```
 
 ### Visual Evidence
@@ -334,19 +348,23 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 ├── scripts/                    # Local AWS doubles and reproducible evidence tooling
 │   ├── capture_evidence.py
 │   ├── e2e_api_verify.py
-│   └── local_aws_doubles.py
+│   ├── local_aws_doubles.py
+│   ├── localstack_infra_test.py
+│   └── run_localstack_infra_test.sh
 ├── security/                   # Security configs, threat models, attack simulations
 │   ├── attack-simulation/
 │   ├── compliance-mapping.md
 │   ├── iam-least-privilege-validation.md
 │   └── injection-mitigation-results.md
-├── terraform/                  # Infrastructure as Code modules and environments
-│   ├── environments/{dev,prod}/
-│   └── modules/
+├── terraform/                  # Infrastructure as Code
+│   ├── environments/{dev,prod}/ # Full stack + mock-provider tests
+│   ├── environments/localstack/ # S3/IAM/KMS LocalStack apply test
+│   └── modules/                 # network, s3, iam, bedrock, opensearch, rag, security, waf, api
 ├── FEDRAMP-ALIGNMENT.md        # FedRAMP High self-assessment mapping
 ├── Makefile                    # Build, test, local API, and evidence targets
 ├── pyproject.toml              # Pytest and Ruff configuration
 ├── requirements-dev.txt        # Test/lint/evidence tooling
+├── requirements-dev.lock       # Locked development dependency set
 ├── samconfig.toml              # SAM local configuration
 ├── template.yaml               # SAM template (local testing only)
 └── README.md
@@ -376,4 +394,4 @@ See [docs/evidence/verification-report.md](docs/evidence/verification-report.md)
 
 For questions, partnerships, or federal engagement inquiries, open an issue or reach out directly.
 
-**Document Version:** 1.1 | **Last Updated:** 2026-10-31 | **FedRAMP High:** Self-assessed 92% control coverage (318/345; not an authorization)
+**Document Version:** 1.2 | **Last Updated:** 2026-10-31 | **FedRAMP High:** Self-assessed 92% control coverage (318/345; not an authorization)

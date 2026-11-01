@@ -1,0 +1,102 @@
+{
+  "endpoint": "http://127.0.0.1:4566",
+  "terraform_dir": "/Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/terraform/environments/localstack",
+  "bucket": "secgenai-local-documents-000000000000",
+  "kms_key_arn": "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42",
+  "checks": [
+    {
+      "name": "s3_bucket_exists",
+      "passed": true,
+      "detail": "secgenai-local-documents-000000000000"
+    },
+    {
+      "name": "s3_versioning_enabled",
+      "passed": true,
+      "detail": "Enabled"
+    },
+    {
+      "name": "s3_kms_encryption",
+      "passed": true,
+      "detail": {
+        "SSEAlgorithm": "aws:kms",
+        "KMSMasterKeyID": "arn:aws:kms:us-east-1:000000000000:key/8e74d36e-21c1-4fdb-8515-f9ef6c25df42"
+      }
+    },
+    {
+      "name": "s3_public_access_blocked",
+      "passed": true,
+      "detail": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+      }
+    },
+    {
+      "name": "s3_bucket_policy_controls",
+      "passed": true,
+      "detail": {
+        "DenyNonTLSRequests": true,
+        "RequireChecksumOnUpload": true
+      }
+    },
+    {
+      "name": "s3_write_read_roundtrip",
+      "passed": true,
+      "detail": {
+        "bytes": 37,
+        "sse": "aws:kms"
+      }
+    },
+    {
+      "name": "kms_key_enabled",
+      "passed": true,
+      "detail": "Enabled"
+    },
+    {
+      "name": "kms_key_rotation_enabled",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "s3_versions_cleaned",
+      "passed": true,
+      "detail": "2 version(s)/delete marker(s) removed"
+    },
+    {
+      "name": "iam_role_secgenai-local-role-lambda-bedrock-orchestrator",
+      "passed": true,
+      "detail": [
+        "secgenai-local-policy-deny-privilege-escalation",
+        "secgenai-local-policy-lambda-bedrock-orchestrator"
+      ]
+    },
+    {
+      "name": "iam_role_secgenai-local-role-lambda-embedding",
+      "passed": true,
+      "detail": [
+        "secgenai-local-policy-deny-privilege-escalation",
+        "secgenai-local-policy-lambda-embedding"
+      ]
+    },
+    {
+      "name": "iam_role_secgenai-local-role-lambda-retrieval",
+      "passed": true,
+      "detail": [
+        "secgenai-local-policy-deny-privilege-escalation",
+        "secgenai-local-policy-lambda-retrieval"
+      ]
+    },
+    {
+      "name": "iam_role_secgenai-local-role-lambda-rag-orchestrator",
+      "passed": true,
+      "detail": [
+        "secgenai-local-policy-deny-privilege-escalation",
+        "secgenai-local-policy-lambda-rag-orchestrator"
+      ]
+    }
+  ],
+  "passed": 13,
+  "total": 13,
+  "failed": 0
+}

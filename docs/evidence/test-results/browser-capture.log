@@ -1,0 +1,10 @@
+Captured screenshots in docs/evidence/screenshots
+  api-verification-desktop.png (367857 bytes)
+  api-verification-full.png (856441 bytes)
+  api-verification-mobile-full.png (584912 bytes)
+  api-verification-mobile.png (145341 bytes)
+  error-validation.png (28940 bytes)
+  query-workflow.png (69287 bytes)
+Browser console entries: 0
+Browser failures: 0
+Browser API checks: 5/5 succeeded

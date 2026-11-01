@@ -28,6 +28,28 @@ variable "document_bucket_name" {
   type        = string
 }
 
+variable "document_bucket_arn" {
+  description = "S3 bucket ARN used for the ObjectCreated notification permission"
+  type        = string
+}
+
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+}
+
+variable "guardrail_id" {
+  description = "Bedrock Guardrail ID applied to RAG inference (empty to disable)"
+  type        = string
+  default     = ""
+}
+
+variable "guardrail_version" {
+  description = "Published Bedrock Guardrail version"
+  type        = string
+  default     = ""
+}
+
 variable "opensearch_endpoint" {
   description = "HTTPS endpoint of the OpenSearch Serverless collection"
   type        = string

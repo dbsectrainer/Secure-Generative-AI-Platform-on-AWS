@@ -10,20 +10,30 @@ terraform {
 
 # ── OpenSearch Serverless Encryption Policy ───────────────────────────────────
 
+locals {
+  # Use the module-created endpoint when enabled; otherwise trust the IDs
+  # supplied by the caller (for environments with a separately managed VPC).
+  source_vpce_ids = var.create_vpc_endpoint ? [aws_opensearchserverless_vpc_endpoint.main[0].id] : var.vpce_ids
+
+  encryption_policy = merge(
+    {
+      Rules = [
+        {
+          ResourceType = "collection"
+          Resource     = ["collection/${var.name_prefix}-vectors"]
+        }
+      ]
+    },
+    var.kms_key_arn != "" ? { KmsKeyArn = var.kms_key_arn } : { AWSOwnedKey = true }
+  )
+}
+
 resource "aws_opensearchserverless_security_policy" "encryption" {
   name        = "${var.name_prefix}-enc-policy"
   type        = "encryption"
   description = "Encryption policy for ${var.name_prefix} vector collection"
 
-  policy = jsonencode({
-    Rules = [
-      {
-        ResourceType = "collection"
-        Resource     = ["collection/${var.name_prefix}-vectors"]
-      }
-    ]
-    AWSOwnedKey = true
-  })
+  policy = jsonencode(local.encryption_policy)
 }
 
 # ── OpenSearch Serverless Network Policy ──────────────────────────────────────
@@ -46,7 +56,7 @@ resource "aws_opensearchserverless_security_policy" "network" {
         }
       ]
       AllowFromPublic = false
-      SourceVPCEs     = var.vpce_ids
+      SourceVPCEs     = local.source_vpce_ids
     }
   ])
 }

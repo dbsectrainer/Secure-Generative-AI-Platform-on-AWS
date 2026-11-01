@@ -29,6 +29,12 @@ variable "bedrock_model_ids" {
   default     = ["anthropic.claude-sonnet-5-5"]
 }
 
+variable "embedding_model_id" {
+  description = "Bedrock embedding model ID used by the embedding and retrieval Lambdas"
+  type        = string
+  default     = "amazon.titan-embed-text-v2:0"
+}
+
 variable "permissions_boundary_arn" {
   description = "ARN of the IAM permissions boundary policy to attach to all roles (empty to disable)"
   type        = string

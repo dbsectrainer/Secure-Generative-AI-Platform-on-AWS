@@ -1,0 +1,51 @@
+### sam local invoke BedrockOrchestratorFunction
+No current session found, using default AWS::AccountId
+Invoking handler.lambda_handler (python3.13)
+Local image is up-to-date
+Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/BedrockOrchestratorFunction as /var/task:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: 92c60880ef1f7cf405f9b69bf66fe91021d9653c5737bbce90a9b393aab01989
+END RequestId: 4948c5f0-c77d-4fe6-aa1b-4e9fd0c3bb7f
+REPORT RequestId: 4948c5f0-c77d-4fe6-aa1b-4e9fd0c3bb7f	Init Duration: 0.02 ms	Duration: 594.34 ms	Billed Duration: 595 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+{"statusCode": 200, "body": {"output": "Local test double response: AWS Bedrock was not called. The request/response path completed successfully.", "model_id": "anthropic.claude-sonnet-5-5", "usage": {"input_tokens": 128, "output_tokens": 42}}}
+
+### sam local invoke RagEmbeddingFunction
+No current session found, using default AWS::AccountId
+Invoking handler.lambda_handler (python3.13)
+Local image is up-to-date
+Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagEmbeddingFunction as /var/task:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: fb0c3dc34bc4efd9bf2e1edd61d2a45167d8db951fa59f6273f9a320396a1044
+END RequestId: ddbbcebd-8b16-473b-b0d7-0bcbd23e5ea9
+REPORT RequestId: ddbbcebd-8b16-473b-b0d7-0bcbd23e5ea9	Init Duration: 0.02 ms	Duration: 615.70 ms	Billed Duration: 616 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+{"statusCode": 200, "body": {"indexed": true, "dimensions": 1024, "metadata": {"document_key": "raw/sample-document.txt", "chunk_index": 0}}}
+
+### sam local invoke RagRetrievalFunction
+No current session found, using default AWS::AccountId
+Invoking handler.lambda_handler (python3.13)
+Local image is up-to-date
+Using local image: public.ecr.aws/lambda/python:3.13-rapid-arm64.
+
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagRetrievalFunction as /var/task:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: 13a97ae6a9d84a985a93decfb144ac97846bdce96fbf7f0d5d74fadc0d171ff8
+START RequestId: c802d61b-6f0d-4dc8-bf62-59bf6676b918 Version: $LATEST
+END RequestId: 0adab330-3ec4-450e-b549-360f99b7388e
+REPORT RequestId: 0adab330-3ec4-450e-b549-360f99b7388e	Init Duration: 0.02 ms	Duration: 604.78 ms	Billed Duration: 605 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+{"statusCode": 200, "body": {"results": [{"text": "The platform encrypts documents at rest with a customer-managed KMS key and requires TLS 1.2 or later in transit.", "metadata": {"document_key": "raw/security-controls.txt", "chunk_index": 0}, "score": 0.94}, {"text": "Audit events are written to CloudTrail with S3 Object Lock retention for seven years.", "metadata": {"document_key": "raw/audit-policy.txt", "chunk_index": 1}, "score": 0.88}, {"text": "Retrieval results are scoped by document metadata so one tenant cannot retrieve another tenant's chunks.", "metadata": {"document_key": "raw/rag-controls.txt", "chunk_index": 2}, "score": 0.81}], "query": "What is the data retention policy for the generative AI platform?", "top_k": 3}}
+
+### sam local invoke RagOrchestratorFunction
+No current session found, using default AWS::AccountId
+Invoking handler.lambda_handler (python3.13)
+PromptBuilderLayer is a local Layer in the template
+Local image is up-to-date
+Building image.....................
+Using local image: samcli/lambda-python:3.13-arm64-20c3c6e7f2c03ffc45516bf68.
+
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/.aws-sam/build/RagOrchestratorFunction as /var/task:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: e538fac620b247d6d91123bc6f9bad328b14738ad6db56e6eeb789807ed3802f
+START RequestId: fd9cd316-b7e5-4d47-be9b-0af08103ea4b Version: $LATEST
+END RequestId: b24677d2-37a4-44e3-9627-09922c696c87
+REPORT RequestId: b24677d2-37a4-44e3-9627-09922c696c87	Init Duration: 0.04 ms	Duration: 619.15 ms	Billed Duration: 620 ms	Memory Size: 256 MB	Max Memory Used: 256 MB	
+{"statusCode": 200, "body": {"output": "Based on the retrieved policy excerpts, the platform encrypts data with a customer-managed KMS key, retains CloudTrail audit events for seven years, and scopes retrieval results by document metadata.", "model_id": "anthropic.claude-sonnet-5-5", "usage": {"input_tokens": 128, "output_tokens": 42, "prompt_token_estimate": 191, "estimated_cost_usd": 0.000676}, "retrieval": {"chunks_used": 3, "latency_ms": 5.2}, "latency_ms": {"retrieval": 5.2, "prompt_construction": 0.0, "bedrock_inference": 3.2, "total": 8.6}}}

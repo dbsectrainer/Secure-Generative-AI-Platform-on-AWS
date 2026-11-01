@@ -4,7 +4,7 @@
 **Date:** 2026-03-01  
 **Tools Used:** IAM Access Analyzer, AWS Config, AWS Organizations SCPs
 
-> **Status: historical/illustrative, not current AWS evidence.** IAM Access Analyzer, AWS Config, and the security Terraform module were not deployed or queried during the 2026-10-31 audit; the `security` module is not instantiated by either environment root. Findings below must be re-validated against the target account before being relied upon. See [docs/evidence/verification-report.md](../docs/evidence/verification-report.md).
+> **Status: historical/illustrative, not current AWS evidence.** IAM Access Analyzer and AWS Config were not deployed or queried during the 2026-10-31 audit. The `security` module is now wired in both Terraform roots and plan-tested with mock providers, but no live account was available. Findings below must be re-validated against the target account before being relied upon. See [docs/evidence/verification-report.md](../docs/evidence/verification-report.md).
 
 ---
 

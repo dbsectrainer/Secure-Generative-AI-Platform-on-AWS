@@ -64,6 +64,18 @@ variable "bedrock_model_id" {
   default     = "anthropic.claude-sonnet-5-5"
 }
 
+variable "embedding_model_id" {
+  description = "Bedrock embedding model ID"
+  type        = string
+  default     = "amazon.titan-embed-text-v2:0"
+}
+
+variable "api_stage_name" {
+  description = "API Gateway stage name for the RAG API"
+  type        = string
+  default     = "prod"
+}
+
 variable "max_tokens" {
   description = "Maximum tokens for Bedrock model response"
   type        = number

@@ -76,6 +76,24 @@ resource "aws_kms_key" "s3_documents" {
           "kms:DescribeKey"
         ]
         Resource = "*"
+      },
+      {
+        Sid    = "AllowOpenSearchServerlessUse"
+        Effect = "Allow"
+        Principal = {
+          Service = "aoss.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = var.account_id
+          }
+        }
       }
     ]
   })
@@ -139,6 +157,7 @@ resource "aws_s3_bucket_logging" "documents" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "documents" {
+  count  = var.manage_lifecycle ? 1 : 0
   bucket = aws_s3_bucket.documents.id
 
   rule {

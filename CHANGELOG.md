@@ -11,8 +11,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - AWS SAM CLI local testing: SAM template, Makefile, sample events, environment config, and documentation for testing all 5 Lambda functions locally without deploying
 - Deterministic local AWS service doubles for Bedrock, OpenSearch, and Lambda Invoke
 - End-to-end HTTP verification script, Playwright evidence capture, and `docs/evidence/`
-- GitHub Actions CI for Python tests/lint, Terraform validation, SAM validation, and SAM build
-- Root `pyproject.toml`, `requirements-dev.txt`, and consolidated Makefile quality targets
+- GitHub Actions CI for tests, mypy, coverage, pip-audit, SBOM, Terraform tests, SAM build, and LocalStack
+- Root `pyproject.toml`, `requirements-dev.txt`, `requirements-dev.lock`, and consolidated Makefile quality targets
+- Moto-backed S3/ingestion integration tests and LocalStack S3/IAM/KMS Terraform apply/verify/destroy tests
+- Terraform mock-provider full-stack wiring tests for dev and prod
+- Full Terraform composition: OpenSearch Serverless, RAG layer/S3 trigger, security, WAF, API Gateway, Guardrail version, and embedding/retrieval/RAG IAM roles
+- Optional Bedrock Guardrails pass-through for content filtering and PII anonymization/blocking
 - Optional `BEDROCK_ENDPOINT_URL` / `LAMBDA_ENDPOINT_URL` test overrides
 - Phase 3 security hardening: threat model, attack simulations, WAF/GuardDuty/Config modules, extended injection patterns
 - Phase 2 RAG pipeline implementation
@@ -31,6 +35,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `top_k: null` / non-integer values raised an unhandled `TypeError` and returned 500 instead of 400
 - Bedrock/OpenSearch error details were echoed to API callers; responses now return generic upstream errors while details stay in logs
 - Terraform files were not consistently formatted
+- Terraform roots did not instantiate the RAG/OpenSearch/security/WAF modules; all are now wired
+- RAG package lacked the prompt-builder layer, S3 trigger, guardrail env, and invoke permissions
+- OpenSearch network policy did not reference the module-created VPC endpoint; added KMS option
+- API Gateway had no module; added routes, stage, Lambda permissions, and WAF association
 - Ruff lint findings in handlers, tests, and attack-simulation scripts
 
 ### Changed

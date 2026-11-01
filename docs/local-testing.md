@@ -51,6 +51,64 @@ make screenshots
 The endpoint overrides are optional in production and are deliberately not named
 `AWS_ENDPOINT_URL_*`, which SAM reserves and filters.
 
+
+## AWS Code and Infrastructure Tests Without a Live Account
+
+Three complementary local test layers cover AWS-facing code and Terraform:
+
+### 1. Moto-backed boto3 integration tests
+
+`moto` intercepts AWS HTTP calls in-process. The ingestion test creates a real
+boto3 S3 client inside `mock_aws()`, uploads a document, and runs the Lambda
+handler; this exercises the S3 request/response path rather than patching
+`get_object`.
+
+```bash
+python3 -m pytest rag/ingestion/tests/test_aws_moto.py -v
+```
+
+### 2. Terraform mock-provider full-stack plans
+
+Terraform's native `terraform test` framework mocks the `aws` and `archive`
+providers, so every module and root wiring is planned without credentials or a
+cloud account.
+
+```bash
+cd terraform/environments/dev
+terraform init -backend=false
+terraform test -no-color
+
+cd ../prod
+terraform init -backend=false
+terraform test -no-color
+```
+
+The tests assert that all modules are wired, the API exposes four routes, and
+Lambda names follow the environment prefix. They do not prove provider API
+semantics; that is covered by `terraform validate` and, for supported services,
+LocalStack.
+
+### 3. LocalStack Terraform apply/destroy test
+
+`scripts/run_localstack_infra_test.sh` starts LocalStack Community 3.8 (if
+needed), applies the S3/IAM/KMS modules, verifies 13 resource assertions with
+boto3, and destroys everything. It uses only local resources and placeholder
+credentials.
+
+```bash
+make localstack-infra-test
+```
+
+Verified assertions include S3 versioning, SSE-KMS with the module-created key,
+all four public-access-block flags, TLS/checksum bucket-policy statements, an
+object write/read round-trip, KMS rotation, and the four IAM roles with their
+attached least-privilege and deny-escalation policies.
+
+**LocalStack Community limitation:** Bedrock, OpenSearch Serverless, WAF,
+GuardDuty, Config, and API Gateway are not applied in the LocalStack test. The
+full stack is plan-tested with Terraform mocks and `terraform validate`; those
+services remain unverified against a live AWS account.
+
 ## Testing Individual Functions
 
 Each function has a dedicated Makefile target and event file:
@@ -155,6 +213,7 @@ sam local invoke BedrockOrchestratorFunction \
 | `BEDROCK_ENDPOINT_URL` | Redirect Bedrock Runtime calls to the local double | unset (regional AWS endpoint) |
 | `LAMBDA_ENDPOINT_URL` | Redirect Lambda Invoke calls to the local double | unset (regional AWS endpoint) |
 | `OPENSEARCH_ENDPOINT` | Point indexing/search at the local double | required endpoint |
+| `BEDROCK_GUARDRAIL_ID` / `BEDROCK_GUARDRAIL_VERSION` | Apply Guardrails content/PII policy to model calls | empty (disabled) |
 
 These overrides are read by the handlers at module load and are intended for local testing. Placeholder credentials are applied by the Makefile to the SAM process only; never put real credentials in `env.mock.json`.
 
@@ -189,6 +248,33 @@ For verification without AWS, use the deterministic doubles in `scripts/local_aw
 ### S3 Triggers
 
 `sam local start-api` does not simulate S3 events. Use `sam local invoke` with the S3 event JSON file instead.
+
+### LocalStack Coverage
+
+LocalStack Community 3.8 is used only for the S3/IAM/KMS infrastructure test.
+Bedrock, OpenSearch Serverless, WAF, GuardDuty, Config, and API Gateway are
+not available in that test. The full Terraform roots are planned with mocked
+providers; those service APIs remain unverified until a live deployment.
+
+### API Authentication
+
+The SAM local API and the Terraform API Gateway routes use `authorization =
+"NONE"` for local verification. Add a Cognito/JWT authorizer before exposing
+the API. Do not treat the local API as an authenticated production boundary.
+
+### Guardrails and PII
+
+The local SAM template leaves `BEDROCK_GUARDRAIL_ID` and
+`BEDROCK_GUARDRAIL_VERSION` empty, so local model calls exercise request/response
+wiring but not Guardrail content/PII enforcement. Set both values (and have the
+guardrail in the same region/account) to exercise the pass-through; unit tests
+assert that the parameters reach the Bedrock client.
+
+### Model Access
+
+`anthropic.claude-sonnet-5-5` may require account-specific model access and/or a
+Bedrock inference profile. The local doubles ignore model availability. Verify
+this in the target account before relying on the default.
 
 ### Layer Packaging
 
@@ -243,6 +329,9 @@ scripts/
   local_aws_doubles.py           # Deterministic Bedrock/OpenSearch/Lambda test harness
   e2e_api_verify.py              # 11-case HTTP verification matrix
   capture_evidence.py            # Playwright screenshots of real captured responses
+  localstack_infra_test.py       # boto3 assertions against Terraform-created LocalStack resources
+  run_localstack_infra_test.sh   # Start LocalStack, apply, verify, destroy
+terraform/environments/localstack/ # S3/IAM/KMS LocalStack apply/destroy test root
 events/                          # Sample event payloads
   bedrock-invoke.json
   rag-ingestion-s3.json

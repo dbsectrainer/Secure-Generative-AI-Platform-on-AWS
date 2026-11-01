@@ -1,0 +1,3 @@
+$ sam validate --lint
+/Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/template.yaml is a valid SAM Template
+exit=0

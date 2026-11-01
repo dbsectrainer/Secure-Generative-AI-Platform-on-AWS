@@ -40,6 +40,12 @@ BEDROCK_REGION = os.environ.get("BEDROCK_REGION", os.environ.get("AWS_REGION", "
 DOCUMENT_BUCKET = os.environ["DOCUMENT_BUCKET"]
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
 
+# Optional Bedrock Guardrail. When set, content filtering and the PII
+# anonymization/blocking policy configured on the guardrail are applied by
+# Bedrock as part of InvokeModel. Unset in purely local runs.
+BEDROCK_GUARDRAIL_ID = os.environ.get("BEDROCK_GUARDRAIL_ID") or None
+BEDROCK_GUARDRAIL_VERSION = os.environ.get("BEDROCK_GUARDRAIL_VERSION") or "DRAFT"
+
 # Optional endpoint override for local end-to-end tests. Production leaves this
 # unset so boto3 resolves the regional Bedrock endpoint normally. Deliberately
 # not named AWS_ENDPOINT_URL_* — SAM reserves/filters AWS_* variables.
@@ -170,15 +176,24 @@ def _invoke_bedrock(prompt: str) -> dict[str, Any]:
 
     logger.info(
         "Invoking Bedrock model",
-        extra={"model_id": BEDROCK_MODEL_ID, "prompt_length": len(prompt)},
+        extra={
+            "model_id": BEDROCK_MODEL_ID,
+            "prompt_length": len(prompt),
+            "guardrail_enabled": bool(BEDROCK_GUARDRAIL_ID),
+        },
     )
 
-    response = _bedrock_client.invoke_model(
-        modelId=BEDROCK_MODEL_ID,
-        contentType="application/json",
-        accept="application/json",
-        body=request_body,
-    )
+    invoke_kwargs: dict[str, Any] = {
+        "modelId": BEDROCK_MODEL_ID,
+        "contentType": "application/json",
+        "accept": "application/json",
+        "body": request_body,
+    }
+    if BEDROCK_GUARDRAIL_ID:
+        invoke_kwargs["guardrailIdentifier"] = BEDROCK_GUARDRAIL_ID
+        invoke_kwargs["guardrailVersion"] = BEDROCK_GUARDRAIL_VERSION
+
+    response = _bedrock_client.invoke_model(**invoke_kwargs)
 
     response_body = json.loads(response["body"].read())
     logger.debug("Bedrock raw response received")

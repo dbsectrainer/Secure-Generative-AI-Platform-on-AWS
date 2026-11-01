@@ -1,6 +1,6 @@
 # FedRAMP High Alignment
 
-> **Status: self-assessment, not an authorization.** This mapping describes intended controls and partial infrastructure coverage. It is not a FedRAMP authorization package, a 3PAO assessment, or evidence that every mapped control is deployed. The repository's Terraform roots do not yet instantiate the RAG, OpenSearch, security, or WAF modules, and no live AWS environment was audited. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
+> **Status: self-assessment, not an authorization.** This mapping describes intended controls and partial infrastructure coverage. It is not a FedRAMP authorization package, a 3PAO assessment, or evidence that every mapped control is deployed. The Terraform roots now instantiate the RAG, OpenSearch, security, WAF, API, and Guardrail modules and pass mock-provider plans; no live AWS environment was audited. See [docs/evidence/verification-report.md](docs/evidence/verification-report.md).
 
 This document maps the Secure Generative AI Platform's architectural components to FedRAMP High baseline controls under NIST SP 800-53 Revision 5.
 

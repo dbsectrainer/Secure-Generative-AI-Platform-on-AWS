@@ -74,6 +74,12 @@ resource "aws_iam_policy" "lambda_bedrock_orchestrator" {
         ]
       },
       {
+        Sid      = "BedrockGuardrail"
+        Effect   = "Allow"
+        Action   = ["bedrock:ApplyGuardrail"]
+        Resource = "arn:aws:bedrock:${var.region}:${var.account_id}:guardrail/*"
+      },
+      {
         Sid    = "KMSDecrypt"
         Effect = "Allow"
         Action = [
@@ -234,6 +240,12 @@ resource "aws_iam_policy" "lambda_document_ingestion" {
         Resource = var.document_bucket_arn
       },
       {
+        Sid      = "InvokeEmbeddingLambda"
+        Effect   = "Allow"
+        Action   = ["lambda:InvokeFunction"]
+        Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:${var.name_prefix}-rag-embedding"
+      },
+      {
         Sid    = "KMSEncrypt"
         Effect = "Allow"
         Action = [
@@ -274,6 +286,279 @@ resource "aws_iam_role_policy_attachment" "lambda_document_ingestion" {
 
 resource "aws_iam_role_policy_attachment" "lambda_ingestion_deny_escalation" {
   role       = aws_iam_role.lambda_document_ingestion.name
+  policy_arn = aws_iam_policy.deny_privilege_escalation.arn
+}
+
+# ── IAM Role: Lambda Embedding Generation ─────────────────────────────────────
+
+resource "aws_iam_role" "lambda_embedding" {
+  name                 = "${var.name_prefix}-role-lambda-embedding"
+  permissions_boundary = var.permissions_boundary_arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowLambdaAssume"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = var.account_id
+          }
+        }
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "lambda_embedding" {
+  name        = "${var.name_prefix}-policy-lambda-embedding"
+  description = "Permissions for the RAG embedding Lambda"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "BedrockEmbeddingInvoke"
+        Effect   = "Allow"
+        Action   = ["bedrock:InvokeModel"]
+        Resource = "arn:aws:bedrock:${var.region}::foundation-model/${var.embedding_model_id}"
+      },
+      {
+        Sid      = "OpenSearchServerlessAccess"
+        Effect   = "Allow"
+        Action   = ["aoss:APIAccessAll"]
+        Resource = "arn:aws:aoss:${var.region}:${var.account_id}:collection/*"
+      },
+      {
+        Sid    = "CloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/lambda/*"
+      },
+      {
+        Sid      = "XRayTrace"
+        Effect   = "Allow"
+        Action   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
+        Resource = "*"
+      },
+      {
+        Sid    = "VPCAccess"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_embedding" {
+  role       = aws_iam_role.lambda_embedding.name
+  policy_arn = aws_iam_policy.lambda_embedding.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_embedding_deny_escalation" {
+  role       = aws_iam_role.lambda_embedding.name
+  policy_arn = aws_iam_policy.deny_privilege_escalation.arn
+}
+
+# ── IAM Role: Lambda Vector Retrieval ─────────────────────────────────────────
+
+resource "aws_iam_role" "lambda_retrieval" {
+  name                 = "${var.name_prefix}-role-lambda-retrieval"
+  permissions_boundary = var.permissions_boundary_arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowLambdaAssume"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = var.account_id
+          }
+        }
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "lambda_retrieval" {
+  name        = "${var.name_prefix}-policy-lambda-retrieval"
+  description = "Permissions for the RAG retrieval Lambda"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "BedrockEmbeddingInvoke"
+        Effect   = "Allow"
+        Action   = ["bedrock:InvokeModel"]
+        Resource = "arn:aws:bedrock:${var.region}::foundation-model/${var.embedding_model_id}"
+      },
+      {
+        Sid      = "OpenSearchServerlessAccess"
+        Effect   = "Allow"
+        Action   = ["aoss:APIAccessAll"]
+        Resource = "arn:aws:aoss:${var.region}:${var.account_id}:collection/*"
+      },
+      {
+        Sid    = "CloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/lambda/*"
+      },
+      {
+        Sid      = "XRayTrace"
+        Effect   = "Allow"
+        Action   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
+        Resource = "*"
+      },
+      {
+        Sid    = "VPCAccess"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_retrieval" {
+  role       = aws_iam_role.lambda_retrieval.name
+  policy_arn = aws_iam_policy.lambda_retrieval.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_retrieval_deny_escalation" {
+  role       = aws_iam_role.lambda_retrieval.name
+  policy_arn = aws_iam_policy.deny_privilege_escalation.arn
+}
+
+# ── IAM Role: RAG Orchestrator Lambda ─────────────────────────────────────────
+
+resource "aws_iam_role" "lambda_rag_orchestrator" {
+  name                 = "${var.name_prefix}-role-lambda-rag-orchestrator"
+  permissions_boundary = var.permissions_boundary_arn
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowLambdaAssume"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = var.account_id
+          }
+        }
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "lambda_rag_orchestrator" {
+  name        = "${var.name_prefix}-policy-lambda-rag-orchestrator"
+  description = "Permissions for the RAG orchestrator Lambda"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "BedrockInvoke"
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = [
+          for model in var.bedrock_model_ids :
+          "arn:aws:bedrock:${var.region}::foundation-model/${model}"
+        ]
+      },
+      {
+        Sid      = "BedrockGuardrail"
+        Effect   = "Allow"
+        Action   = ["bedrock:ApplyGuardrail"]
+        Resource = "arn:aws:bedrock:${var.region}:${var.account_id}:guardrail/*"
+      },
+      {
+        Sid      = "InvokeRetrievalLambda"
+        Effect   = "Allow"
+        Action   = ["lambda:InvokeFunction"]
+        Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:${var.name_prefix}-rag-retrieval"
+      },
+      {
+        Sid    = "CloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/lambda/*"
+      },
+      {
+        Sid      = "XRayTrace"
+        Effect   = "Allow"
+        Action   = ["xray:PutTraceSegments", "xray:PutTelemetryRecords"]
+        Resource = "*"
+      },
+      {
+        Sid    = "VPCAccess"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_rag_orchestrator" {
+  role       = aws_iam_role.lambda_rag_orchestrator.name
+  policy_arn = aws_iam_policy.lambda_rag_orchestrator.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_rag_orchestrator_deny_escalation" {
+  role       = aws_iam_role.lambda_rag_orchestrator.name
   policy_arn = aws_iam_policy.deny_privilege_escalation.arn
 }
 

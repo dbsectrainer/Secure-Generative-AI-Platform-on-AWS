@@ -1,12 +1,23 @@
 # PII Redaction in Generative AI Platform
 
-> **Implementation status (2026-10-31): design guidance, not wired into the Lambda handlers.** The repository's handlers do not currently call Amazon Comprehend or pass a Bedrock Guardrails `guardrailIdentifier`; with the local SAM template, model requests go directly to Bedrock Runtime. The architecture, IAM guidance, and code snippets below describe the intended production control set and must not be read as evidence that PII redaction is active. See [docs/evidence/verification-report.md](evidence/verification-report.md) for verified functionality and remaining limitations.
+> **Implementation status (2026-10-31): Bedrock Guardrails pass-through is implemented; Amazon Comprehend is not.** When `BEDROCK_GUARDRAIL_ID` and `BEDROCK_GUARDRAIL_VERSION` are configured, the Bedrock and RAG handlers pass them to `InvokeModel`, and the Terraform-created guardrail anonymizes EMAIL/NAME/PHONE and blocks AWS access/secret keys. The Comprehend-based path and its code snippets below are design guidance only. No live Guardrails call was exercised in this audit; see [docs/evidence/verification-report.md](evidence/verification-report.md).
 
-This document describes the Personally Identifiable Information (PII) redaction mechanisms planned for the Secure Generative AI Platform to protect sensitive data during LLM processing.
+This document describes PII redaction options for the Secure Generative AI Platform. The implemented path is Bedrock Guardrails; the Amazon Comprehend design is an alternative that is not wired into the handlers.
+
+## Implemented Control Path
+
+- Terraform creates a Bedrock Guardrail with EMAIL/NAME/PHONE anonymization and
+  AWS access/secret key blocking, publishes a version, and passes the ID/version
+  to the Bedrock and RAG orchestrator Lambda environments.
+- The handlers add `guardrailIdentifier` and `guardrailVersion` to
+  `InvokeModel` when configured; regression tests assert the parameters.
+- The SAM local template leaves the guardrail variables empty, so local-doubles
+  runs do not pretend to exercise Guardrails.
+- Amazon Comprehend/Comprehend Medical is **not** called by the current code.
 
 ## Overview
 
-The intended platform design uses **multi-layer PII redaction** to ensure that Personally Identifiable Information is not exposed to generative AI models or stored in logs:
+The intended platform design uses **multi-layer PII redaction**. The currently wired layer is Bedrock Guardrails; the remaining layers are design targets:
 
 1. **Input Redaction** — Remove PII before sending to Bedrock/Claude
 2. **Compliance Audit** — Log PII detection for compliance (FISMA, FedRAMP)

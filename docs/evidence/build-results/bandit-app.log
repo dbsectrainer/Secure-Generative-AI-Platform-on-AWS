@@ -1,0 +1,41 @@
+Run started:2026-11-01 00:42:07.818003
+
+Test results:
+>> Issue: [B310:blacklist] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-22 (https://cwe.mitre.org/data/definitions/22.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.0/blacklists/blacklist_calls.html#b310-urllib-urlopen
+   Location: rag/embedding/handler.py:196:13
+195	    try:
+196	        with urllib_request.urlopen(req, timeout=10) as resp:  # noqa: S310
+197	            status = resp.status
+
+--------------------------------------------------
+>> Issue: [B310:blacklist] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-22 (https://cwe.mitre.org/data/definitions/22.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.0/blacklists/blacklist_calls.html#b310-urllib-urlopen
+   Location: rag/retrieval/handler.py:249:13
+248	        start = time.monotonic()
+249	        with urllib_request.urlopen(req, timeout=10) as resp:  # noqa: S310
+250	            latency_ms = (time.monotonic() - start) * 1000
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 1414
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 0
+		Medium: 2
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 2
+Files skipped (0):

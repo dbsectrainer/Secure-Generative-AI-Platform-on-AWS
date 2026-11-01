@@ -7,6 +7,7 @@
         sam-invoke-bedrock sam-invoke-ingestion sam-invoke-embedding \
         sam-invoke-retrieval sam-invoke-rag \
         sam-api sam-api-mock mock-aws e2e screenshots \
+        coverage typecheck sbom localstack-infra-test \
         terraform-validate sam-generate-s3-event clean-sam
 
 LAYER_DIR := layers/prompt_builder
@@ -35,14 +36,33 @@ sam-validate:
 test:
 	python3 -m pytest -q
 
+coverage:
+	python3 -m pytest --cov \
+		--cov-report=term-missing \
+		--cov-report=xml:docs/evidence/test-results/coverage.xml \
+		--cov-report=html:docs/evidence/test-results/htmlcov
+
+typecheck:
+	mypy
+
+sbom:
+	cyclonedx-py requirements requirements-dev.lock \
+		--of json \
+		-o docs/evidence/build-results/sbom.cdx.json \
+		--validate
+
+localstack-infra-test:
+	scripts/run_localstack_infra_test.sh
+
 lint:
 	ruff check .
 
 terraform-validate:
-	cd terraform/environments/dev && terraform init -backend=false -input=false && terraform validate
-	cd terraform/environments/prod && terraform init -backend=false -input=false && terraform validate
+	cd terraform/environments/dev && terraform init -backend=false -input=false && terraform validate && terraform test -no-color
+	cd terraform/environments/prod && terraform init -backend=false -input=false && terraform validate && terraform test -no-color
+	cd terraform/modules/rag && terraform init -backend=false -input=false && terraform test -no-color
 
-validate: lint test sam-validate terraform-validate
+validate: lint test typecheck sam-validate terraform-validate
 
 # ── Individual function invocations ───────────────────────────────────────────
 

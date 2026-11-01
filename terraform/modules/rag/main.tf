@@ -42,6 +42,31 @@ data "archive_file" "orchestrator" {
   excludes    = ["tests", "__pycache__"]
 }
 
+# Build the prompt-builder layer from the canonical source. Lambda requires
+# modules under python/ inside the layer archive.
+data "archive_file" "prompt_builder_layer" {
+  type        = "zip"
+  output_path = "${path.module}/prompt_builder_layer.zip"
+
+  source {
+    content  = file("${path.module}/../../../genai/prompt_builder/builder.py")
+    filename = "python/builder.py"
+  }
+
+  source {
+    content  = file("${path.module}/../../../genai/prompt_builder/templates.py")
+    filename = "python/templates.py"
+  }
+}
+
+resource "aws_lambda_layer_version" "prompt_builder" {
+  layer_name          = "${var.name_prefix}-prompt-builder"
+  description         = "Injection-safe prompt builder shared by the RAG orchestrator"
+  filename            = data.archive_file.prompt_builder_layer.output_path
+  source_code_hash    = data.archive_file.prompt_builder_layer.output_base64sha256
+  compatible_runtimes = ["python3.13"]
+}
+
 # ── CloudWatch Log Groups ─────────────────────────────────────────────────────
 
 resource "aws_cloudwatch_log_group" "ingestion" {
@@ -195,15 +220,19 @@ resource "aws_lambda_function" "orchestrator" {
 
   environment {
     variables = {
-      BEDROCK_MODEL_ID     = var.inference_model_id
-      BEDROCK_REGION       = var.region
-      RETRIEVAL_LAMBDA_ARN = aws_lambda_function.retrieval.arn
-      MAX_TOKENS           = tostring(var.max_tokens)
-      TOP_K                = tostring(var.retrieval_top_k)
-      PROMPT_MODE          = var.prompt_mode
-      LOG_LEVEL            = var.log_level
+      BEDROCK_MODEL_ID          = var.inference_model_id
+      BEDROCK_REGION            = var.region
+      BEDROCK_GUARDRAIL_ID      = var.guardrail_id
+      BEDROCK_GUARDRAIL_VERSION = var.guardrail_version
+      RETRIEVAL_LAMBDA_ARN      = aws_lambda_function.retrieval.arn
+      MAX_TOKENS                = tostring(var.max_tokens)
+      TOP_K                     = tostring(var.retrieval_top_k)
+      PROMPT_MODE               = var.prompt_mode
+      LOG_LEVEL                 = var.log_level
     }
   }
+
+  layers = [aws_lambda_layer_version.prompt_builder.arn]
 
   vpc_config {
     subnet_ids         = var.private_subnet_ids
@@ -217,6 +246,29 @@ resource "aws_lambda_function" "orchestrator" {
   depends_on = [aws_cloudwatch_log_group.orchestrator]
 
   tags = merge(var.tags, { Name = "${var.name_prefix}-rag-orchestrator" })
+}
+
+# ── S3 ObjectCreated trigger ──────────────────────────────────────────────────
+
+resource "aws_lambda_permission" "s3_invoke_ingestion" {
+  statement_id   = "AllowS3InvokeRagIngestion"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.ingestion.function_name
+  principal      = "s3.amazonaws.com"
+  source_arn     = var.document_bucket_arn
+  source_account = var.account_id
+}
+
+resource "aws_s3_bucket_notification" "documents" {
+  bucket = var.document_bucket_name
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.ingestion.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "raw/"
+  }
+
+  depends_on = [aws_lambda_permission.s3_invoke_ingestion]
 }
 
 # ── CloudWatch Alarms ─────────────────────────────────────────────────────────

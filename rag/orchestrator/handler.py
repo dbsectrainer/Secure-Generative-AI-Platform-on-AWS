@@ -57,6 +57,12 @@ MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
 TOP_K = int(os.environ.get("TOP_K", "5"))
 PROMPT_MODE = os.environ.get("PROMPT_MODE", "rag")
 
+# Optional Bedrock Guardrail. When set, content filtering and the PII
+# anonymization/blocking policy configured on the guardrail are applied by
+# Bedrock as part of InvokeModel. Unset in purely local runs.
+BEDROCK_GUARDRAIL_ID = os.environ.get("BEDROCK_GUARDRAIL_ID") or None
+BEDROCK_GUARDRAIL_VERSION = os.environ.get("BEDROCK_GUARDRAIL_VERSION") or "DRAFT"
+
 # Optional endpoint overrides for local end-to-end tests (unset in production).
 BEDROCK_ENDPOINT_URL = os.environ.get("BEDROCK_ENDPOINT_URL") or None
 LAMBDA_ENDPOINT_URL = os.environ.get("LAMBDA_ENDPOINT_URL") or None
@@ -203,12 +209,17 @@ def _invoke_retrieval(
 def _invoke_bedrock(payload: dict[str, Any]) -> tuple[str, dict[str, int], float]:
     """Call Bedrock with *payload* and return (output_text, usage, latency_ms)."""
     start = time.monotonic()
-    response = _bedrock_client.invoke_model(
-        modelId=BEDROCK_MODEL_ID,
-        contentType="application/json",
-        accept="application/json",
-        body=json.dumps(payload),
-    )
+    invoke_kwargs: dict[str, Any] = {
+        "modelId": BEDROCK_MODEL_ID,
+        "contentType": "application/json",
+        "accept": "application/json",
+        "body": json.dumps(payload),
+    }
+    if BEDROCK_GUARDRAIL_ID:
+        invoke_kwargs["guardrailIdentifier"] = BEDROCK_GUARDRAIL_ID
+        invoke_kwargs["guardrailVersion"] = BEDROCK_GUARDRAIL_VERSION
+
+    response = _bedrock_client.invoke_model(**invoke_kwargs)
     latency_ms = (time.monotonic() - start) * 1000
 
     response_body = json.loads(response["body"].read())

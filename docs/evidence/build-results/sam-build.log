@@ -1,0 +1,57 @@
+✓ Lambda layer prepared at layers/prompt_builder
+sam build
+Starting Build inside a container
+Building layer 'PromptBuilderLayer'
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-x86_64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/layers/prompt_builder as /tmp/samcli/source:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: 80df7143b2cf616bb69d755bf5b7501768a43df73eba871bf592fe7b37fcef59
+ Running PythonPipBuilder:ResolveDependencies
+ Running PythonPipBuilder:CopySource
+Building codeuri: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/lambda/bedrock_integration runtime: python3.13 architecture: arm64 functions: BedrockOrchestratorFunction
+Building codeuri: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/ingestion runtime: python3.13 architecture: arm64 functions: RagIngestionFunction
+Building codeuri: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/embedding runtime: python3.13 architecture: arm64 functions: RagEmbeddingFunction
+Building codeuri: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/retrieval runtime: python3.13 architecture: arm64 functions: RagRetrievalFunction
+Building codeuri: /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/orchestrator runtime: python3.13 architecture: arm64 functions: RagOrchestratorFunction
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-arm64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/orchestrator as /tmp/samcli/source:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: ba1d96e22db220b9ac2829b9227c2b019b5b47d7700b41855ad86563593dcb09
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-arm64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/ingestion as /tmp/samcli/source:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: 562b9882235f43c1212658b69d7e1b56ca4ddf1c23fdff6068d2eaa3e5a1ba52
+ Running PythonPipBuilder:ResolveDependencies
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-arm64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/embedding as /tmp/samcli/source:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: d8c47f5783b93a417c5065c7ea57401ee0c273c1d2ef1a8b347c397dd040a6cb
+ Running PythonPipBuilder:ResolveDependencies
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-arm64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/rag/retrieval as /tmp/samcli/source:ro,delegated, inside runtime container
+SAM_CONTAINER_ID: a375e9037f8c15a78ebda3373bc066360bf66c544d4602136a7e808f00573ec1
+ Running PythonPipBuilder:ResolveDependencies
+
+Fetching public.ecr.aws/sam/build-python3.13:latest-arm64 Docker container image......
+Mounting /Users/newtechlab/Documents/GitHub/Secure-Generative-AI-Platform-on-AWS/lambda/bedrock_integration as /tmp/samcli/source:ro,delegated, inside runtime container
+ Running PythonPipBuilder:ResolveDependencies
+SAM_CONTAINER_ID: c7e3926514822f158b1cc1ff2a722b8d4ebc0949d0894c5c91f9996fa99e8e11
+ Running PythonPipBuilder:ResolveDependencies
+ Running PythonPipBuilder:CopySource
+ Running PythonPipBuilder:CopySource
+ Running PythonPipBuilder:CopySource
+ Running PythonPipBuilder:CopySource
+ Running PythonPipBuilder:CopySource
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam/build
+Built Template   : .aws-sam/build/template.yaml
+
+Commands you can use next
+=========================
+[*] Validate SAM template: sam validate
+[*] Invoke Function: sam local invoke
+[*] Test Function in the Cloud: sam sync --stack-name {{stack-name}} --watch
+[*] Deploy: sam deploy --guided

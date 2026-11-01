@@ -44,13 +44,15 @@ resource "aws_lambda_function" "bedrock_orchestrator" {
 
   environment {
     variables = {
-      BEDROCK_MODEL_ID        = var.bedrock_model_id
-      BEDROCK_REGION          = var.region
-      DOCUMENT_BUCKET         = var.document_bucket_name
-      MAX_TOKENS              = tostring(var.max_tokens)
-      LOG_LEVEL               = var.log_level
-      POWERTOOLS_LOG_LEVEL    = var.log_level
-      POWERTOOLS_SERVICE_NAME = "${var.name_prefix}-bedrock-orchestrator"
+      BEDROCK_MODEL_ID          = var.bedrock_model_id
+      BEDROCK_REGION            = var.region
+      BEDROCK_GUARDRAIL_ID      = var.enable_bedrock_guardrail ? aws_bedrock_guardrail.main[0].guardrail_id : ""
+      BEDROCK_GUARDRAIL_VERSION = var.enable_bedrock_guardrail ? aws_bedrock_guardrail_version.main[0].version : ""
+      DOCUMENT_BUCKET           = var.document_bucket_name
+      MAX_TOKENS                = tostring(var.max_tokens)
+      LOG_LEVEL                 = var.log_level
+      POWERTOOLS_LOG_LEVEL      = var.log_level
+      POWERTOOLS_SERVICE_NAME   = "${var.name_prefix}-bedrock-orchestrator"
     }
   }
 
@@ -184,4 +186,10 @@ resource "aws_bedrock_guardrail" "main" {
   }
 
   tags = var.tags
+}
+
+resource "aws_bedrock_guardrail_version" "main" {
+  count         = var.enable_bedrock_guardrail ? 1 : 0
+  guardrail_arn = aws_bedrock_guardrail.main[0].guardrail_arn
+  description   = "Published guardrail version for ${var.name_prefix}"
 }

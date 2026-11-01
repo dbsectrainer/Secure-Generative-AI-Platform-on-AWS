@@ -49,6 +49,12 @@ variable "noncurrent_version_expiration_days" {
   default     = 90
 }
 
+variable "manage_lifecycle" {
+  description = "Whether to manage the bucket lifecycle configuration (disable for LocalStack Community)"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Map of tags applied to all resources"
   type        = map(string)

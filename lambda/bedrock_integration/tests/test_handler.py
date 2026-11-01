@@ -210,6 +210,22 @@ class TestApiGatewayProxy:
         assert parsed["output"] == "Grounded answer."
         assert result["headers"]["Content-Type"] == "application/json"
 
+    def test_guardrail_parameters_are_sent_when_configured(self, monkeypatch):
+        import handler
+
+        monkeypatch.setattr(handler, "BEDROCK_GUARDRAIL_ID", "guardrail-test")
+        monkeypatch.setattr(handler, "BEDROCK_GUARDRAIL_VERSION", "7")
+        mock_response = _make_bedrock_response("Filtered answer.")
+
+        with patch.object(
+            handler._bedrock_client, "invoke_model", return_value=mock_response
+        ) as mock_invoke:
+            handler.lambda_handler({"prompt": "Hello"}, None)
+
+        kwargs = mock_invoke.call_args.kwargs
+        assert kwargs["guardrailIdentifier"] == "guardrail-test"
+        assert kwargs["guardrailVersion"] == "7"
+
     def test_malformed_json_body_returns_400_not_500(self):
         import handler
 
